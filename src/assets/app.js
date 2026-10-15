@@ -82,6 +82,50 @@
     return Promise.race([p, new Promise(function (r) { setTimeout(function () { r(false); }, ms); })]);
   }
 
+
+  function firstPage() {
+    try {
+      var k = "byd_first_page", v = sessionStorage.getItem(k);
+      if (!v) { v = location.pathname.slice(0, 200); sessionStorage.setItem(k, v); }
+      return v;
+    } catch (e) { return location.pathname.slice(0, 200); }
+  }
+
+  // Prefill model dari ?model= (tombol "Minta penawaran" di artikel/model)
+  (function () {
+    try {
+      var m = new URLSearchParams(location.search).get("model");
+      if (!m) return;
+      document.querySelectorAll("form.lead select[name=model]").forEach(function (sel) {
+        for (var i = 0; i < sel.options.length; i++) {
+          if (sel.options[i].value === m || sel.options[i].text === m) { sel.selectedIndex = i; break; }
+        }
+      });
+    } catch (e) {}
+  })();
+
+  // Lightbox sederhana untuk galeri model
+  (function () {
+    var links = document.querySelectorAll("[data-gal]");
+    if (!links.length) return;
+    var box = document.createElement("div");
+    box.className = "lb"; box.hidden = true; box.setAttribute("role", "dialog"); box.setAttribute("aria-modal", "true");
+    box.innerHTML = '<button type="button" aria-label="Tutup">×</button><img alt="">';
+    document.body.appendChild(box);
+    var img = box.querySelector("img");
+    function close() { box.hidden = true; }
+    box.addEventListener("click", close);
+    document.addEventListener("keydown", function (e) { if (e.key === "Escape") close(); });
+    links.forEach(function (a) {
+      a.addEventListener("click", function (e) {
+        e.preventDefault();
+        var t = a.querySelector("img");
+        img.src = a.getAttribute("href"); img.alt = t ? t.alt : "";
+        box.hidden = false; box.querySelector("button").focus();
+      });
+    });
+  })();
+
   document.querySelectorAll("form.lead").forEach(function (form) {
     var out = form.querySelector(".msg");
     var busy = false;
@@ -115,7 +159,7 @@
         name: d.name, phone: d.phone, model: d.model, timeline: d.timeline,
         payment: d.payment, testDrive: d.testDrive, tradeIn: d.tradeIn,
         score: sc.score, tier: sc.tier,
-        page: location.pathname, referrer: (document.referrer || "").slice(0, 200),
+        page: location.pathname, first_page: firstPage(), referrer: (document.referrer || "").slice(0, 200),
         utm_source: src.utm_source || "", utm_medium: src.utm_medium || "",
         utm_campaign: src.utm_campaign || "", utm_term: src.utm_term || ""
       };

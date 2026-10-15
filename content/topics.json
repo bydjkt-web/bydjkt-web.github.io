@@ -1,0 +1,22 @@
+{
+  "note": "Rencana editorial. status: draft | planned | published. tier: hard | medium | easy. Hard keyword didukung oleh pilar + artikel medium/easy yang menaut ke pilar.",
+  "topics": [
+    {"keyword":"harga mobil listrik","tier":"hard","type":"pilar","slug":"harga-mobil-listrik","status":"published"},
+    {"keyword":"mobil listrik murah","tier":"hard","type":"pilar","slug":"mobil-listrik-murah","status":"published"},
+    {"keyword":"mobil listrik 300 jutaan","tier":"hard","type":"artikel","slug":"mobil-listrik-300-jutaan","status":"draft"},
+    {"keyword":"byd atto 1 vs geely ex2","tier":"medium","type":"artikel","slug":"byd-atto-1-vs-geely-ex2-vs-changan-lumin","status":"draft"},
+    {"keyword":"byd atto 3 vs chery e5","tier":"medium","type":"artikel","slug":"byd-atto-3-vs-chery-e5-vs-geely-ex5","status":"draft"},
+    {"keyword":"byd seal vs mazda 6e","tier":"medium","type":"artikel","slug":"byd-seal-vs-mazda-6e","status":"planned"},
+    {"keyword":"byd sealion 7 vs xpeng g6","tier":"medium","type":"artikel","slug":"byd-sealion-7-vs-xpeng-g6","status":"planned"},
+    {"keyword":"byd m6 vs atto 3","tier":"medium","type":"artikel","slug":"byd-m6-vs-atto-3","status":"planned"},
+    {"keyword":"mobil listrik vs hybrid vs phev","tier":"medium","type":"artikel","slug":"mobil-listrik-vs-hybrid-vs-phev","status":"planned"},
+    {"keyword":"mobil listrik 200 jutaan","tier":"medium","type":"artikel","slug":"mobil-listrik-200-jutaan","status":"planned"},
+    {"keyword":"mobil listrik 7 seater","tier":"medium","type":"artikel","slug":"mobil-listrik-7-seater","status":"planned"},
+    {"keyword":"cicilan mobil listrik byd","tier":"medium","type":"artikel","slug":"cicilan-mobil-listrik-byd","status":"planned"},
+    {"keyword":"biaya charging mobil listrik di rumah","tier":"easy","type":"artikel","slug":"biaya-charging-mobil-listrik-di-rumah","status":"published"},
+    {"keyword":"kelebihan dan kekurangan mobil listrik","tier":"easy","type":"artikel","slug":"kelebihan-dan-kekurangan-mobil-listrik","status":"published"},
+    {"keyword":"pajak mobil listrik","tier":"easy","type":"artikel","slug":"pajak-mobil-listrik","status":"planned"},
+    {"keyword":"cara merawat mobil listrik","tier":"easy","type":"artikel","slug":"cara-merawat-mobil-listrik","status":"planned"},
+    {"keyword":"apakah mobil listrik aman saat banjir","tier":"easy","type":"artikel","slug":"mobil-listrik-saat-banjir","status":"planned"}
+  ]
+}

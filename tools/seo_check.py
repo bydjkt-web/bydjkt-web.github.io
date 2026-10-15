@@ -18,7 +18,7 @@ from html.parser import HTMLParser
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 DOCS = ROOT / "docs"
-SRC_ART = ROOT / "src/articles"
+SRC_ART = ROOT / "content/articles"
 
 
 class P(HTMLParser):
@@ -119,7 +119,8 @@ def check_page(f, seen):
             n = len(re.findall(re.escape(kw), " ".join(W)))
             dens = n * len(kw.split()) / max(1, len(W)) * 100
             ok(0.4 <= dens <= 2.5, "WARN", f"kepadatan keyword {dens:.2f}% ({n}x; ideal 0.4-2.5%)")
-        ok(len(W) >= 800, "WARN", f"jumlah kata {len(W)} (>=800)")
+        nb = len(words(re.sub(r"\{\{[^}]*\}\}", " ", re.sub(r"[#*`>|]", " ", src.read_text(encoding="utf-8").split("\n---\n", 1)[-1].split("\n## FAQ")[0])))) if src.exists() else len(W)
+        ok(nb >= 800, "WARN", f"jumlah kata isi artikel {nb} (>=800; tabel/CTA/menu tidak dihitung)")
         ok(len([h for h in p.h if h[0] == "h2"]) >= 3, "WARN", "minimal 3 subjudul H2")
         ok(len([l for l in internal if l.startswith("/byd-") or l == "/harga-byd/"]) >= 2, "WARN", "minimal 2 link internal ke model/harga")
         ok(any('"BlogPosting"' in b for b in p.ld), "WARN", "schema BlogPosting")
@@ -127,17 +128,19 @@ def check_page(f, seen):
 
 
 def main():
-    files = sorted(DOCS.rglob("*.html"))
+    files = sorted(f for f in DOCS.rglob("*.html") if "admin" not in f.relative_to(DOCS).parts[:1])
     if not files:
         print("docs/ kosong. Jalankan tools/build.py dulu."); return 1
     seen = {"t": set(), "d": set()}
     fails = warns = 0
     pages = set()
+    report = []
     for f in files:
         rel, res, p, noidx = check_page(f, seen)
         pages.add(rel)
         bad = [(l, m) for l, m in res if l != "PASS"]
         fails += sum(1 for l, _ in bad if l == "FAIL"); warns += sum(1 for l, _ in bad if l == "WARN")
+        report.append({"path": rel, "passed": len(res) - len(bad), "total": len(res), "issues": [{"level": l, "msg": m} for l, m in bad]})
         print(f"{'OK  ' if not bad else 'CEK '} {rel}  ({len(res) - len(bad)}/{len(res)} lulus)")
         for l, m in bad:
             print(f"      {l}: {m}")
@@ -155,6 +158,9 @@ def main():
     indexable = len([f for f in files if f.name != "404.html"])
     print(f"Sitemap: {n_sm} URL (halaman indexable: {indexable})" + ("" if n_sm == indexable else "  <- TIDAK SAMA"))
     if n_sm != indexable: fails += 1
+    if "--json" in sys.argv:
+        out = pathlib.Path(sys.argv[sys.argv.index("--json") + 1])
+        out.write_text(json.dumps({"fails": fails, "warns": warns, "pages": report}, ensure_ascii=False), encoding="utf-8")
     print(f"\nHasil: {fails} FAIL, {warns} WARN dari {len(files)} halaman")
     return 1 if fails else 0
 

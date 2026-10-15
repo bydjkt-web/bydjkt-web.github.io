@@ -1,0 +1,13 @@
+{
+  "note": "Daftar keyword yang dipantau. Posisi diambil dari Google Search Console (hanya untuk query yang punya impresi).",
+  "keywords": [
+    {"q":"harga mobil listrik","tier":"hard","target":"/harga-mobil-listrik/"},
+    {"q":"mobil listrik murah","tier":"hard","target":"/mobil-listrik-murah/"},
+    {"q":"mobil listrik 300 jutaan","tier":"hard","target":"/blog/mobil-listrik-300-jutaan/"},
+    {"q":"harga mobil byd","tier":"hard","target":"/harga-byd/"},
+    {"q":"byd atto 1 vs geely ex2","tier":"medium","target":"/blog/byd-atto-1-vs-geely-ex2-vs-changan-lumin/"},
+    {"q":"byd atto 3 vs chery e5","tier":"medium","target":"/blog/byd-atto-3-vs-chery-e5-vs-geely-ex5/"},
+    {"q":"biaya charging mobil listrik di rumah","tier":"easy","target":"/blog/biaya-charging-mobil-listrik-di-rumah/"},
+    {"q":"kelebihan dan kekurangan mobil listrik","tier":"easy","target":"/blog/kelebihan-dan-kekurangan-mobil-listrik/"}
+  ]
+}

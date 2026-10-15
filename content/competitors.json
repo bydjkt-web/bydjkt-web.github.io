@@ -1,0 +1,121 @@
+[
+  {
+    "slug": "geely-ex2-pro", "brand": "Geely", "name": "Geely EX2 Pro", "price": 239900000,
+    "price_basis": "OTR Jakarta", "battery": "sekitar 40 kWh", "range": "hingga 395 km (NEDC)",
+    "power": "85 kW (114 hp), 150 Nm", "seats": "5", "body": "Hatchback", "powertrain": "BEV", "partial": false,
+    "source": "https://moladin.com/news/harga-otr-geely-terbaru-september-2026/", "as_of": "2026-09",
+    "note": "Sumber mencatat kapasitas baterai 40,8 kWh pada satu tabel dan 40,16 kWh pada tabel lain."
+  },
+  {
+    "slug": "geely-ex2-max", "brand": "Geely", "name": "Geely EX2 Max", "price": 269900000,
+    "price_basis": "OTR Jakarta", "battery": "sekitar 40 kWh", "range": "hingga 395 km (NEDC)",
+    "power": "85 kW (114 hp), 150 Nm", "seats": "5", "body": "Hatchback", "powertrain": "BEV", "partial": false,
+    "source": "https://moladin.com/news/harga-otr-geely-terbaru-september-2026/", "as_of": "2026-09",
+    "note": "Artikel lain mencantumkan harga EX2 Max Rp259,9 juta; gunakan harga dari dealer Geely."
+  },
+  {
+    "slug": "changan-lumin", "brand": "Changan", "name": "Changan Lumin", "price": 222000000,
+    "price_basis": "daftar harga Moladin Okt 2026 (basis OTR tidak dinyatakan)", "battery": "28,08 kWh (LFP)", "range": "hingga 301 km (NEDC)",
+    "power": "35 kW, 83 Nm", "seats": "4", "body": "City car mini", "powertrain": "BEV", "partial": false,
+    "source": "https://moladin.com/news/update-harga-changan-lumin-ev-2026/", "as_of": "2026-10",
+    "note": "Artikel Moladin Juni 2026 mencantumkan harga mulai Rp205 juta OTR Jakarta."
+  },
+  {
+    "slug": "wuling-binguo-lite", "brand": "Wuling", "name": "Wuling Binguo EV Lite", "price": 318000000,
+    "price_basis": "OTR Jakarta (daftar harga resmi Wuling menurut Moladin)", "battery": "31,9 kWh", "range": "hingga 333 km (klaim)",
+    "power": "", "seats": "", "body": "Hatchback", "powertrain": "BEV", "partial": false,
+    "source": "https://moladin.com/news/harga-wuling-binguo-ev-lite-2026/", "as_of": "2026-09",
+    "note": "Sumber lain mencatat kisaran harga Binguo EV yang lebih rendah; konfirmasi ke dealer Wuling."
+  },
+  {
+    "slug": "aion-ut-standard", "brand": "Aion", "name": "Aion UT Standard", "price": 345000000,
+    "price_basis": "OTR Jakarta (kisaran Rp345–350 juta)", "battery": "44,12 kWh", "range": "tidak dicantumkan konsisten oleh sumber",
+    "power": "100 kW (134 hp), 145 Nm", "seats": "5", "body": "Hatchback", "powertrain": "BEV", "partial": false,
+    "source": "https://moladin.com/mobil-baru/aion/aion-ut/", "as_of": "2026-10",
+    "note": "Halaman sumber memuat angka jarak tempuh yang saling bertentangan, jadi tidak ditampilkan."
+  },
+  {
+    "slug": "aion-ut-premium", "brand": "Aion", "name": "Aion UT Premium", "price": 395000000,
+    "price_basis": "OTR Jakarta (kisaran Rp395–400 juta)", "battery": "60 kWh", "range": "tidak dicantumkan konsisten oleh sumber",
+    "power": "150 kW (201 hp), 210 Nm", "seats": "5", "body": "Hatchback", "powertrain": "BEV", "partial": false,
+    "source": "https://moladin.com/mobil-baru/aion/aion-ut/", "as_of": "2026-10",
+    "note": "Halaman sumber memuat angka jarak tempuh yang saling bertentangan, jadi tidak ditampilkan."
+  },
+  {
+    "slug": "chery-e5-pure", "brand": "Chery", "name": "Chery E5 Pure", "price": 379900000,
+    "price_basis": "daftar harga Moladin Okt 2026 (basis tidak dinyatakan)", "battery": "61,06 kWh (LFP)", "range": "hingga 430 km (WLTP)",
+    "power": "208 PS, 288 Nm", "seats": "5", "body": "SUV", "powertrain": "BEV", "partial": false,
+    "source": "https://moladin.com/news/harga-chery-e5-2026-semua-tipe/", "as_of": "2026-10",
+    "note": "Artikel Moladin Februari 2026 mencantumkan Pure Rp369,9 juta OTR Jabodetabek."
+  },
+  {
+    "slug": "chery-e5-luxury", "brand": "Chery", "name": "Chery E5 Luxury", "price": 399900000,
+    "price_basis": "OTR Jabodetabek (Moladin Feb 2026)", "battery": "61,06 kWh (LFP)", "range": "hingga 430 km (WLTP)",
+    "power": "208 PS, 288 Nm", "seats": "5", "body": "SUV", "powertrain": "BEV", "partial": false,
+    "source": "https://moladin.com/news/harga-chery-e5-2026-semua-tipe/", "as_of": "2026-02",
+    "note": "Harga bisa sudah berubah sejak Februari 2026."
+  },
+  {
+    "slug": "geely-ex5-pro", "brand": "Geely", "name": "Geely EX5 Pro", "price": 465000000,
+    "price_basis": "OTR Jakarta (kisaran Rp465–475 juta)", "battery": "", "range": "495 km (klaim)",
+    "power": "hingga 160 kW", "seats": "5", "body": "SUV", "powertrain": "BEV", "partial": false,
+    "source": "https://moladin.com/news/harga-otr-geely-terbaru-september-2026/", "as_of": "2026-09",
+    "note": "Sumber tidak mencantumkan kapasitas baterai dan standar jarak tempuh."
+  },
+  {
+    "slug": "mazda-6e", "brand": "Mazda", "name": "Mazda 6e Fastback", "price": 850000000,
+    "price_basis": "daftar harga Moladin Okt 2026 (basis tidak dinyatakan)", "battery": "78 kWh (LFP)", "range": "hingga 545 km (klaim)",
+    "power": "190 kW (254 hp), 290 Nm", "seats": "5", "body": "Sedan fastback", "powertrain": "BEV", "partial": false,
+    "source": "https://www.carmudi.co.id/journal/kulik-spesifikasi-all-new-mazda6e-fastback-yang-akan-hadir-di-indonesia-tahun-ini/", "as_of": "2026-10",
+    "note": "Spesifikasi diambil dari versi Singapura (Carmudi, Feb 2026); spesifikasi versi Indonesia dapat berbeda."
+  },
+  {
+    "slug": "xpeng-g6-pro-awd", "brand": "Xpeng", "name": "Xpeng G6 Pro AWD", "price": 769000000,
+    "price_basis": "OTR Jakarta", "battery": "80,8 kWh", "range": "hingga 575 km (NEDC)",
+    "power": "hingga 487 hp (dua motor, AWD)", "seats": "5", "body": "SUV", "powertrain": "BEV", "partial": false,
+    "source": "https://moladin.com/news/harga-xpeng-g6-pro-awd-2026/", "as_of": "2026-08",
+    "note": ""
+  },
+  {
+    "slug": "suzuki-e-vitara", "brand": "Suzuki", "name": "Suzuki e Vitara", "price": 755000000,
+    "price_basis": "harga varian single tone menurut Moladin (basis tidak dinyatakan)", "battery": "61 kWh (LFP)", "range": "hingga 428 km (WLTP)",
+    "power": "128 kW, 193 Nm", "seats": "5", "body": "SUV", "powertrain": "BEV", "partial": false,
+    "source": "https://moladin.com/news/spesifikasi-suzuki-e-vitara/", "as_of": "2026-10",
+    "note": "Varian two tone dihargai Rp758 juta. Jumlah kursi tidak dinyatakan sumber."
+  },
+  {
+    "slug": "wuling-aira-ev", "brand": "Wuling", "name": "Wuling Aira EV (mulai)", "price": 155000000,
+    "price_basis": "harga mulai menurut daftar Moladin Okt 2026", "battery": "17,3 kWh atau 26,7 kWh", "range": "200 km atau 300 km (klaim)",
+    "power": "sekitar 40 hp", "seats": "4", "body": "City car mini", "powertrain": "BEV", "partial": true,
+    "source": "https://infobanknews.com/5-mobil-listrik-murah-di-giias-2026-harga-mulai-rp155-juta", "as_of": "2026-10",
+    "note": "Harga mulai untuk Standard Range; varian lain lebih tinggi."
+  },
+  {
+    "slug": "jaecoo-j5-ev", "brand": "Jaecoo", "name": "Jaecoo J5 (mulai)", "price": 279900000,
+    "price_basis": "harga mulai menurut daftar Moladin Okt 2026", "battery": "", "range": "",
+    "power": "", "seats": "", "body": "SUV compact", "powertrain": "BEV", "partial": true,
+    "source": "https://moladin.com/?p=340288", "as_of": "2026-10",
+    "note": "Varian Premium Rp324,9 juta. Spesifikasi belum diverifikasi."
+  },
+  {
+    "slug": "mg-s5-ev", "brand": "MG", "name": "MG S5 EV Ignite (mulai)", "price": 333900000,
+    "price_basis": "harga mulai menurut daftar Moladin Okt 2026", "battery": "", "range": "",
+    "power": "", "seats": "", "body": "SUV", "powertrain": "BEV", "partial": true,
+    "source": "https://moladin.com/?p=340288", "as_of": "2026-10",
+    "note": "Spesifikasi belum diverifikasi."
+  },
+  {
+    "slug": "gwm-ora-03", "brand": "GWM", "name": "GWM Ora 03 (mulai)", "price": 379000000,
+    "price_basis": "harga mulai menurut daftar Moladin Okt 2026", "battery": "", "range": "",
+    "power": "", "seats": "", "body": "Hatchback", "powertrain": "BEV", "partial": true,
+    "source": "https://moladin.com/?p=340288", "as_of": "2026-10",
+    "note": "Spesifikasi belum diverifikasi."
+  },
+  {
+    "slug": "toyota-urban-cruiser-bev", "brand": "Toyota", "name": "Toyota Urban Cruiser BEV (mulai)", "price": 759000000,
+    "price_basis": "harga mulai menurut daftar Moladin Okt 2026", "battery": "", "range": "",
+    "power": "", "seats": "", "body": "SUV", "powertrain": "BEV", "partial": true,
+    "source": "https://moladin.com/?p=340288", "as_of": "2026-10",
+    "note": "Spesifikasi belum diverifikasi."
+  }
+]

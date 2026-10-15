@@ -1,0 +1,41 @@
+{
+  "name": "BYD Harmony",
+  "legal_name": "Harmony Auto",
+  "tagline": "Dealer mobil listrik BYD",
+  "domain": "https://DOMAIN-ANDA.com",
+  "wa_number": "6281234567890",
+  "phone_display": "0812-3456-7890",
+  "address": "ALAMAT LENGKAP DEALER",
+  "city": "Jakarta",
+  "region": "DKI Jakarta",
+  "postal": "00000",
+  "hours": "Senin–Sabtu 09.00–18.00",
+  "hours_schema": "Mo-Sa 09:00-18:00",
+  "price_date_label": "Oktober 2026",
+  "price_date": "2026-10-15",
+  "ga4_id": "",
+  "gsc_verification": "",
+  "gsc_property": "",
+  "indexnow_key": "",
+  "instagram": "byd.harmony.id",
+  "tiktok": "byd.harmony.id",
+  "facebook": "",
+  "youtube": "",
+  "author_name": "Tim BYD Harmony",
+  "author_role": "Sales consultant BYD",
+  "theme": { "accent": "#00806d" },
+  "promo": {
+    "enabled": true,
+    "text": "Free charging di seluruh dealer Harmony. Tanya sales untuk syarat dan ketentuan.",
+    "link": "/test-drive/"
+  },
+  "show_floating_wa": true,
+  "nav": [
+    { "label": "Model", "href": "/#model" },
+    { "label": "Harga", "href": "/harga-byd/" },
+    { "label": "Mobil Listrik Murah", "href": "/mobil-listrik-murah/" },
+    { "label": "Blog", "href": "/blog/" }
+  ],
+  "footer_note": "Harga, promo, dan spesifikasi dapat berubah sewaktu-waktu; konfirmasi ke sales kami. BYD adalah merek dagang BYD Company Limited.",
+  "firebase": { "apiKey": "", "authDomain": "", "projectId": "", "appId": "" }
+}

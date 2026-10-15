@@ -1,0 +1,88 @@
+{
+  "home": {
+    "title": "Dealer Mobil Listrik BYD: Harga OTR, Promo & Test Drive",
+    "description": "Dealer mobil listrik BYD: cek harga OTR terbaru, promo, simulasi kredit, dan booking test drive Atto 1, Atto 3, M6, M6 DM-i, Seal, dan Sealion 7.",
+    "h1": "Mobil Listrik BYD: Harga OTR Terbaru, Promo & Test Drive",
+    "lead": "Konsultasi model, simulasi kredit, dan booking test drive di {name}. Harga mulai Rp199 juta OTR Jakarta untuk BYD Atto 1 ({price_date}).",
+    "badges": ["Konsultasi gratis", "Simulasi kredit", "Test drive", "Tukar tambah"],
+    "cta_primary": "Chat WhatsApp",
+    "cta_secondary": "Booking Test Drive",
+    "models_title": "Pilih Model Mobil Listrik BYD",
+    "models_intro": "Dari hatchback compact hingga SUV, MPV, dan sedan performa. Pilih sesuai kebutuhan dan anggaran Anda.",
+    "why_title": "Kenapa Mobil Listrik?",
+    "why_items": [
+      { "title": "Biaya energi lebih rendah", "text": "Listrik umumnya lebih murah per kilometer daripada bensin, terutama jika diisi di rumah." },
+      { "title": "Perawatan lebih sederhana", "text": "Tanpa mesin pembakaran, tidak ada ganti oli mesin dan busi pada mobil listrik murni." },
+      { "title": "Senyap dan halus", "text": "Tenaga motor listrik langsung terasa dan kabin lebih tenang di kemacetan." }
+    ],
+    "why_links": "Pelajari lebih dalam: [kelebihan dan kekurangan mobil listrik](/blog/kelebihan-dan-kekurangan-mobil-listrik/) dan [biaya charging mobil listrik di rumah](/blog/biaya-charging-mobil-listrik-di-rumah/).",
+    "articles_title": "Panduan & Perbandingan Terbaru",
+    "articles_count": 3,
+    "usecases_title": "Cocok untuk Kebutuhan Apa?",
+    "usecases": [
+      "Mobilitas kota dengan anggaran Rp200 jutaan: [BYD Atto 1](/byd-atto-1/)",
+      "SUV listrik keluarga: [BYD Atto 3](/byd-atto-3/) dan [BYD Sealion 7](/byd-sealion-7/)",
+      "Keluarga besar 6 atau 7 kursi: [BYD M6](/byd-m6/) dan [BYD M6 DM-i](/byd-m6-dm/)",
+      "Sedan listrik performa: [BYD Seal](/byd-seal/)",
+      "Sedang membandingkan harga: [mobil listrik murah](/mobil-listrik-murah/) dan [harga mobil listrik](/harga-mobil-listrik/)"
+    ],
+    "lead_title": "Konsultasi Gratis & Booking Test Drive",
+    "lead_text": "Isi form singkat, tim kami menghubungi Anda lewat WhatsApp dengan harga OTR terbaru, promo yang berlaku, dan simulasi cicilan sesuai kebutuhan.",
+    "lead_bullets": [
+      "Konsultasi model sesuai kebutuhan dan anggaran",
+      "Simulasi uang muka, tenor, dan cicilan",
+      "Jadwal test drive sesuai ketersediaan unit",
+      "Opsi tukar tambah"
+    ],
+    "faq_title": "Pertanyaan yang Sering Diajukan",
+    "faq": [
+      { "q": "Berapa harga mobil BYD termurah?", "a": "Berdasarkan price list dealer, BYD Atto 1 varian Standard dimulai dari Rp199 juta OTR Jakarta. Hubungi sales kami untuk harga terbaru." },
+      { "q": "Apakah mobil listrik BYD bisa dibeli secara kredit?", "a": "Bisa. Kami membantu simulasi uang muka, tenor, dan cicilan. Isi form di halaman ini dan tim kami menghubungi Anda lewat WhatsApp." },
+      { "q": "Bagaimana cara booking test drive BYD?", "a": "Isi form di halaman ini atau chat WhatsApp kami. Tim kami akan menjadwalkan sesi test drive sesuai ketersediaan unit." },
+      { "q": "Berapa biaya charging mobil listrik di rumah?", "a": "Biayanya dihitung dari kapasitas baterai dikali tarif listrik per kWh. Baca panduan lengkap beserta contoh hitungannya di artikel biaya charging mobil listrik di rumah." },
+      { "q": "Model BYD apa yang cocok untuk keluarga?", "a": "BYD M6 dan M6 DM-i berformat MPV untuk keluarga besar, sedangkan BYD Atto 3 dan Sealion 7 berformat SUV listrik. Test drive membantu Anda menilai kenyamanannya." }
+    ]
+  },
+  "prices": {
+    "title": "Harga Mobil BYD Terbaru {price_date} (OTR Jakarta)",
+    "description": "Daftar harga mobil BYD terbaru {price_date} OTR Jakarta: Atto 1, Atto 3, M6, M6 DM-i, Seal, dan Sealion 7. Minta simulasi cicilan gratis.",
+    "h1": "Harga Mobil BYD Terbaru {price_date} (OTR Jakarta)",
+    "intro": "Berikut daftar harga mobil listrik BYD untuk wilayah Jakarta sesuai price list dealer. Untuk model yang belum tercantum atau harga yang berubah, hubungi sales kami agar mendapat harga yang berlaku hari ini.",
+    "guide_title": "Cara Memilih Mobil BYD Sesuai Anggaran",
+    "guide_md": "- Sekitar Rp200 jutaan: [BYD Atto 1](/byd-atto-1/) dengan tiga varian\n- Rp300 jutaan: [BYD M6 DM-i](/byd-m6-dm/) varian Classic, MPV plug-in hybrid\n- Rp400 jutaan: [BYD Atto 3](/byd-atto-3/) dan [BYD M6](/byd-m6/)\n- Performa dan fitur premium: [BYD Seal](/byd-seal/) atau [BYD Sealion 7](/byd-sealion-7/)\n\nSebelum memutuskan, bandingkan dengan kompetitor di [daftar harga mobil listrik](/harga-mobil-listrik/) dan baca [kelebihan dan kekurangan mobil listrik](/blog/kelebihan-dan-kekurangan-mobil-listrik/).",
+    "articles_title": "Artikel Perbandingan Harga",
+    "faq_title": "Pertanyaan tentang Harga Mobil BYD",
+    "faq": [
+      { "q": "Berapa harga mobil BYD termurah?", "a": "BYD Atto 1 Standard dimulai dari Rp199 juta OTR Jakarta berdasarkan price list dealer." },
+      { "q": "Apa arti harga OTR?", "a": "OTR (on the road) adalah harga mobil yang sudah termasuk biaya pengurusan seperti pajak dan administrasi, sehingga siap dipakai di jalan. Besarnya bisa berbeda antar daerah." },
+      { "q": "Apakah harga mobil BYD bisa berubah?", "a": "Bisa. Harga dan promo dapat berubah per periode. Pastikan Anda mengonfirmasi harga terbaru ke sales sebelum membeli." },
+      { "q": "Apakah tersedia cicilan untuk mobil BYD?", "a": "Tersedia. Kami membantu simulasi uang muka, tenor, dan cicilan. Isi form di halaman ini untuk mendapatkannya." }
+    ],
+    "lead_title": "Minta Harga & Simulasi Cicilan Terbaru"
+  },
+  "testdrive": {
+    "title": "Booking Test Drive Mobil Listrik BYD | {name}",
+    "description": "Booking test drive mobil listrik BYD di {name}. Isi form, kami jadwalkan sesi test drive dan kirim penawaran lewat WhatsApp.",
+    "h1": "Booking Test Drive Mobil Listrik BYD",
+    "intro": "Rasakan langsung kenyamanan berkendara mobil listrik BYD. Isi form, kami jadwalkan.",
+    "lead_title": "Jadwalkan Test Drive Anda",
+    "steps_title": "Langkah Booking Test Drive",
+    "steps": [
+      "Isi form dan pilih model yang ingin dicoba.",
+      "Tim kami menghubungi Anda lewat WhatsApp untuk konfirmasi jadwal.",
+      "Datang ke dealer pada waktu yang disepakati dan coba langsung."
+    ],
+    "faq_title": "Pertanyaan tentang Test Drive",
+    "faq": [
+      { "q": "Apa yang perlu dibawa saat test drive?", "a": "Bawa SIM A yang masih berlaku dan identitas diri. Tim kami akan menginformasikan detail lainnya saat konfirmasi jadwal." },
+      { "q": "Apakah test drive dikenakan biaya?", "a": "Silakan konfirmasi ke sales kami saat menjadwalkan sesi." },
+      { "q": "Model apa saja yang bisa dites?", "a": "Ketersediaan unit test drive berbeda tiap periode. Tim kami akan mengonfirmasi model yang tersedia sebelum jadwal." }
+    ]
+  },
+  "blog": {
+    "title": "Blog Mobil Listrik BYD: Panduan & Perbandingan | {name}",
+    "description": "Panduan memilih mobil listrik, perbandingan BYD dengan kompetitor sekelas harga, biaya charging, dan tips dari tim {name}.",
+    "h1": "Blog Mobil Listrik BYD: Panduan & Perbandingan",
+    "intro": "Panduan memilih, menghitung biaya, dan membandingkan mobil listrik di kelas harga yang sama."
+  }
+}

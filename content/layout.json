@@ -1,0 +1,39 @@
+{
+  "home": [
+    { "id": "hero", "on": true },
+    { "id": "models", "on": true },
+    { "id": "why", "on": true },
+    { "id": "articles", "on": true },
+    { "id": "usecases", "on": true },
+    { "id": "lead", "on": true },
+    { "id": "faq", "on": true }
+  ],
+  "model": [
+    { "id": "gallery", "on": true },
+    { "id": "summary", "on": true },
+    { "id": "highlights", "on": true },
+    { "id": "variants", "on": true },
+    { "id": "specs", "on": true },
+    { "id": "compare", "on": true },
+    { "id": "articles", "on": true },
+    { "id": "faq", "on": true },
+    { "id": "others", "on": true },
+    { "id": "lead", "on": true }
+  ],
+  "prices": [
+    { "id": "table", "on": true },
+    { "id": "guide", "on": true },
+    { "id": "articles", "on": true },
+    { "id": "faq", "on": true },
+    { "id": "lead", "on": true }
+  ],
+  "article": {
+    "toc": true,
+    "author": true,
+    "cta_mid": true,
+    "cta_mid_after_h2": 2,
+    "model_box": true,
+    "related": true,
+    "related_count": 3
+  }
+}

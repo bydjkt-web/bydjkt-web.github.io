@@ -12,7 +12,7 @@ service cloud.firestore {
       allow create: if
         request.resource.data.keys().hasOnly([
           'name','phone','model','timeline','payment','testDrive','tradeIn',
-          'score','tier','page','referrer','utm_source','utm_medium','utm_campaign','utm_term','createdAt'
+          'score','tier','page','first_page','referrer','utm_source','utm_medium','utm_campaign','utm_term','createdAt'
         ])
         && request.resource.data.name is string
         && request.resource.data.name.size() >= 2 && request.resource.data.name.size() <= 80
@@ -27,6 +27,7 @@ service cloud.firestore {
         && request.resource.data.score >= 0 && request.resource.data.score <= 100
         && request.resource.data.tier in ['hot','warm','cold']
         && request.resource.data.page is string && request.resource.data.page.size() <= 200
+        && (!('first_page' in request.resource.data) || (request.resource.data.first_page is string && request.resource.data.first_page.size() <= 200))
         && request.resource.data.createdAt == request.time;
     }
 
