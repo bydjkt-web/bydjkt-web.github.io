@@ -1,0 +1,165 @@
+[
+  {
+    "slug": "byd-atto-1",
+    "name": "BYD Atto 1",
+    "type": "Hatchback listrik compact",
+    "tagline": "Mobil listrik paling terjangkau di jajaran BYD Indonesia.",
+    "variants": [
+      {"name": "Standard", "price": 199000000},
+      {"name": "Dynamic", "price": 210000000},
+      {"name": "Premium", "price": 245000000}
+    ],
+    "specs": [
+      ["Segmen", "Hatchback listrik compact"],
+      ["Varian", "Standard, Dynamic, Premium"],
+      ["Posisi di lineup", "Model entry-level BYD di Indonesia"]
+    ],
+    "intro": [
+      "BYD Atto 1 adalah pintu masuk paling terjangkau ke dunia mobil listrik BYD. Formatnya hatchback compact yang mudah diparkir dan lincah di jalan kota, sehingga cocok untuk mobilitas harian di area perkotaan.",
+      "Dengan tiga pilihan varian, Anda bisa menyesuaikan fitur dengan anggaran. Hubungi sales kami untuk membandingkan varian Standard, Dynamic, dan Premium secara langsung, lengkap dengan simulasi cicilan."
+    ],
+    "best_for": [
+      "Pengguna yang baru beralih ke mobil listrik",
+      "Mobilitas harian di dalam kota dan area sekitarnya",
+      "Rumah tangga yang butuh mobil kedua yang hemat biaya energi",
+      "Anda yang mencari mobil listrik dengan anggaran sekitar Rp200 jutaan"
+    ],
+    "faq": [
+      ["Berapa harga BYD Atto 1?", "Berdasarkan daftar harga OTR Jakarta yang dipublikasikan pada Oktober 2026, BYD Atto 1 dimulai dari Rp199 juta untuk varian Standard. Harga dapat berubah sewaktu-waktu, jadi konfirmasi harga terbaru ke sales kami."],
+      ["Apa saja varian BYD Atto 1?", "BYD Atto 1 tersedia dalam varian Standard, Dynamic, dan Premium. Perbedaan fitur tiap varian dapat dijelaskan oleh sales kami saat konsultasi atau test drive."],
+      ["Apakah BYD Atto 1 bisa dibeli secara kredit?", "Bisa. Kami membantu simulasi cicilan dan pengajuan pembiayaan. Isi form di halaman ini untuk mendapat simulasi sesuai uang muka dan tenor yang Anda inginkan."]
+    ]
+  },
+  {
+    "slug": "byd-dolphin",
+    "name": "BYD Dolphin",
+    "type": "Hatchback listrik",
+    "tagline": "Hatchback listrik dengan baterai 55,4 kWh untuk harian dan keluarga kecil.",
+    "variants": [
+      {"name": "Dynamic", "price": 369000000},
+      {"name": "Premium", "price": 429000000}
+    ],
+    "specs": [
+      ["Segmen", "Hatchback listrik"],
+      ["Varian", "Dynamic, Premium"],
+      ["Kapasitas baterai", "55,4 kWh"],
+      ["Jarak tempuh", "Hingga 420 km (standar NEDC)"]
+    ],
+    "intro": [
+      "BYD Dolphin adalah hatchback listrik dengan baterai 55,4 kWh dan jarak tempuh hingga 420 km menurut standar NEDC. Angka NEDC adalah patokan laboratorium, jadi jarak tempuh nyata akan bergantung pada gaya berkendara, kondisi lalu lintas, dan penggunaan AC.",
+      "Dolphin berada satu tingkat di atas Atto 1, dengan pilihan varian Dynamic dan Premium. Ukurannya tetap ringkas untuk perkotaan, namun cukup nyaman untuk perjalanan antarkota sesekali."
+    ],
+    "best_for": [
+      "Pemakaian harian dan perjalanan antarkota sesekali",
+      "Keluarga kecil yang ingin mobil listrik praktis",
+      "Anda yang membandingkan hatchback listrik di kelas Rp300 jutaan hingga Rp400 jutaan"
+    ],
+    "faq": [
+      ["Berapa harga BYD Dolphin?", "Pada daftar harga OTR Jakarta yang dipublikasikan Oktober 2026, BYD Dolphin Dynamic Rp369 juta dan Dolphin Premium Rp429 juta. Konfirmasi harga terbaru ke sales kami sebelum membeli."],
+      ["Berapa jarak tempuh BYD Dolphin?", "Hingga 420 km berdasarkan standar NEDC dengan baterai 55,4 kWh. Jarak tempuh nyata biasanya lebih pendek dan dipengaruhi gaya berkendara serta kondisi jalan."],
+      ["Apakah bisa test drive BYD Dolphin?", "Bisa. Isi form booking test drive dan tim kami akan menghubungi Anda untuk menjadwalkan sesi sesuai ketersediaan unit."]
+    ]
+  },
+  {
+    "slug": "byd-atto-3",
+    "name": "BYD Atto 3",
+    "type": "SUV listrik compact",
+    "tagline": "SUV listrik compact yang populer untuk keluarga urban.",
+    "variants": [],
+    "specs": [
+      ["Segmen", "SUV listrik compact"],
+      ["Harga", "Hubungi sales untuk harga OTR terbaru"]
+    ],
+    "intro": [
+      "BYD Atto 3 mengisi segmen SUV listrik compact dan menjadi salah satu model BYD yang populer di Indonesia. Posisi duduk lebih tinggi dan ruang kabin yang lega membuatnya nyaman untuk keluarga.",
+      "Harga dan varian Atto 3 mengalami pembaruan beberapa kali, sehingga cara paling akurat untuk mengetahuinya adalah menghubungi sales kami. Kami siapkan perbandingan varian dan simulasi cicilan sesuai kebutuhan Anda."
+    ],
+    "best_for": [
+      "Keluarga urban yang menginginkan SUV listrik dengan ukuran compact",
+      "Pengguna yang butuh posisi berkendara tinggi dan ruang kabin lega",
+      "Anda yang membandingkan SUV listrik dengan SUV bensin atau hybrid"
+    ],
+    "faq": [
+      ["Berapa harga BYD Atto 3?", "Harga BYD Atto 3 berbeda per varian dan pernah diperbarui beberapa kali. Hubungi sales kami untuk harga OTR terbaru."],
+      ["Apakah BYD Atto 3 cocok untuk keluarga?", "Atto 3 adalah SUV listrik compact dengan kabin lega sehingga banyak dipilih keluarga urban. Untuk kebutuhan penumpang lebih banyak, bandingkan juga dengan BYD M6."],
+      ["Bisakah saya test drive BYD Atto 3?", "Bisa. Booking test drive melalui form di halaman ini."]
+    ]
+  },
+  {
+    "slug": "byd-seal",
+    "name": "BYD Seal",
+    "type": "Sedan listrik performa",
+    "tagline": "Sedan listrik dengan karakter performa untuk pengemudi yang menyukai sensasi berkendara.",
+    "variants": [],
+    "specs": [
+      ["Segmen", "Sedan listrik"],
+      ["Varian Premium Extended Range", "Baterai 82,56 kWh, motor listrik 230 kW (sekitar 308 dk), torsi 360 Nm"],
+      ["Harga", "Hubungi sales untuk harga OTR terbaru"]
+    ],
+    "intro": [
+      "BYD Seal adalah sedan listrik yang berorientasi pada performa. Varian Premium Extended Range menggunakan baterai 82,56 kWh dengan motor listrik berdaya maksimum 230 kW atau sekitar 308 daya kuda dan torsi maksimal 360 Nm.",
+      "Harga Seal mengalami penyesuaian dibanding periode sebelumnya, jadi pastikan Anda mengecek harga OTR terbaru langsung ke sales kami sebelum mengambil keputusan."
+    ],
+    "best_for": [
+      "Pengemudi yang mengutamakan performa dan sensasi berkendara",
+      "Anda yang mencari sedan listrik premium",
+      "Pengguna yang sering menempuh perjalanan jauh dan butuh baterai besar"
+    ],
+    "faq": [
+      ["Berapa tenaga BYD Seal?", "Varian Premium Extended Range memiliki motor listrik dengan daya maksimum 230 kW atau sekitar 308 daya kuda dan torsi maksimal 360 Nm."],
+      ["Berapa harga BYD Seal terbaru?", "Harga Seal berubah pada beberapa periode terakhir. Hubungi sales kami untuk harga OTR yang berlaku hari ini."],
+      ["Apakah BYD Seal bisa dicicil?", "Bisa. Kami membantu simulasi cicilan sesuai uang muka dan tenor yang Anda inginkan."]
+    ]
+  },
+  {
+    "slug": "byd-sealion-7",
+    "name": "BYD Sealion 7",
+    "type": "SUV listrik",
+    "tagline": "SUV listrik berkabin lega dengan performa kuat dan fitur premium.",
+    "variants": [],
+    "specs": [
+      ["Segmen", "SUV listrik"],
+      ["Varian Extended", "Baterai 82,56 kWh, motor listrik 230 kW, torsi 380 Nm"],
+      ["Harga", "Hubungi sales untuk harga OTR terbaru"]
+    ],
+    "intro": [
+      "BYD Sealion 7 adalah SUV listrik berukuran lebih besar dengan kabin lega dan fitur premium. Varian Extended mengandalkan baterai 82,56 kWh dan motor listrik 230 kW dengan torsi 380 Nm.",
+      "Sebagai salah satu model tertinggi di jajaran BYD Indonesia, Sealion 7 cocok untuk Anda yang ingin SUV listrik dengan ruang dan performa lebih besar. Hubungi kami untuk harga dan simulasi terbaru."
+    ],
+    "best_for": [
+      "Keluarga yang menginginkan SUV listrik berukuran lebih besar",
+      "Pengguna yang mengutamakan fitur premium dan performa",
+      "Anda yang sering bepergian jarak jauh bersama keluarga"
+    ],
+    "faq": [
+      ["Apa spesifikasi BYD Sealion 7 Extended?", "Varian Extended menggunakan baterai 82,56 kWh dengan motor listrik berdaya maksimum 230 kW dan torsi 380 Nm."],
+      ["Berapa harga BYD Sealion 7?", "Harga Sealion 7 berbeda per varian dan dapat berubah. Hubungi sales kami untuk harga OTR terbaru."],
+      ["Apakah ada test drive BYD Sealion 7?", "Silakan booking melalui form di halaman ini. Ketersediaan unit demo akan dikonfirmasi oleh tim kami."]
+    ]
+  },
+  {
+    "slug": "byd-m6",
+    "name": "BYD M6",
+    "type": "MPV listrik keluarga",
+    "tagline": "MPV listrik untuk keluarga yang butuh ruang dan kenyamanan.",
+    "variants": [],
+    "specs": [
+      ["Segmen", "MPV listrik keluarga"],
+      ["Harga", "Hubungi sales untuk harga OTR terbaru"]
+    ],
+    "intro": [
+      "BYD M6 hadir sebagai MPV listrik yang dirancang untuk membawa lebih banyak penumpang, sehingga cocok sebagai mobil keluarga. Format MPV memberi fleksibilitas ruang untuk keluarga besar maupun kebutuhan usaha ringan.",
+      "BYD juga memiliki beberapa varian M6 di Indonesia. Hubungi sales kami untuk mengetahui varian yang tersedia, harga OTR terbaru, dan simulasi cicilan."
+    ],
+    "best_for": [
+      "Keluarga besar yang butuh ruang penumpang lega",
+      "Pengguna yang berpindah dari MPV bensin ke kendaraan listrik",
+      "Kebutuhan antar jemput atau usaha yang membutuhkan kabin luas"
+    ],
+    "faq": [
+      ["Berapa harga BYD M6?", "Harga BYD M6 berbeda per varian. Hubungi sales kami untuk harga OTR terbaru."],
+      ["Apakah BYD M6 cocok untuk keluarga besar?", "BYD M6 berformat MPV dengan kabin lega sehingga banyak dipilih keluarga. Test drive adalah cara terbaik untuk menilai kenyamanannya."],
+      ["Bagaimana cara membeli BYD M6 secara kredit?", "Isi form di halaman ini dan tim kami akan membuatkan simulasi cicilan sesuai uang muka dan tenor yang Anda inginkan."]
+    ]
+  }
+]

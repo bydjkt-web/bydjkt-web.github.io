@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://DOMAIN-ANDA.com/sitemap.xml
