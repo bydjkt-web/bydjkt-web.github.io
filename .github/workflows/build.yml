@@ -1,0 +1,57 @@
+name: Ekstrak zip dan build website
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "*.zip"
+      - "src/**"
+      - "tools/**"
+      - ".github/workflows/build.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: build-site
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Ekstrak file zip di root repo (jika ada)
+        run: |
+          shopt -s nullglob
+          for z in *.zip; do
+            echo "Mengekstrak $z"
+            unzip -o -q "$z" -x ".github/*" "__MACOSX/*"
+            rm -f "$z"
+          done
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - run: pip install pillow
+
+      - name: Build website
+        run: python tools/build.py
+
+      - name: Cek SEO
+        run: python tools/seo_check.py
+
+      - name: Commit hasil
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "Tidak ada perubahan"
+          else
+            git commit -m "Ekstrak zip dan build website"
+            git push
+          fi
