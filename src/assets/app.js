@@ -126,6 +126,38 @@
     });
   })();
 
+
+  // Pemilih anggaran di hero
+  (function () {
+    var r = document.getElementById("bud"); if (!r) return;
+    var out = document.getElementById("budout"), cnt = document.getElementById("budcnt"), items = document.querySelectorAll("#bm li");
+    function fmt(n) { return n >= 1000 ? "Rp1 miliar" : "Rp" + n + " juta"; }
+    function upd() {
+      var v = Number(r.value), n = 0;
+      out.textContent = fmt(v);
+      items.forEach(function (li) { var ok = Number(li.getAttribute("data-min")) <= v; li.classList.toggle("over", !ok); if (ok) n++; });
+      cnt.textContent = n ? n + " model mulai di bawah anggaran ini." : "Belum ada model di bawah anggaran ini. Geser ke kanan atau tanya sales soal cicilan.";
+    }
+    r.addEventListener("input", upd); upd();
+  })();
+
+  // Slider model: tombol geser + animasi indikator baterai saat terlihat
+  (function () {
+    var tr = document.querySelector(".track"); if (!tr) return;
+    var prev = document.querySelector("[data-sl='-1']"), next = document.querySelector("[data-sl='1']");
+    function step(d) { var c = tr.firstElementChild; tr.scrollBy({ left: d * (c ? c.getBoundingClientRect().width + 16 : 300), behavior: "smooth" }); }
+    function state() { prev.disabled = tr.scrollLeft < 4; next.disabled = tr.scrollLeft + tr.clientWidth >= tr.scrollWidth - 4; }
+    prev.addEventListener("click", function () { step(-1); }); next.addEventListener("click", function () { step(1); });
+    tr.addEventListener("scroll", state, { passive: true }); state();
+  })();
+  (function () {
+    var bars = document.querySelectorAll(".rg");
+    if (!bars.length) return;
+    if (!("IntersectionObserver" in window)) { bars.forEach(function (b) { b.classList.add("on"); }); return; }
+    var io = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("on"); io.unobserve(e.target); } }); }, { threshold: 0.4 });
+    bars.forEach(function (b) { io.observe(b); });
+  })();
+
   document.querySelectorAll("form.lead").forEach(function (form) {
     var out = form.querySelector(".msg");
     var busy = false;

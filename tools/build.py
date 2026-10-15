@@ -108,10 +108,12 @@ def darken(hexcol, f=0.8):
     return "#%02x%02x%02x" % (int(r * f), int(g * f), int(b * f))
 
 
-ACC = (SITE.get("theme") or {}).get("accent", "#00806d")
+ACC = (SITE.get("theme") or {}).get("accent", "#d4001a")
+if ACC.lower() == "#00806d":  # warna bawaan lama -> warna baru
+    ACC = "#d4001a"
 if not re.fullmatch(r"#[0-9a-fA-F]{6}", ACC or ""):
     WARN.append(f"Warna tema tidak valid '{ACC}', memakai default")
-    ACC = "#00806d"
+    ACC = "#d4001a"
 CSS = minify_css((SRC / "assets/style.css").read_text(encoding="utf-8")) + f":root{{--acc:{ACC};--acc2:{darken(ACC)}}}"
 
 BOLT = ("<svg viewBox='0 0 32 32' aria-hidden='true'><rect width='32' height='32' rx='8' fill='currentColor'/>"
@@ -356,7 +358,8 @@ def head(title, desc, path, og_type="website", schema=None, robots="index,follow
             f'<meta property="og:type" content="{og_type}"><meta property="og:site_name" content="{esc(NAME)}">'
             f'<meta property="og:title" content="{esc(title)}"><meta property="og:description" content="{esc(desc)}">'
             f'<meta property="og:url" content="{canon}"><meta property="og:locale" content="id_ID"><meta property="og:image" content="{ogi}">{wh}'
-            f'<meta name="twitter:card" content="summary_large_image">{extra}{gsc}<style>{CSS}</style>'
+            f'<meta name="twitter:card" content="summary_large_image"><link rel="preload" href="/assets/fonts/display.woff2" as="font" type="font/woff2" crossorigin>'
+            f'<script>document.documentElement.className="js"</script>{extra}{gsc}<style>{CSS}</style>'
             f'{"".join(ld(s) for s in (schema or []))}{ga}<script>window.SITE_CONFIG={json.dumps(cfg)}</script></head>')
 
 
@@ -523,26 +526,65 @@ def sections_order(group, registry):
     return ids
 
 
+
+def range_info(m):
+    """(km, label, pct, hybrid) dari variants[].range_km; PHEV memakai jarak mode listrik."""
+    best = 0
+    for v in m.get("variants", []):
+        mm = re.match(r"\s*(\d+)", str(v.get("range_km", "")))
+        if mm:
+            best = max(best, int(mm.group(1)))
+    if not best:
+        return None
+    hyb = m.get("powertrain") == "PHEV"
+    return best, (f"{best} km listrik + bensin" if hyb else f"hingga {best} km"), min(100, round(best / 700 * 100)), hyb
+
+
+def rg_html(m, dark=False):
+    r = range_info(m)
+    if not r:
+        return ""
+    return f'<div class="rg"><i style="--w:{r[2]}%"></i><b>{"" if r[3] else "hingga "}{r[0]} km{" listrik" if r[3] else ""}</b></div>'
+
+
 def build_home():
     h = PG["home"]
     lead_txt = fmt(h.get("lead", ""))
 
     def s_hero():
         badges = "".join(f"<li>{esc(b)}</li>" for b in h.get("badges", []))
-        return (f'<section class="hero"><div class="wrap"><h1>{esc(fmt(h["h1"]))}</h1><p class="lead">{esc(lead_txt)}</p><div class="cta">'
+        pm = sorted([m for m in MODELS if m.get("variants")], key=lambda m: min(v["price"] for v in m["variants"]))
+        items = ""
+        for m in pm:
+            lo = min(v["price"] for v in m["variants"])
+            items += (f'<li data-min="{lo // 1_000_000}"><a href="/{m["slug"]}/"><strong>{esc(m["name"])}</strong>'
+                      f'<span class="p">{esc(juta(lo))}</span>{rg_html(m)}</a></li>')
+        lo_all = min(min(v["price"] for v in m["variants"]) for m in pm) // 1_000_000 if pm else 150
+        panel = (f'<div class="budget" id="budget"><h2>Cek anggaran Anda</h2><p class="sub2">Geser untuk melihat model BYD yang harganya mulai di bawah anggaran.</p>'
+                 f'<label for="bud">Anggaran maksimal</label><output id="budout" for="bud">Rp400 juta</output>'
+                 f'<input id="bud" type="range" min="{max(100, (lo_all - 20) // 10 * 10)}" max="1000" step="10" value="400">'
+                 f'<ul class="bm" id="bm">{items}</ul><p class="cnt" id="budcnt" aria-live="polite"></p>'
+                 f'<p class="note" style="margin:6px 0 0">Harga OTR Jakarta ({esc(PRICE_LABEL)}), harga mulai varian termurah. Jarak tempuh menurut price list dealer.</p></div>') if pm else ""
+        return (f'<section class="hero"><div class="wrap"><div><h1>{esc(fmt(h["h1"]))}</h1><p class="lead">{esc(lead_txt)}</p><div class="cta">'
                 f'<a class="btn w" href="{wa_url()}" data-wa="hero" rel="noopener">{WA_ICON} {esc(h.get("cta_primary", "Chat WhatsApp"))}</a>'
-                f'<a class="btn o" href="#lead">{esc(h.get("cta_secondary", "Booking Test Drive"))}</a></div><ul class="badges">{badges}</ul></div></section>')
+                f'<a class="btn o" href="#lead">{esc(h.get("cta_secondary", "Booking Test Drive"))}</a></div><ul class="badges">{badges}</ul></div>{panel}</div></section>')
 
     def s_models():
         cards = ""
         for m in MODELS:
-            vis = (img_tag(m["images"][0]["src"], m["images"][0].get("alt") or m["name"], "(max-width:600px) 100vw, 360px")
-                   if m.get("images") and images.resolve(m["images"][0]["src"]) else esc(m["name"]))
-            cards += (f'<a class="card" href="/{m["slug"]}/"><div class="vis">{vis}</div><div class="bd"><span class="tp">{esc(m["type"])}</span>'
-                      f'<h3>{esc(m["name"])}</h3><span class="pr">{price_line(m)}</span><span class="more">Lihat detail →</span></div></a>')
-        return (f'<section class="s" id="model"><div class="wrap"><h2>{esc(h["models_title"])}</h2><p>{esc(h.get("models_intro", ""))}</p>'
-                f'<div class="grid">{cards}</div><p class="note" style="margin-top:14px">Harga OTR Jakarta, {esc(PRICE_LABEL)}; dapat berubah. '
-                f'Lihat <a href="/harga-byd/">daftar harga mobil BYD terbaru</a>.</p></div></section>')
+            r = range_info(m)
+            if m.get("images") and images.resolve(m["images"][0]["src"]):
+                pic = img_tag(m["images"][0]["src"], m["images"][0].get("alt") or m["name"], "(max-width:600px) 82vw, 330px")
+            else:
+                pic = ""
+            big = f'<div class="big">{"" if r[3] else "<small style='margin:0 6px 0 0'>hingga</small>"}{r[0]}<small>km{" listrik" if r[3] else ""}</small></div>{rg_html(m)}' if r else f'<div class="big">{esc(m["name"])}</div>'
+            hy = " + mesin bensin" if r and r[3] else ""
+            cards += (f'<a class="mc" href="/{m["slug"]}/"><div class="top">{pic}{big}</div><div class="bd"><span class="tp">{esc(m["type"])}{hy}</span>'
+                      f'<h3>{esc(m["name"])}</h3><span class="pr">{price_line(m)}</span><span class="more">Lihat detail dan harga</span></div></a>')
+        return (f'<section class="s" id="model"><div class="wrap"><div class="row-h"><div><h2>{esc(h["models_title"])}</h2><p>{esc(h.get("models_intro", ""))}</p></div>'
+                f'<div class="sl-nav" aria-label="Geser model"><button type="button" data-sl="-1" aria-label="Model sebelumnya">&#8592;</button><button type="button" data-sl="1" aria-label="Model berikutnya">&#8594;</button></div></div>'
+                f'<div class="sl"><div class="track" tabindex="0" role="region" aria-label="Daftar model BYD">{cards}</div></div>'
+                f'<p class="note">Harga OTR Jakarta, {esc(PRICE_LABEL)}; dapat berubah. Lihat <a href="/harga-byd/">daftar harga mobil BYD terbaru</a>.</p></div></section>')
 
     def s_why():
         items = "".join(f'<div><h3>{esc(i["title"])}</h3><p>{esc(i["text"])}</p></div>' for i in h.get("why_items", []))
@@ -884,6 +926,8 @@ def write_all():
     (OUT / "assets").mkdir(parents=True)
     images.process(OUT)
     shutil.copy(SRC / "assets/app.js", OUT / "assets/app.js")
+    (OUT / "assets/fonts").mkdir(exist_ok=True)
+    shutil.copy(SRC / "assets/fonts/display.woff2", OUT / "assets/fonts/display.woff2")
     og_default()
 
 
