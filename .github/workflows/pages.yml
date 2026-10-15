@@ -1,0 +1,49 @@
+name: Build & Deploy
+on:
+  push:
+    branches: [main]
+    paths-ignore: ['data/**']
+  schedule:
+    - cron: '7 * * * *'   # tiap jam: menerbitkan artikel terjadwal
+  workflow_dispatch:
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+concurrency:
+  group: pages
+  cancel-in-progress: false
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Ekstrak zip yang diupload ke root repo
+        run: |
+          shopt -s nullglob
+          z=(*.zip)
+          if [ ${#z[@]} -gt 0 ]; then
+            for f in "${z[@]}"; do unzip -o -q "$f" -x '.github/*' '__MACOSX/*' && git rm -q --cached "$f" 2>/dev/null; rm -f "$f"; done
+            git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add -A; git commit -m "Ekstrak zip upload" || true
+            git push || true
+          fi
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - run: pip install pillow
+      - run: python3 tools/build.py
+      - run: python3 tools/seo_check.py --json docs/seo-report.json || true
+      - run: python3 tools/seo_check.py
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with: { path: docs }
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.d.outputs.page_url }}
+    steps:
+      - id: d
+        uses: actions/deploy-pages@v4
+        
