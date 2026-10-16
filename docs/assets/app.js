@@ -141,52 +141,62 @@
     r.addEventListener("input", upd); upd();
   })();
 
-  // Slider model: tombol geser + animasi indikator baterai saat terlihat
+  // Animasi indikator baterai saat terlihat
+  // Swiper dimuat malas: hanya saat slider hampir terlihat (0 KB di awal). Sebelum aktif, slider tampil sebagai scroll-snap.
   (function () {
-    var tr = document.querySelector(".track"); if (!tr) return;
-    var prev = document.querySelector("[data-sl='-1']"), next = document.querySelector("[data-sl='1']");
-    function step(d) { var c = tr.firstElementChild; tr.scrollBy({ left: d * (c ? c.getBoundingClientRect().width + 16 : 300), behavior: "smooth" }); }
-    function state() { prev.disabled = tr.scrollLeft < 4; next.disabled = tr.scrollLeft + tr.clientWidth >= tr.scrollWidth - 4; }
-    prev.addEventListener("click", function () { step(-1); }); next.addEventListener("click", function () { step(1); });
-    tr.addEventListener("scroll", state, { passive: true }); state();
+    var els = document.querySelectorAll(".bhs"); if (!els.length) return;
+    var still = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches, p = null;
+    function load() {
+      if (p) return p;
+      p = new Promise(function (ok, bad) {
+        var n = 0, done = function () { if (++n === 2) ok(); };
+        var l = document.createElement("link"); l.rel = "stylesheet"; l.href = "/assets/vendor/swiper.min.css"; l.onload = done; l.onerror = bad; document.head.appendChild(l);
+        var sc = document.createElement("script"); sc.src = "/assets/vendor/swiper.min.js"; sc.onload = done; sc.onerror = bad; document.head.appendChild(sc);
+      });
+      return p;
+    }
+    function init(el) {
+      var sec = el.closest("section") || document, d = el.dataset, per = parseFloat(d.per) || 3, mob = parseFloat(d.mob) || 1.12, mid = parseFloat(d.mid) || Math.min(2, per), auto = parseInt(d.auto, 10) || 0;
+      var cfg = {
+        spaceBetween: 16, slidesPerView: mob, watchOverflow: true, grabCursor: true, a11y: { enabled: true, prevSlideMessage: "Slide sebelumnya", nextSlideMessage: "Slide berikutnya" },
+        breakpoints: { 600: { slidesPerView: mid }, 1000: { slidesPerView: per } },
+        navigation: { prevEl: sec.querySelector("[data-sw='-1']"), nextEl: sec.querySelector("[data-sw='1']") },
+        pagination: { el: el.querySelector(".swiper-pagination"), clickable: true }
+      };
+      if (auto && !still) { cfg.rewind = true; cfg.autoplay = { delay: auto, pauseOnMouseEnter: true, disableOnInteraction: true }; }
+      window.BHSwiper(el, cfg);
+    }
+    function go(el) { load().then(function () { init(el); }).catch(function () {}); }
+    if (!("IntersectionObserver" in window)) { els.forEach(go); return; }
+    var io = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { io.unobserve(e.target); go(e.target); } }); }, { rootMargin: "400px 0px" });
+    els.forEach(function (el) { io.observe(el); });
   })();
-  // Slider logo leasing: geser, titik indikator, putar otomatis (berhenti saat disentuh / reduced-motion)
-  document.querySelectorAll(".lp").forEach(function (box) {
-    var tr = box.querySelector(".lpt"), dots = box.querySelector(".lpd");
-    var prev = box.querySelector("[data-lp='-1']"), next = box.querySelector("[data-lp='1']");
-    function per() { var c = tr.firstElementChild; return c ? Math.max(1, Math.round(tr.clientWidth / (c.getBoundingClientRect().width + 14))) : 1; }
-    function stepW() { var c = tr.firstElementChild; return c ? c.getBoundingClientRect().width + 14 : 200; }
-    function pages() { return Math.max(1, Math.ceil(tr.children.length / per())); }
-    function drawDots() {
-      var n = pages(); dots.innerHTML = "";
-      if (n < 2) { prev.parentNode.hidden = true; return; }
-      prev.parentNode.hidden = false;
-      for (var i = 0; i < n; i++) dots.appendChild(document.createElement("i"));
-      mark();
+
+  // AOS dimuat malas setelah halaman selesai; animasi hanya aktif bila JS memasang html.aos-on (tanpa JS konten tetap tampil)
+  (function () {
+    if (!document.querySelector("[data-aos]") || (window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches)) return;
+    function go() {
+      var l = document.createElement("link"); l.rel = "stylesheet"; l.href = "/assets/vendor/aos.min.css";
+      l.onload = function () {
+        var sc = document.createElement("script"); sc.src = "/assets/vendor/aos.min.js";
+        sc.onload = function () { document.documentElement.classList.add("aos-on"); window.AOS.init({ duration: 600, easing: "ease-out-cubic", once: true, offset: 40 }); };
+        document.head.appendChild(sc);
+      };
+      document.head.appendChild(l);
     }
-    function mark() {
-      var n = pages(), max = tr.scrollWidth - tr.clientWidth, i = max > 4 ? Math.round(tr.scrollLeft / max * (n - 1)) : 0;
-      Array.prototype.forEach.call(dots.children, function (d, k) { d.className = k === i ? "on" : ""; });
-    }
-    function go(dir) {
-      var max = tr.scrollWidth - tr.clientWidth;
-      if (dir > 0 && tr.scrollLeft >= max - 4) tr.scrollTo({ left: 0, behavior: "smooth" });
-      else if (dir < 0 && tr.scrollLeft < 4) tr.scrollTo({ left: max, behavior: "smooth" });
-      else tr.scrollBy({ left: dir * stepW() * per(), behavior: "smooth" });
-    }
-    prev.addEventListener("click", function () { go(-1); }); next.addEventListener("click", function () { go(1); });
-    tr.addEventListener("scroll", mark, { passive: true }); window.addEventListener("resize", drawDots); drawDots();
-    var still = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (tr.getAttribute("data-auto") && !still) {
-      var t = null, hold = false;
-      function start() { stop(); if (!hold && pages() > 1 && !document.hidden) t = setInterval(function () { go(1); }, 3500); }
-      function stop() { if (t) { clearInterval(t); t = null; } }
-      ["mouseenter", "focusin", "touchstart"].forEach(function (ev) { box.addEventListener(ev, function () { hold = true; stop(); }, { passive: true }); });
-      ["mouseleave", "focusout"].forEach(function (ev) { box.addEventListener(ev, function () { hold = false; start(); }); });
-      document.addEventListener("visibilitychange", function () { document.hidden ? stop() : start(); });
-      start();
-    }
-  });
+    var run = function () { (window.requestIdleCallback || function (f) { setTimeout(f, 200); })(go); };
+    if (document.readyState === "complete") run(); else window.addEventListener("load", run);
+  })();
+
+  // WhatsApp melayang: isi pesan sesuai halaman yang sedang dibuka
+  (function () {
+    var a = document.querySelector(".wafab"), h1 = document.querySelector("h1");
+    if (!a || !h1 || location.pathname === "/") return;
+    try {
+      var u = new URL(a.href); u.searchParams.set("text", "Halo " + (C.name || "BYD Harmony") + ", saya ingin info: " + h1.textContent.trim().slice(0, 90));
+      a.href = u.toString();
+    } catch (e) {}
+  })();
   (function () {
     var bars = document.querySelectorAll(".rg");
     if (!bars.length) return;

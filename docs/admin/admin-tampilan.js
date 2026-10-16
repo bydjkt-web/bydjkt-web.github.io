@@ -136,4 +136,59 @@
     m.appendChild(list);
     draw();
   };
+
+  /* ---- Testimoni & Serah Terima ---- */
+  function modelOpts() { return [["", "— tidak terkait model tertentu —"]].concat((A.S.models || []).map(function (m) { return [m.slug, m.name]; })); }
+  var CONSENT_NOTE = "Hanya isi testimoni/foto yang benar-benar dari customer dan sudah diizinkan tampil (nama, foto, dan wajah). Item tanpa centang izin tidak akan tayang. Jangan membuat testimoni palsu: itu melanggar kebijakan Google dan bisa merugikan reputasi dealer.";
+  function countNote(items, ok) {
+    var n = (items || []).length, v = (items || []).filter(ok).length;
+    return n + " item tersimpan, " + v + " siap tayang" + (n > v ? " (" + (n - v) + " belum lengkap atau belum ada izin)" : "") + ".";
+  }
+  A.routes.testimoni = function () {
+    var m = A.view(), T = A.S.testi; T.items = T.items || [];
+    m.appendChild(h("h2", { text: "Testimoni Customer" }));
+    m.appendChild(h("p", { class: "muted", text: CONSENT_NOTE }));
+    m.appendChild(h("p", { class: "muted", text: countNote(T.items, function (t) { return t.consent === true && t.name && (t.text || "").trim().length >= 20; }) + " Tampil di beranda (slider), halaman model terkait, dan halaman /testimoni/. Halaman /testimoni/ baru dibuat bila ada minimal satu testimoni siap tayang." }));
+    var set = h("div", { class: "card" }, [h("h3", { text: "Pengaturan & SEO halaman /testimoni/" })]);
+    set.appendChild(Forms.render([
+      { k: "h1", label: "Judul halaman (H1)", t: "text" }, { k: "title", label: "Title SEO (30–60 karakter)", t: "text" }, { k: "description", label: "Meta description (70–160 karakter)", t: "area", rows: 2 },
+      { k: "intro", label: "Kalimat pengantar", t: "area", rows: 2 }, { k: "home_title", label: "Judul bagian di beranda", t: "text" },
+      { k: "show_home", label: "Tampilkan di beranda", t: "bool" }, { k: "show_model", label: "Tampilkan di halaman model terkait", t: "bool" }, { k: "home_count", label: "Jumlah di beranda", t: "num" }
+    ], T, function () { A.saveJSON("testi"); }));
+    m.appendChild(set);
+    var card = h("div", { class: "card" }, [h("h3", { text: "Daftar testimoni" })]);
+    card.appendChild(Forms.render([{ k: "items", label: "", t: "objlist", titleKey: "name", fields: [
+      { k: "name", label: "Nama customer (boleh inisial, mis. Bpk. Andi)", t: "text" }, { k: "city", label: "Kota/area", t: "text" },
+      { k: "model", label: "Model yang dibeli", t: "select", opts: modelOpts() },
+      { k: "rating", label: "Rating (1–5)", t: "select", opts: ["5", "4", "3", "2", "1"], def: "5" },
+      { k: "text", label: "Isi testimoni (minimal 20 karakter, kata-kata customer)", t: "area", rows: 4 },
+      { k: "date", label: "Tanggal (YYYY-MM-DD)", t: "text" }, { k: "source", label: "Sumber (mis. WhatsApp, Google Maps, Instagram)", t: "text" },
+      { k: "photo", label: "Foto customer (opsional)", t: "image" },
+      { k: "featured", label: "Utamakan di beranda", t: "bool" },
+      { k: "consent", label: "Customer sudah memberi izin testimoni/nama/foto ini ditampilkan", t: "bool" }
+    ] }], T, function () { A.saveJSON("testi"); }));
+    m.appendChild(card);
+  };
+  A.routes["serah-terima"] = function () {
+    var m = A.view(), H = A.S.hand; H.items = H.items || [];
+    m.appendChild(h("h2", { text: "Serah Terima Unit" }));
+    m.appendChild(h("p", { class: "muted", text: CONSENT_NOTE }));
+    m.appendChild(h("p", { class: "muted", text: countNote(H.items, function (x) { return x.consent === true && x.customer && x.photo; }) + " Tampil di beranda (slider) dan halaman /serah-terima/ (dibuat bila ada minimal satu item siap tayang; foto masuk sitemap gambar)." }));
+    var set = h("div", { class: "card" }, [h("h3", { text: "Pengaturan & SEO halaman /serah-terima/" })]);
+    set.appendChild(Forms.render([
+      { k: "h1", label: "Judul halaman (H1)", t: "text" }, { k: "title", label: "Title SEO (30–60 karakter)", t: "text" }, { k: "description", label: "Meta description (70–160 karakter)", t: "area", rows: 2 },
+      { k: "intro", label: "Kalimat pengantar", t: "area", rows: 2 }, { k: "home_title", label: "Judul bagian di beranda", t: "text" },
+      { k: "show_home", label: "Tampilkan di beranda", t: "bool" }, { k: "home_count", label: "Jumlah di beranda", t: "num" }
+    ], H, function () { A.saveJSON("hand"); }));
+    m.appendChild(set);
+    var card = h("div", { class: "card" }, [h("h3", { text: "Daftar serah terima" })]);
+    card.appendChild(Forms.render([{ k: "items", label: "", t: "objlist", titleKey: "customer", fields: [
+      { k: "customer", label: "Nama customer (boleh inisial)", t: "text" }, { k: "city", label: "Kota/area", t: "text" },
+      { k: "model", label: "Model yang diserahkan", t: "select", opts: modelOpts() }, { k: "date", label: "Tanggal serah terima (YYYY-MM-DD)", t: "text" },
+      { k: "photo", label: "Foto utama (wajib)", t: "image" }, { k: "photo2", label: "Foto kedua (opsional)", t: "image" },
+      { k: "caption", label: "Keterangan singkat (mis. Penyerahan kunci BYD Atto 3 oleh sales kepada Bpk. Andi)", t: "area", rows: 2 },
+      { k: "consent", label: "Customer sudah memberi izin foto & nama ini ditampilkan", t: "bool" }
+    ] }], H, function () { A.saveJSON("hand"); }));
+    m.appendChild(card);
+  };
 })();
