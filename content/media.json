@@ -1,44 +1,12 @@
 {
   "items": [
     {
-      "src": "/img/leasing-1.webp",
-      "alt": "Logo leasing",
-      "w": 554,
-      "h": 554,
-      "kb": 29,
-      "file": "leasing-1.webp"
-    },
-    {
-      "src": "/img/leasing-2.webp",
-      "alt": "Logo leasing",
-      "w": 600,
-      "h": 92,
-      "kb": 9,
-      "file": "leasing-2.webp"
-    },
-    {
-      "src": "/img/leasing-3.webp",
-      "alt": "Logo leasing",
-      "w": 320,
-      "h": 320,
-      "kb": 6,
-      "file": "leasing-3.webp"
-    },
-    {
-      "src": "/img/leasing-4.webp",
-      "alt": "Logo leasing",
-      "w": 600,
-      "h": 95,
-      "kb": 9,
-      "file": "leasing-4.webp"
-    },
-    {
-      "src": "/img/leasing-5.webp",
-      "alt": "Logo leasing",
-      "w": 600,
-      "h": 428,
-      "kb": 5,
-      "file": "leasing-5.webp"
+      "src": "/img/214400.webp",
+      "alt": "Atto 1 Premium",
+      "w": 930,
+      "h": 620,
+      "kb": 53,
+      "file": "214400.webp"
     }
   ]
 }
