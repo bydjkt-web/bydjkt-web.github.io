@@ -3,9 +3,11 @@
   "use strict";
   var h = Forms.h;
   var A = root.A = { S: {}, routes: {}, h: h, cur: null };
-  var JSONS = { site: "site.json", layout: "layout.json", pages: "pages.json", models: "models.json", comps: "competitors.json", media: "media.json", keywords: "keywords.json", topics: "topics.json", rules: "seo-rules.json", theme: "theme.json", leasing: "leasing.json" };
+  var JSONS = { site: "site.json", layout: "layout.json", pages: "pages.json", models: "models.json", comps: "competitors.json", media: "media.json", keywords: "keywords.json", topics: "topics.json", rules: "seo-rules.json", theme: "theme.json", leasing: "leasing.json", testi: "testimonials.json", hand: "handovers.json" };
   var DEFAULTS = { site: {}, layout: {}, pages: {}, models: [], comps: [], media: { items: [] }, keywords: { keywords: [] }, topics: { topics: [] }, rules: {},
     theme: { preset: "atlantic", dark: "#243746", primary: "#3d5a6c", accent: "#2b6a8a", paper: "#f1f4f6", presets: [{id:"atlantic",name:"Atlantic Grey",dark:"#243746",primary:"#3d5a6c",accent:"#2b6a8a",paper:"#f1f4f6"},{id:"merah",name:"Merah BYD",dark:"#101820",primary:"#0d6b5b",accent:"#d4001a",paper:"#f4f5f2"},{id:"biru",name:"Biru Terang",dark:"#14213d",primary:"#1d4ed8",accent:"#0b5cff",paper:"#f3f7fe"},{id:"sporty",name:"Hitam Sporty",dark:"#0b0b0d",primary:"#8a1020",accent:"#e10b22",paper:"#f2f2f2"}] },
+    testi: { h1: "Testimoni Customer BYD Harmony", title: "Testimoni Customer BYD Harmony | Pengalaman Beli BYD", description: "Cerita dan pengalaman customer yang membeli mobil listrik BYD di BYD Harmony: proses pembelian, test drive, hingga serah terima unit.", intro: "Pengalaman nyata customer BYD Harmony, dari konsultasi, test drive, sampai unit diserahkan. Testimoni ditampilkan dengan izin customer.", home_title: "Kata Customer BYD Harmony", show_home: true, show_model: true, home_count: 6, items: [] },
+    hand: { h1: "Serah Terima Unit BYD ke Customer", title: "Serah Terima Unit BYD | Momen Customer BYD Harmony", description: "Dokumentasi momen serah terima unit mobil listrik BYD kepada customer BYD Harmony: foto penyerahan kunci, unit baru, dan senyum pemilik baru.", intro: "Momen penyerahan unit BYD kepada pemilik barunya. Foto dan nama ditampilkan dengan izin customer.", home_title: "Momen Serah Terima Unit", show_home: true, home_count: 6, items: [] },
     leasing: { show_home: true, show_model: true, autoplay: true, title: "Mitra Leasing Resmi", intro: "Pengajuan kredit mobil listrik BYD lewat lembaga pembiayaan yang bekerja sama dengan kami.", items: [] } };
 
   A.toast = function (msg, err) {
@@ -39,7 +41,7 @@
   /* ---- kerangka halaman ---- */
   var NAV = [
     ["dashboard", "Dashboard"], ["#", "Konten"], ["artikel", "Artikel"], ["halaman", "Halaman Pilar"], ["model", "Model Mobil"], ["pesaing", "Data Pesaing"],
-    ["konten/home", "Beranda"], ["konten/prices", "Halaman Harga"], ["konten/testdrive", "Test Drive"], ["konten/blog", "Blog (index)"],
+    ["testimoni", "Testimoni Customer"], ["serah-terima", "Serah Terima Unit"], ["konten/home", "Beranda"], ["konten/prices", "Halaman Harga"], ["konten/testdrive", "Test Drive"], ["konten/blog", "Blog (index)"],
     ["#", "Tampilan"], ["tema", "Warna Template"], ["leasing", "Mitra Leasing"], ["layout", "Layout & Urutan"], ["media", "Media Gambar"], ["pengaturan", "Pengaturan Situs"],
     ["#", "SEO & Distribusi"], ["jadwal", "Jadwal Terbit"], ["rencana", "Rencana & Keyword"], ["laporan", "Laporan"],
     ["#", "Alat"], ["zip", "Upload ZIP ke GitHub"]
@@ -59,6 +61,7 @@
     app.appendChild(h("div", { class: "top-m" }, [h("strong", { text: "Admin BYD Harmony" }), h("button", { type: "button", text: "Menu", onclick: function () { side.classList.toggle("open"); } })]));
     app.appendChild(h("div", { class: "shell" }, [side, main]));
     app.appendChild(bar);
+    if (window.ResizeObserver) new ResizeObserver(function () { main.style.paddingBottom = (bar.hidden ? 40 : bar.offsetHeight + 40) + "px"; }).observe(bar);
     GH.onChange(A.renderBar);
     A.renderBar();
   };
@@ -157,7 +160,7 @@
 
   /* ---- Layout ---- */
   var SEC = { hero: "Hero (judul + tombol)", models: "Kartu model", why: "Kenapa mobil listrik", articles: "Artikel terbaru", usecases: "Cocok untuk kebutuhan", lead: "Form lead", faq: "FAQ",
-    gallery: "Galeri foto", summary: "Ringkasan", highlights: "Keunggulan", variants: "Varian & harga", specs: "Spesifikasi", compare: "Perbandingan kompetitor", others: "Model lainnya", table: "Tabel harga", leasing: "Slider mitra leasing", guide: "Panduan memilih" };
+    gallery: "Galeri foto", summary: "Ringkasan", highlights: "Keunggulan", variants: "Varian & harga", specs: "Spesifikasi", compare: "Perbandingan kompetitor", others: "Model lainnya", table: "Tabel harga", leasing: "Slider mitra leasing", handover: "Serah terima unit (foto)", testimonials: "Testimoni customer", guide: "Panduan memilih" };
   A.routes.layout = function () {
     var m = A.view();
     m.appendChild(h("h2", { text: "Layout & Urutan Bagian" }));
@@ -168,11 +171,13 @@
       function draw() {
         ul.innerHTML = "";
         var arr = A.S.layout[g[0]];
-        var anch = { home: "models", model: "others" }[g[0]];
-        if (anch && !arr.some(function (x) { return x.id === "leasing"; })) {
-          var ix = arr.map(function (x) { return x.id; }).indexOf(anch);
-          arr.splice(ix < 0 ? arr.length : ix + 1, 0, { id: "leasing", on: true });
-        }
+        var ANCH = { home: { leasing: ["models"], handover: ["why", "models"], testimonials: ["handover", "why", "models"] }, model: { leasing: ["others"], testimonials: ["articles", "compare", "specs"] } }[g[0]] || {};
+        Object.keys(ANCH).forEach(function (id) {
+          if (arr.some(function (x) { return x.id === id; })) return;
+          var ids = arr.map(function (x) { return x.id; }), at = -1;
+          ANCH[id].some(function (a) { var ix = ids.indexOf(a); if (ix > -1) { at = ix; return true; } });
+          arr.splice(at < 0 ? arr.length : at + 1, 0, { id: id, on: true });
+        });
         arr.forEach(function (it, i) {
           ul.appendChild(h("li", {}, [
             h("input", { type: "checkbox", checked: it.on, "aria-label": "Tampilkan " + it.id, onchange: function (e) { it.on = e.target.checked; A.saveJSON("layout"); } }),
@@ -198,7 +203,7 @@
     { k: "name", label: "Nama model", t: "text" }, { k: "slug", label: "Slug URL (jangan diubah setelah tayang)", t: "text" }, { k: "published", label: "Tayang di situs", t: "bool" }, { k: "order", label: "Urutan", t: "num" },
     { k: "brand", label: "Merek", t: "text" }, { k: "type", label: "Tipe (mis. SUV listrik compact)", t: "text" }, { k: "body", label: "Bodi", t: "text" }, { k: "powertrain", label: "Penggerak", t: "select", opts: ["BEV", "PHEV", "HEV"] },
     { k: "keyword", label: "Keyword utama halaman", t: "text" }, { k: "tagline", label: "Tagline (jadi meta description)", t: "area", rows: 2 },
-    { k: "images", label: "Galeri foto (maks 6; foto pertama = utama)", t: "objlist", titleKey: "src", fields: [{ k: "src", label: "Gambar (upload dulu di menu Media)", t: "select", opts: A.mediaOpts() }, { k: "alt", label: "Alt teks (jelaskan isi foto)", t: "text" }] },
+    { k: "images", label: "Galeri foto (maks 6; foto pertama = utama)", t: "objlist", titleKey: "src", fields: [{ k: "src", label: "Gambar", t: "image" }, { k: "alt", label: "Alt teks (jelaskan isi foto)", t: "text" }] },
     { k: "intro", label: "Paragraf pengantar", t: "strlist", area: true }, { k: "highlights", label: "Keunggulan", t: "objlist", titleKey: "title", fields: [{ k: "title", label: "Judul", t: "text" }, { k: "text", label: "Teks", t: "area", rows: 2 }] },
     { k: "best_for", label: "Cocok untuk", t: "strlist" }, { k: "specs", label: "Spesifikasi", t: "objlist", titleKey: "label", fields: [{ k: "label", label: "Label", t: "text" }, { k: "value", label: "Nilai", t: "text" }] },
     { k: "variants", label: "Varian & harga OTR", t: "objlist", titleKey: "name", fields: [{ k: "name", label: "Nama varian", t: "text" }, { k: "price", label: "Harga OTR (angka rupiah)", t: "num" }, { k: "range_km", label: "Jarak tempuh (km)", t: "text" }, { k: "range_std", label: "Standar jarak (NEDC/WLTP/price list)", t: "text" }, { k: "battery", label: "Baterai", t: "text" }, { k: "power", label: "Tenaga", t: "text" }, { k: "seats", label: "Kursi", t: "text" }, { k: "note", label: "Catatan", t: "text" }, { k: "verify", label: "Perlu verifikasi (tampilkan peringatan)", t: "bool" }] },

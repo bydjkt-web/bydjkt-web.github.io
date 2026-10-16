@@ -42,7 +42,7 @@ DOMAIN = SITE["domain"].rstrip("/")
 PRICE_DATE = SITE.get("price_date") or NOW.date().isoformat()
 PRICE_LABEL = SITE.get("price_date_label", "")
 BULAN = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"]
-RESERVED = {"blog", "admin", "assets", "img", "harga-byd", "test-drive", "feed.xml", "sitemap.xml", "robots.txt", "404.html"}
+RESERVED = {"testimoni", "serah-terima", "blog", "admin", "assets", "img", "harga-byd", "test-drive", "feed.xml", "sitemap.xml", "robots.txt", "404.html"}
 
 ARTICLES = content.load_items("articles", "article")
 LANDING = content.load_items("pages", "page")
@@ -150,7 +150,8 @@ if contrast(DARK, "#ffffff") < 7:
 THEME_VARS = (f":root{{--paper:{PAPER};--ink:{DARK};--ink2:{mix(DARK, PAPER, .22)};--line:{mix(PAPER, DARK, .15)};--soft:{mix(PAPER, DARK, .06)};"
               f"--acc:{ACC};--acc2:{darken(ACC)};--onacc:{ONACC};--ev:{PRIMARY};--evl:{mix(PRIMARY, '#ffffff', .78)};--evb:{mix(PRIMARY, '#ffffff', .55)};"
               f"--ig:{mix(DARK, PRIMARY, .5)};--it:{mix(DARK, '#ffffff', .8)};--it2:{mix(DARK, '#ffffff', .72)}}}")
-CSS = minify_css((SRC / "assets/style.css").read_text(encoding="utf-8")) + THEME_VARS
+_BS = SRC / "assets/vendor/bootstrap-lite.css"  # subset Bootstrap 5.3 (grid + utilitas), hasil build tools/vendor
+CSS = (_BS.read_text(encoding="utf-8") if _BS.exists() else "") + minify_css((SRC / "assets/style.css").read_text(encoding="utf-8")) + THEME_VARS
 
 BOLT = ("<svg viewBox='0 0 32 32' aria-hidden='true'><rect width='32' height='32' rx='8' fill='currentColor'/>"
         "<path d='M18 4 8 18h7l-1 10 10-14h-7z' fill='#fff'/></svg>")
@@ -412,6 +413,15 @@ def header():
             f'<details class="m"><summary>Menu</summary><div>{nav}<a href="/test-drive/">Test Drive</a></div></details></div></header>')
 
 
+def social_links():
+    o = ""
+    if testi_items():
+        o += '<li><a href="/testimoni/">Testimoni customer</a></li>'
+    if hand_items():
+        o += '<li><a href="/serah-terima/">Serah terima unit</a></li>'
+    return o
+
+
 def footer():
     mod = "".join(f'<li><a href="/{m["slug"]}/">{esc(m["name"])}</a></li>' for m in MODELS)
     extra = "".join(f'<li><a href="/{p["slug"]}/">{esc(p["h1"])}</a></li>' for p in VIS_LAND if p["in_footer"])
@@ -424,7 +434,7 @@ def footer():
             f'<p><a href="{wa_url()}" data-wa="footer" rel="noopener">WhatsApp {esc(SITE["phone_display"])}</a></p></div>'
             f'<div><h2>Model BYD</h2><ul>{mod}</ul></div>'
             f'<div><h2>Informasi</h2><ul><li><a href="/harga-byd/">Harga mobil BYD terbaru</a></li><li><a href="/test-drive/">Booking test drive</a></li>'
-            f'<li><a href="/blog/">Blog &amp; perbandingan</a></li>{extra}</ul></div>{soc_block}</div>'
+            f'<li><a href="/blog/">Blog &amp; perbandingan</a></li>{social_links()}{extra}</ul></div>{soc_block}</div>'
             f'<p class="legal">{esc(SITE.get("footer_note", ""))} © {NOW.year} {esc(SITE.get("legal_name") or NAME)}.</p></div></footer>'
             f'{fab}<script defer src="/assets/app.js"></script></body></html>')
 
@@ -554,18 +564,20 @@ def section_on(group, sid):
     return False
 
 
-DEFAULT_AFTER = {("home", "leasing"): "models", ("model", "leasing"): "others"}
+DEFAULT_AFTER = {("home", "leasing"): ["models"], ("home", "handover"): ["why", "models"], ("home", "testimonials"): ["handover", "why", "models"],
+                 ("model", "leasing"): ["others"], ("model", "testimonials"): ["articles", "compare", "specs"]}
 
 
 def sections_order(group, registry):
     ids = [s["id"] for s in LAYOUT.get(group, []) if s.get("on", True) and s["id"] in registry]
     known = [s["id"] for s in LAYOUT.get(group, [])]
-    for k in registry:  # section baru yang belum ada di layout.json: taruh setelah jangkarnya, atau di akhir
+    for k in registry:  # section baru yang belum ada di layout.json: taruh setelah jangkar pertama yang ada, atau di akhir
         if k in known:
             continue
-        anchor = DEFAULT_AFTER.get((group, k))
-        if anchor in ids:
-            ids.insert(ids.index(anchor) + 1, k)
+        for anchor in DEFAULT_AFTER.get((group, k), []):
+            if anchor in ids:
+                ids.insert(ids.index(anchor) + 1, k)
+                break
         else:
             ids.append(k)
     return ids
@@ -592,11 +604,152 @@ def leasing_section(where):
             items.append(f"<div>{inner}</div>")
     if not items:
         return ""
-    ap = ' data-auto="1"' if LEASING.get("autoplay", True) else ""
+    auto = 3500 if LEASING.get("autoplay", True) else 0
+    slides = "".join(f'<div class="swiper-slide">{i}</div>' for i in items)
     return (f'<section class="s"><div class="wrap"><div class="lp"><div class="row-h"><div><h2>{esc(LEASING.get("title") or "Mitra Leasing")}</h2>'
             f'<p>{esc(LEASING.get("intro", ""))}</p></div><div class="sl-nav" aria-label="Geser logo leasing">'
-            f'<button type="button" data-lp="-1" aria-label="Sebelumnya">&#8592;</button><button type="button" data-lp="1" aria-label="Berikutnya">&#8594;</button></div></div>'
-            f'<div class="lpt" tabindex="0" role="region" aria-label="Mitra leasing"{ap}>{"".join(items)}</div><div class="lpd" aria-hidden="true"></div></div></div></section>')
+            f'<button type="button" data-sw="-1" aria-label="Sebelumnya">&#8592;</button><button type="button" data-sw="1" aria-label="Berikutnya">&#8594;</button></div></div>'
+            f'<div class="swiper bhs lsl" data-per="5" data-mid="3" data-mob="2" data-auto="{auto}"><div class="swiper-wrapper">{slides}</div><div class="swiper-pagination"></div></div></div></div></section>')
+
+
+# ------------------------------------------------------------------ TESTIMONI & SERAH TERIMA
+TESTI = content.load_json("testimonials.json", {})
+HAND = content.load_json("handovers.json", {})
+PAGE_IMAGES = {}  # path -> [(url gambar, keterangan)] untuk sitemap gambar
+
+
+def id_date(iso):
+    try:
+        y, mo, d = (iso or "")[:10].split("-")
+        return f"{int(d)} {BULAN[int(mo) - 1]} {y}"
+    except Exception:
+        return ""
+
+
+def _visible(items, need):
+    out = []
+    for it in items or []:
+        if it.get("consent") is True and need(it):
+            out.append(it)
+    return out
+
+
+def _testi_ok(t):
+    return bool((t.get("name") or "").strip() and len((t.get("text") or "").strip()) >= 20)
+
+
+def _hand_ok(h):
+    return bool((h.get("customer") or "").strip() and h.get("photo") and images.resolve(h["photo"]))
+
+
+def testi_items():
+    return _visible(TESTI.get("items"), _testi_ok)
+
+
+def hand_items():
+    return _visible(HAND.get("items"), _hand_ok)
+
+
+def _model_link(slug):
+    m = MBY.get(slug or "")
+    return (f'<a href="/{m["slug"]}/">{esc(m["name"])}</a>', m["name"]) if m and m.get("published", True) else ("", "")
+
+
+def testi_card(t, aos=""):
+    try:
+        n = max(1, min(5, int(t.get("rating") or 5)))
+    except ValueError:
+        n = 5
+    link, mname = _model_link(t.get("model"))
+    meta = " · ".join(x for x in [esc(t.get("city", "")), link, esc(id_date(t.get("date")))] if x)
+    av = ""
+    if t.get("photo") and images.resolve(t["photo"]):
+        av = f'<span class="av">{img_tag(t["photo"], "Foto " + t["name"], "56px")}</span>'
+    src = f' <span class="srcl">via {esc(t["source"])}</span>' if (t.get("source") or "").strip() else ""
+    return (f'<figure class="tc"{aos}><div class="stars" role="img" aria-label="Rating {n} dari 5">{"★" * n}{"☆" * (5 - n)}</div>'
+            f'<blockquote><p>{esc(t["text"].strip())}</p></blockquote>'
+            f'<figcaption>{av}<span><strong>{esc(t["name"])}</strong><small>{meta}{src}</small></span></figcaption></figure>')
+
+
+def hand_card(h, aos=""):
+    link, mname = _model_link(h.get("model"))
+    who = h["customer"].strip()
+    alt = f"Serah terima {mname or 'unit BYD'} kepada {who}" + (f", {h['city']}" if h.get("city") else "")
+    pics = [h["photo"]] + ([h["photo2"]] if h.get("photo2") and images.resolve(h["photo2"]) else [])
+    big = (f'<a class="hph" href="{images.resolve(pics[0])}" data-gal aria-label="Perbesar foto serah terima {esc(who)}">'
+           f'{img_tag(pics[0], alt, "(max-width:600px) 82vw, 360px")}</a>')
+    more = "".join(f'<a class="hmore" href="{images.resolve(p)}" data-gal aria-label="Foto lain serah terima {esc(who)}">{img_tag(p, alt + " (foto " + str(k + 2) + ")", "88px")}</a>'
+                   for k, p in enumerate(pics[1:]))
+    meta = " · ".join(x for x in [esc(h.get("city", "")), esc(id_date(h.get("date")))] if x)
+    cap = f'<p>{esc(h["caption"].strip())}</p>' if (h.get("caption") or "").strip() else ""
+    return (f'<figure class="hc"{aos}>{big}<figcaption><strong>{esc(who)}</strong>'
+            f'<span>{"Unit " + link if link else "Serah terima unit BYD"}</span><small>{meta}</small>{cap}{more}</figcaption></figure>')
+
+
+def _slider(cards, per, title, intro, link, cls, sid="", alt=False, auto=0):
+    slides = "".join(f'<div class="swiper-slide">{c}</div>' for c in cards)
+    nav = ('<div class="sl-nav" aria-label="Geser"><button type="button" data-sw="-1" aria-label="Sebelumnya">&#8592;</button>'
+           '<button type="button" data-sw="1" aria-label="Berikutnya">&#8594;</button></div>')
+    more = f'<p style="margin-top:14px"><a class="btn o sm" style="color:var(--acc2)" href="{link[0]}">{esc(link[1])}</a></p>' if link else ""
+    idattr = f' id="{sid}"' if sid else ""
+    return (f'<section class="s{" alt" if alt else ""}"{idattr}><div class="wrap"><div class="row-h"><div><h2>{esc(title)}</h2><p>{esc(intro)}</p></div>{nav}</div>'
+            f'<div class="swiper bhs {cls}" data-per="{per}" data-auto="{auto}" data-aos="fade-up"><div class="swiper-wrapper">{slides}</div><div class="swiper-pagination"></div></div>{more}</div></section>')
+
+
+def testi_section(where, model_slug=None):
+    if not TESTI.get("show_" + where, True):
+        return ""
+    its = testi_items()
+    if where == "model":
+        its = [t for t in its if t.get("model") == model_slug]
+    else:
+        its = sorted(sorted(its, key=lambda t: str(t.get("date") or ""), reverse=True), key=lambda t: not t.get("featured"))[:int(TESTI.get("home_count", 6))]
+    if not its:
+        return ""
+    title = TESTI.get("home_title") or "Kata Customer"
+    if where == "model":
+        title = f"Kata Customer tentang {MBY[model_slug]['name']}"
+    return _slider([testi_card(t) for t in its], 3, title, TESTI.get("intro", ""), ("/testimoni/", "Lihat semua testimoni") if where == "home" else None,
+                   "tsl", sid="testimoni", alt=(where == "home"))
+
+
+def hand_section():
+    if not HAND.get("show_home", True):
+        return ""
+    its = hand_items()[:int(HAND.get("home_count", 6))]
+    if not its:
+        return ""
+    return _slider([hand_card(h) for h in its], 3, HAND.get("home_title") or "Serah Terima Unit", HAND.get("intro", ""), ("/serah-terima/", "Lihat semua serah terima"), "hsl", sid="serah-terima")
+
+
+def _grid_page(path, h1, intro, cards, title, desc, crumb_name, schema_extra, lm):
+    crumb_items = [("Beranda", "/"), (crumb_name, path)]
+    grid = "".join(f'<div class="col" data-aos="fade-up">{c}</div>' for c in cards)
+    body = (f'<section class="sub"><div class="wrap">{crumbs(crumb_items)}<h1>{esc(h1)}</h1><p>{esc(intro)}</p></div></section>'
+            f'<section class="s"><div class="wrap"><div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">{grid}</div></div></section>'
+            + lead_section(alt=True))
+    add(path, page(fmt(title), fmt(desc), path, body, [breadcrumb_ld(crumb_items)] + schema_extra), lm)
+
+
+def build_social_pages():
+    ti = testi_items()
+    if ti:
+        lm = max([str(t.get("date") or "")[:10] for t in ti] + [PRICE_DATE])
+        _grid_page("/testimoni/", TESTI.get("h1") or "Testimoni Customer", TESTI.get("intro", ""), [testi_card(t) for t in ti],
+                   TESTI.get("title") or "Testimoni Customer", TESTI.get("description") or "", "Testimoni", [], lm)
+    hi = hand_items()
+    if hi:
+        lm = max([str(h.get("date") or "")[:10] for h in hi] + [PRICE_DATE])
+        imgs = []
+        for h in hi:
+            _, mname = _model_link(h.get("model"))
+            for k, p in enumerate([h["photo"]] + ([h["photo2"]] if h.get("photo2") and images.resolve(h["photo2"]) else [])):
+                imgs.append((url(images.resolve(p)), f"Serah terima {mname or 'unit BYD'} kepada {h['customer']}"))
+        PAGE_IMAGES["/serah-terima/"] = imgs[:900]
+        ld = [{"@context": "https://schema.org", "@type": "CollectionPage", "name": HAND.get("h1"), "url": url("/serah-terima/"), "inLanguage": "id-ID",
+               "image": [{"@type": "ImageObject", "contentUrl": u, "caption": c} for u, c in imgs[:20]]}]
+        _grid_page("/serah-terima/", HAND.get("h1") or "Serah Terima Unit", HAND.get("intro", ""), [hand_card(h) for h in hi],
+                   HAND.get("title") or "Serah Terima Unit BYD", HAND.get("description") or "", "Serah Terima", ld, lm)
 
 
 def range_info(m):
@@ -651,15 +804,15 @@ def build_home():
                 pic = ""
             big = f'<div class="big">{"" if r[3] else "<small style='margin:0 6px 0 0'>hingga</small>"}{r[0]}<small>km{" listrik" if r[3] else ""}</small></div>{rg_html(m)}' if r else f'<div class="big">{esc(m["name"])}</div>'
             hy = " + mesin bensin" if r and r[3] else ""
-            cards += (f'<a class="mc" href="/{m["slug"]}/"><div class="top">{pic}{big}</div><div class="bd"><span class="tp">{esc(m["type"])}{hy}</span>'
-                      f'<h3>{esc(m["name"])}</h3><span class="pr">{price_line(m)}</span><span class="more">Lihat detail dan harga</span></div></a>')
+            cards += (f'<div class="swiper-slide"><a class="mc" href="/{m["slug"]}/"><div class="top">{pic}{big}</div><div class="bd"><span class="tp">{esc(m["type"])}{hy}</span>'
+                      f'<h3>{esc(m["name"])}</h3><span class="pr">{price_line(m)}</span><span class="more">Lihat detail dan harga</span></div></a></div>')
         return (f'<section class="s" id="model"><div class="wrap"><div class="row-h"><div><h2>{esc(h["models_title"])}</h2><p>{esc(h.get("models_intro", ""))}</p></div>'
-                f'<div class="sl-nav" aria-label="Geser model"><button type="button" data-sl="-1" aria-label="Model sebelumnya">&#8592;</button><button type="button" data-sl="1" aria-label="Model berikutnya">&#8594;</button></div></div>'
-                f'<div class="sl"><div class="track" tabindex="0" role="region" aria-label="Daftar model BYD">{cards}</div></div>'
+                f'<div class="sl-nav" aria-label="Geser model"><button type="button" data-sw="-1" aria-label="Model sebelumnya">&#8592;</button><button type="button" data-sw="1" aria-label="Model berikutnya">&#8594;</button></div></div>'
+                f'<div class="swiper bhs msl" data-per="4" data-mid="2.2" data-mob="1.15"><div class="swiper-wrapper">{cards}</div><div class="swiper-pagination"></div></div>'
                 f'<p class="note">Harga OTR Jakarta, {esc(PRICE_LABEL)}; dapat berubah. Lihat <a href="/harga-byd/">daftar harga mobil BYD terbaru</a>.</p></div></section>')
 
     def s_why():
-        items = "".join(f'<div><h3>{esc(i["title"])}</h3><p>{esc(i["text"])}</p></div>' for i in h.get("why_items", []))
+        items = "".join(f'<div data-aos="fade-up" data-aos-delay="{k * 80}"><h3>{esc(i["title"])}</h3><p>{esc(i["text"])}</p></div>' for k, i in enumerate(h.get("why_items", [])))
         return (f'<section class="s alt"><div class="wrap"><h2>{esc(h["why_title"])}</h2><div class="feat">{items}</div>'
                 f'<p style="margin-top:18px">{md.inline(h.get("why_links", ""))}</p></div></section>')
 
@@ -682,7 +835,7 @@ def build_home():
     def s_faq():
         return f'<section class="s"><div class="wrap art"><h2>{esc(h["faq_title"])}</h2>{faq_html(faq_pairs(h.get("faq")))}</div></section>'
 
-    reg = {"hero": s_hero, "models": s_models, "leasing": lambda: leasing_section("home"), "why": s_why, "articles": s_articles, "usecases": s_usecases, "lead": s_lead, "faq": s_faq}
+    reg = {"hero": s_hero, "models": s_models, "leasing": lambda: leasing_section("home"), "handover": hand_section, "testimonials": lambda: testi_section("home"), "why": s_why, "articles": s_articles, "usecases": s_usecases, "lead": s_lead, "faq": s_faq}
     body = "".join(reg[i]() for i in sections_order("home", reg))
     schema = [dealer_ld(), {"@context": "https://schema.org", "@type": "WebSite", "name": NAME, "url": url("/"), "inLanguage": "id-ID"}]
     if h.get("faq"):
@@ -772,7 +925,7 @@ def build_models():
 
         reg = {"gallery": s_gallery, "summary": s_summary, "highlights": s_highlights, "variants": s_variants, "specs": s_specs,
                "compare": s_compare, "articles": s_articles, "faq": s_faq, "others": s_others, "lead": s_lead,
-               "leasing": lambda: leasing_section("model")}
+               "leasing": lambda: leasing_section("model"), "testimonials": lambda: testi_section("model", m["slug"])}
         top = (f'<section class="sub"><div class="wrap">{crumbs(crumb_items)}<h1>{esc(m["name"])}: Harga, Spesifikasi &amp; Test Drive</h1>'
                f'<p>{esc(m["tagline"])}</p><a class="btn" href="{td_url(m["name"])}">Booking Test Drive</a> '
                f'<a class="btn w" href="{wa_url("Halo, saya ingin info " + m["name"])}" data-wa="model-{m["slug"]}" rel="noopener">{WA_ICON} Tanya via WhatsApp</a></div></section>')
@@ -999,6 +1152,9 @@ def write_all():
     (OUT / "assets").mkdir(parents=True)
     images.process(OUT)
     shutil.copy(SRC / "assets/app.js", OUT / "assets/app.js")
+    (OUT / "assets/vendor").mkdir(exist_ok=True)
+    for f in ("swiper.min.js", "swiper.min.css", "aos.min.js", "aos.min.css"):
+        shutil.copy(SRC / "assets/vendor" / f, OUT / "assets/vendor" / f)
     (OUT / "assets/fonts").mkdir(exist_ok=True)
     shutil.copy(SRC / "assets/fonts/display.woff2", OUT / "assets/fonts/display.woff2")
     og_default()
@@ -1009,8 +1165,10 @@ def finalize():
         f = OUT / (path.lstrip("/") + "index.html") if path.endswith("/") else OUT / path.lstrip("/")
         f.parent.mkdir(parents=True, exist_ok=True)
         f.write_text(html_, encoding="utf-8")
-    urls = "".join(f"<url><loc>{url(p)}</loc><lastmod>{lm}</lastmod></url>" for p, _, lm, idx in OUT_PAGES if idx)
-    (OUT / "sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' + urls + "</urlset>", encoding="utf-8")
+    def _im(p):
+        return "".join(f"<image:image><image:loc>{esc(u)}</image:loc><image:caption>{esc(c)}</image:caption></image:image>" for u, c in PAGE_IMAGES.get(p, []))
+    urls = "".join(f"<url><loc>{url(p)}</loc><lastmod>{lm}</lastmod>{_im(p)}</url>" for p, _, lm, idx in OUT_PAGES if idx)
+    (OUT / "sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">' + urls + "</urlset>", encoding="utf-8")
     (OUT / "robots.txt").write_text(f"User-agent: *\nAllow: /\n\nSitemap: {url('/sitemap.xml')}\n", encoding="utf-8")
     (OUT / ".nojekyll").write_text("")
     write_feed()
@@ -1069,7 +1227,7 @@ def validate():
 def main():
     validate()
     write_all()
-    build_home(); build_models(); build_prices(); build_testdrive()
+    build_home(); build_models(); build_prices(); build_testdrive(); build_social_pages()
     for a in VIS_ART:
         build_article(a)
     for p in VIS_LAND:

@@ -194,13 +194,40 @@ details.src ul{padding-left:1.2em;margin:.5em 0}
 .lp{background:#fff;border:1px solid var(--line);border-radius:16px;padding:28px 28px 22px}
 .lp .row-h{margin-bottom:18px}.lp h2{font-size:clamp(1.3rem,3vw,1.8rem);margin-bottom:.2em}.lp .row-h p{margin:0;color:var(--ink2)}
 .lp .sl-nav{margin:0}.lp .sl-nav button{border-radius:50%}
-.lpt{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;padding:2px}
-.lpt::-webkit-scrollbar{display:none}
-.lpt>*{flex:0 0 calc((100% - 56px)/5);aspect-ratio:3/1;scroll-snap-align:start;background:var(--paper);border:1px solid var(--line);border-radius:10px;display:flex;align-items:center;justify-content:center;padding:10px 16px;color:var(--ink2);font-weight:700;text-decoration:none;text-align:center;font-size:.9rem}
-.lpt img{max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain}
+.lsl .swiper-slide>*{aspect-ratio:3/1;height:auto;background:var(--paper);border:1px solid var(--line);border-radius:10px;display:flex;align-items:center;justify-content:center;padding:10px 16px;color:var(--ink2);font-weight:700;text-decoration:none;text-align:center;font-size:.9rem}
+.lsl img{max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain}
 a.lpi:hover{border-color:var(--ink)}
-.lpd{display:flex;justify-content:center;gap:8px;margin-top:16px}
-.lpd i{width:6px;height:6px;border-radius:3px;background:var(--line);transition:width .2s,background .2s}.lpd i.on{width:22px;background:var(--ev)}
-@media(max-width:900px){.lpt>*{flex-basis:calc((100% - 28px)/3)}}
-@media(max-width:600px){.lp{padding:20px 16px 16px}.lpt>*{flex-basis:calc((100% - 14px)/2)}}
+.lsl:not(.swiper-initialized) .swiper-wrapper{gap:14px}.lsl:not(.swiper-initialized) .swiper-slide{flex-basis:calc((100% - 14px)/2)}
+@media(min-width:600px){.lsl:not(.swiper-initialized) .swiper-slide{flex-basis:calc((100% - 28px)/3)}}
+@media(min-width:1000px){.lsl:not(.swiper-initialized) .swiper-slide{flex-basis:calc((100% - 56px)/5)}}
+@media(max-width:600px){.lp{padding:20px 16px 16px}}
+.swiper-button-lock{display:none!important}
 .sl-nav[hidden]{display:none}
+
+/* ---------- Swiper (dimuat malas); sebelum aktif tampil sebagai scroll-snap agar tidak ada layout shift ---------- */
+.swiper:not(.swiper-initialized) .swiper-wrapper{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:thin;padding-bottom:6px}
+.swiper:not(.swiper-initialized) .swiper-slide{flex:0 0 min(84%,340px);scroll-snap-align:start}
+.bhs .swiper-slide{height:auto}.bhs .swiper-slide>*{height:100%}
+.bhs .swiper-pagination{position:static;margin-top:14px}
+.bhs .swiper-pagination-bullet{background:var(--line);opacity:1;width:7px;height:7px}.bhs .swiper-pagination-bullet-active{background:var(--ev);width:22px;border-radius:4px}
+.swiper-initialized.bhs{overflow:hidden}
+.sl-nav button[disabled],.sl-nav button.swiper-button-disabled{opacity:.3;cursor:default}
+/* ---------- testimoni & serah terima ---------- */
+.tc{margin:0;background:#fff;border:1px solid var(--line);border-radius:16px;padding:22px;display:flex;flex-direction:column;gap:12px;height:100%}
+.tc .stars{color:#e0a100;letter-spacing:2px;font-size:1.05rem}
+.tc blockquote{margin:0;flex:1}.tc blockquote p{margin:0;font-size:1.02rem;line-height:1.6}
+.tc figcaption{display:flex;gap:12px;align-items:center;border-top:1px solid var(--line);padding-top:12px}
+.tc figcaption span{display:flex;flex-direction:column;min-width:0}.tc small{color:var(--ink2);font-size:.82rem}
+.tc .av{flex:none;width:48px;height:48px;border-radius:50%;overflow:hidden;background:var(--soft)}.tc .av img{width:100%;height:100%;object-fit:cover;display:block}
+.tc .srcl{opacity:.85}
+.hc{margin:0;background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden;display:flex;flex-direction:column;height:100%}
+.hc .hph{display:block;aspect-ratio:4/3;overflow:hidden;background:var(--soft)}.hc .hph img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .35s}
+.hc .hph:hover img{transform:scale(1.04)}
+.hc figcaption{padding:14px 16px 16px;display:flex;flex-direction:column;gap:2px;flex:1}.hc figcaption>span{font-weight:600;color:var(--ink2)}.hc small{color:var(--ink2)}
+.hc figcaption p{margin:8px 0 0;font-size:.95rem}
+.hc .hmore{display:inline-block;width:64px;height:48px;border-radius:8px;overflow:hidden;margin:10px 8px 0 0}.hc .hmore img{width:100%;height:100%;object-fit:cover;display:block}
+/* ---------- WhatsApp melayang: label + denyut halus ---------- */
+.wafab{transition:transform .2s,box-shadow .2s}.wafab:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(0,0,0,.34)}
+.wafab::after{content:"";position:absolute;inset:0;border-radius:999px;box-shadow:0 0 0 0 rgba(37,211,102,.55);animation:wapulse 2.6s ease-out 3s 3}
+@keyframes wapulse{to{box-shadow:0 0 0 18px rgba(37,211,102,0)}}
+@media(prefers-reduced-motion:reduce){.wafab::after{animation:none}.hc .hph img{transition:none}}

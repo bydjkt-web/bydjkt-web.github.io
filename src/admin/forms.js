@@ -41,6 +41,19 @@
         }));
         label.appendChild(s); return label;
       }
+      case "image": {
+        var ib = h("div", { class: "imgf" });
+        var draw = function () {
+          ib.innerHTML = "";
+          var cur = obj[f.k] || "", th = h("div", { class: "imgf-th" });
+          if (cur) { var im = h("img", { alt: "" }); if (!root.A.thumbInto(im, cur)) th.textContent = "[tidak ditemukan]"; else th.appendChild(im); } else th.textContent = "Belum ada gambar";
+          ib.appendChild(th);
+          ib.appendChild(h("div", { class: "imgf-b" }, [h("div", { class: "muted", text: cur || "" }),
+            h("div", { class: "row" }, [h("button", { type: "button", class: "btn o sm", text: cur ? "Ganti gambar" : "Pilih gambar", onclick: function () { root.A.pickImage(cur, function (src) { set(src); draw(); }, { empty: true }); } }),
+              cur ? h("button", { type: "button", class: "btn d sm", text: "Hapus", onclick: function () { set(""); draw(); } }) : null])]));
+        };
+        draw(); label.appendChild(ib); return label;
+      }
       case "strlist": return list(f, obj, onChange, path, true);
       case "objlist": return list(f, obj, onChange, path, false);
       case "obj": {
@@ -58,7 +71,7 @@
     var wrap = h("div", { class: "sub-list" });
     function redraw() {
       wrap.innerHTML = "";
-      wrap.appendChild(h("strong", { text: f.label || f.k }));
+      if (f.label !== "") wrap.appendChild(h("strong", { text: f.label || f.k }));
       if (f.hint) wrap.appendChild(h("div", { class: "muted", text: f.hint }));
       obj[f.k] = obj[f.k] || [];
       var arr = obj[f.k];

@@ -1,0 +1,2 @@
+{ "name": "byd-vendor", "private": true, "description": "Build aset vendor (Bootstrap subset, Swiper, AOS). Hasil build sudah di-commit ke src/assets/vendor, jadi GitHub Actions tidak perlu npm.",
+  "devDependencies": { "bootstrap": "5.3.3", "swiper": "11.1.14", "aos": "2.3.4", "sass": "1.77.8", "esbuild": "0.23.1" } }

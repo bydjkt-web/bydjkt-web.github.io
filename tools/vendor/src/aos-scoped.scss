@@ -1,0 +1,3 @@
+@use "sass:meta";
+// Animasi AOS hanya aktif bila JS menambah kelas html.aos-on (tanpa JS konten tetap terlihat)
+html.aos-on { @include meta.load-css("aos/dist/aos.css"); }

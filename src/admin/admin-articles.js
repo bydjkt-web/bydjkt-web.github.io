@@ -128,7 +128,9 @@
         ["Link", "[", "](/harga-byd/)", "teks link"], ["Tabel", "\n| Kolom A | Kolom B |\n|---|---|\n| ", " | isi |\n", "isi"], ["FAQ", "\n\n## FAQ\n\n### ", "?\n\nJawaban.\n", "Pertanyaan"],
         ["{{compare}}", "\n\n{{compare ", "}}\n\n", "byd-atto-3 chery-e5-pure"], ["{{cta}}", "\n\n{{cta model=", "}}\n\n", "byd-atto-3"], ["{{pricelist}}", "\n\n{{pricelist min=100 max=400}}\n\n", "", ""], ["{{modelcard}}", "\n\n{{modelcard ", "}}\n\n", "byd-atto-1 byd-atto-3"]
       ].forEach(function (b) { tbar.appendChild(h("button", { type: "button", text: b[0], onclick: function () { ins(b[1], b[2], b[3]); } })); });
-      var imgSel = h("select", { "aria-label": "Sisipkan gambar", onchange: function (e) { if (e.target.value) { var md_ = (A.S.media.items || []).filter(function (x) { return x.src === e.target.value; })[0]; ins("\n\n![", "](" + e.target.value + ")\n\n", (md_ && md_.alt) || "deskripsi gambar"); e.target.value = ""; } }, style: "width:auto" }, A.mediaOpts().map(function (o) { return h("option", { value: o[0] }, [o[0] ? "Gambar: " + o[1] : "+ Sisipkan gambar"]); }));
+      var imgSel = h("button", { type: "button", text: "+ Gambar", title: "Sisipkan gambar dari Media", onclick: function () {
+        A.pickImage("", function (src) { if (!src) return; var md_ = (A.S.media.items || []).filter(function (x) { return x.src === src; })[0]; ins("\n\n![", "](" + src + ")\n\n", (md_ && md_.alt) || "deskripsi gambar"); });
+      } });
       tbar.appendChild(imgSel);
       card2.appendChild(tbar); card2.appendChild(ta);
       ta.addEventListener("input", function () { item.body = ta.value; refresh(); });
@@ -136,9 +138,9 @@
 
       if (!isPage) {
         var card3 = h("div", { class: "card" }, [h("h3", { text: "Cover, penulis, kategori" })]);
-        var coverSel = h("select", { id: "a_cover" }, A.mediaOpts(meta.cover).map(function (o) { return h("option", { value: o[0], selected: o[0] === (meta.cover || "") }, [o[1]]); }));
-        coverSel.addEventListener("change", function () { meta.cover = coverSel.value; refresh(); });
-        card3.appendChild(h("label", { class: "f" }, ["Gambar cover (upload di menu Media)", coverSel]));
+        var coverBox = Forms.render([{ k: "cover", label: "Gambar cover", t: "image" }], meta, function () { refresh(); });
+        coverBox.id = "a_cover";
+        card3.appendChild(coverBox);
         card3.appendChild(tf("cover_alt", "Alt teks cover"));
         card3.appendChild(h("div", { class: "grid2" }, [tf("category", "Kategori"), tf("author", "Penulis (kosong = default situs)")]));
         left.appendChild(card3);

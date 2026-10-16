@@ -1,0 +1,17 @@
+// Subset Bootstrap 5.3: hanya grid + utilitas yang dipakai. Tanpa reboot/komponen/JS agar ringan.
+@import "bootstrap/scss/functions";
+@import "bootstrap/scss/variables";
+$grid-breakpoints: (xs: 0, md: 768px, lg: 992px);
+$container-max-widths: (md: 720px, lg: 960px);
+$spacers: (0: 0, 1: .25rem, 2: .5rem, 3: 1rem, 4: 1.5rem, 5: 3rem);
+$grid-columns: 12;
+@import "bootstrap/scss/variables-dark";
+@import "bootstrap/scss/maps";
+@import "bootstrap/scss/mixins";
+@import "bootstrap/scss/utilities";
+$utilities: map-get-multiple($utilities, ("display", "flex-direction", "flex-wrap", "justify-content", "align-items", "gap", "margin-bottom", "margin-top", "text-align"));
+@import "bootstrap/scss/mixins/grid";
+
+@import "bootstrap/scss/grid";
+@import "bootstrap/scss/helpers/visually-hidden";
+@import "bootstrap/scss/utilities/api";
