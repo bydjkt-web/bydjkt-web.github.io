@@ -9,6 +9,11 @@
       "name": "Maybank",
       "logo": "/img/leasing-1.webp",
       "url": ""
+    },
+    {
+      "name": "CIMB Niaga",
+      "logo": "/img/leasing-2.webp",
+      "url": ""
     }
   ]
 }
