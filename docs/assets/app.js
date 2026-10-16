@@ -150,6 +150,43 @@
     prev.addEventListener("click", function () { step(-1); }); next.addEventListener("click", function () { step(1); });
     tr.addEventListener("scroll", state, { passive: true }); state();
   })();
+  // Slider logo leasing: geser, titik indikator, putar otomatis (berhenti saat disentuh / reduced-motion)
+  document.querySelectorAll(".lp").forEach(function (box) {
+    var tr = box.querySelector(".lpt"), dots = box.querySelector(".lpd");
+    var prev = box.querySelector("[data-lp='-1']"), next = box.querySelector("[data-lp='1']");
+    function per() { var c = tr.firstElementChild; return c ? Math.max(1, Math.round(tr.clientWidth / (c.getBoundingClientRect().width + 14))) : 1; }
+    function stepW() { var c = tr.firstElementChild; return c ? c.getBoundingClientRect().width + 14 : 200; }
+    function pages() { return Math.max(1, Math.ceil(tr.children.length / per())); }
+    function drawDots() {
+      var n = pages(); dots.innerHTML = "";
+      if (n < 2) { prev.parentNode.hidden = true; return; }
+      prev.parentNode.hidden = false;
+      for (var i = 0; i < n; i++) dots.appendChild(document.createElement("i"));
+      mark();
+    }
+    function mark() {
+      var n = pages(), max = tr.scrollWidth - tr.clientWidth, i = max > 4 ? Math.round(tr.scrollLeft / max * (n - 1)) : 0;
+      Array.prototype.forEach.call(dots.children, function (d, k) { d.className = k === i ? "on" : ""; });
+    }
+    function go(dir) {
+      var max = tr.scrollWidth - tr.clientWidth;
+      if (dir > 0 && tr.scrollLeft >= max - 4) tr.scrollTo({ left: 0, behavior: "smooth" });
+      else if (dir < 0 && tr.scrollLeft < 4) tr.scrollTo({ left: max, behavior: "smooth" });
+      else tr.scrollBy({ left: dir * stepW() * per(), behavior: "smooth" });
+    }
+    prev.addEventListener("click", function () { go(-1); }); next.addEventListener("click", function () { go(1); });
+    tr.addEventListener("scroll", mark, { passive: true }); window.addEventListener("resize", drawDots); drawDots();
+    var still = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (tr.getAttribute("data-auto") && !still) {
+      var t = null, hold = false;
+      function start() { stop(); if (!hold && pages() > 1 && !document.hidden) t = setInterval(function () { go(1); }, 3500); }
+      function stop() { if (t) { clearInterval(t); t = null; } }
+      ["mouseenter", "focusin", "touchstart"].forEach(function (ev) { box.addEventListener(ev, function () { hold = true; stop(); }, { passive: true }); });
+      ["mouseleave", "focusout"].forEach(function (ev) { box.addEventListener(ev, function () { hold = false; start(); }); });
+      document.addEventListener("visibilitychange", function () { document.hidden ? stop() : start(); });
+      start();
+    }
+  });
   (function () {
     var bars = document.querySelectorAll(".rg");
     if (!bars.length) return;

@@ -3,8 +3,10 @@
   "use strict";
   var h = Forms.h;
   var A = root.A = { S: {}, routes: {}, h: h, cur: null };
-  var JSONS = { site: "site.json", layout: "layout.json", pages: "pages.json", models: "models.json", comps: "competitors.json", media: "media.json", keywords: "keywords.json", topics: "topics.json", rules: "seo-rules.json" };
-  var DEFAULTS = { site: {}, layout: {}, pages: {}, models: [], comps: [], media: { items: [] }, keywords: { keywords: [] }, topics: { topics: [] }, rules: {} };
+  var JSONS = { site: "site.json", layout: "layout.json", pages: "pages.json", models: "models.json", comps: "competitors.json", media: "media.json", keywords: "keywords.json", topics: "topics.json", rules: "seo-rules.json", theme: "theme.json", leasing: "leasing.json" };
+  var DEFAULTS = { site: {}, layout: {}, pages: {}, models: [], comps: [], media: { items: [] }, keywords: { keywords: [] }, topics: { topics: [] }, rules: {},
+    theme: { preset: "atlantic", dark: "#243746", primary: "#3d5a6c", accent: "#2b6a8a", paper: "#f1f4f6", presets: [{id:"atlantic",name:"Atlantic Grey",dark:"#243746",primary:"#3d5a6c",accent:"#2b6a8a",paper:"#f1f4f6"},{id:"merah",name:"Merah BYD",dark:"#101820",primary:"#0d6b5b",accent:"#d4001a",paper:"#f4f5f2"},{id:"biru",name:"Biru Terang",dark:"#14213d",primary:"#1d4ed8",accent:"#0b5cff",paper:"#f3f7fe"},{id:"sporty",name:"Hitam Sporty",dark:"#0b0b0d",primary:"#8a1020",accent:"#e10b22",paper:"#f2f2f2"}] },
+    leasing: { show_home: true, show_model: true, autoplay: true, title: "Mitra Leasing Resmi", intro: "Pengajuan kredit mobil listrik BYD lewat lembaga pembiayaan yang bekerja sama dengan kami.", items: [] } };
 
   A.toast = function (msg, err) {
     var t = document.getElementById("toast"), d = h("div", { class: err ? "err" : "", text: msg });
@@ -38,7 +40,7 @@
   var NAV = [
     ["dashboard", "Dashboard"], ["#", "Konten"], ["artikel", "Artikel"], ["halaman", "Halaman Pilar"], ["model", "Model Mobil"], ["pesaing", "Data Pesaing"],
     ["konten/home", "Beranda"], ["konten/prices", "Halaman Harga"], ["konten/testdrive", "Test Drive"], ["konten/blog", "Blog (index)"],
-    ["#", "Tampilan"], ["layout", "Layout & Urutan"], ["media", "Media Gambar"], ["pengaturan", "Pengaturan Situs"],
+    ["#", "Tampilan"], ["tema", "Warna Template"], ["leasing", "Mitra Leasing"], ["layout", "Layout & Urutan"], ["media", "Media Gambar"], ["pengaturan", "Pengaturan Situs"],
     ["#", "SEO & Distribusi"], ["jadwal", "Jadwal Terbit"], ["rencana", "Rencana & Keyword"], ["laporan", "Laporan"],
     ["#", "Alat"], ["zip", "Upload ZIP ke GitHub"]
   ];
@@ -141,8 +143,7 @@
     { k: "hours", label: "Jam buka (teks)", t: "text" }, { k: "hours_schema", label: "Jam buka (format schema, contoh Mo-Sa 09:00-18:00)", t: "text" },
     { k: "price_date_label", label: "Label tanggal harga (mis. Oktober 2026)", t: "text" }, { k: "price_date", label: "Tanggal harga (YYYY-MM-DD)", t: "text" },
     { k: "author_name", label: "Nama penulis default artikel", t: "text" }, { k: "author_role", label: "Jabatan penulis", t: "text" },
-    { k: "theme", t: "obj", label: "Tema", fields: [{ k: "accent", label: "Warna aksen (hex)", t: "text" }] },
-    { k: "promo", t: "obj", label: "Banner promo", fields: [{ k: "enabled", label: "Tampilkan banner", t: "bool" }, { k: "text", label: "Teks promo", t: "text" }, { k: "link", label: "Link (opsional)", t: "text" }] },
+        { k: "promo", t: "obj", label: "Banner promo", fields: [{ k: "enabled", label: "Tampilkan banner", t: "bool" }, { k: "text", label: "Teks promo", t: "text" }, { k: "link", label: "Link (opsional)", t: "text" }] },
     { k: "show_floating_wa", label: "Tombol WhatsApp melayang", t: "bool" },
     { k: "nav", label: "Menu navigasi", t: "objlist", titleKey: "label", fields: [{ k: "label", label: "Teks", t: "text" }, { k: "href", label: "Link", t: "text" }] },
     { k: "footer_note", label: "Catatan footer", t: "area", rows: 3 },
@@ -156,7 +157,7 @@
 
   /* ---- Layout ---- */
   var SEC = { hero: "Hero (judul + tombol)", models: "Kartu model", why: "Kenapa mobil listrik", articles: "Artikel terbaru", usecases: "Cocok untuk kebutuhan", lead: "Form lead", faq: "FAQ",
-    gallery: "Galeri foto", summary: "Ringkasan", highlights: "Keunggulan", variants: "Varian & harga", specs: "Spesifikasi", compare: "Perbandingan kompetitor", others: "Model lainnya", table: "Tabel harga", guide: "Panduan memilih" };
+    gallery: "Galeri foto", summary: "Ringkasan", highlights: "Keunggulan", variants: "Varian & harga", specs: "Spesifikasi", compare: "Perbandingan kompetitor", others: "Model lainnya", table: "Tabel harga", leasing: "Slider mitra leasing", guide: "Panduan memilih" };
   A.routes.layout = function () {
     var m = A.view();
     m.appendChild(h("h2", { text: "Layout & Urutan Bagian" }));
@@ -167,6 +168,11 @@
       function draw() {
         ul.innerHTML = "";
         var arr = A.S.layout[g[0]];
+        var anch = { home: "models", model: "others" }[g[0]];
+        if (anch && !arr.some(function (x) { return x.id === "leasing"; })) {
+          var ix = arr.map(function (x) { return x.id; }).indexOf(anch);
+          arr.splice(ix < 0 ? arr.length : ix + 1, 0, { id: "leasing", on: true });
+        }
         arr.forEach(function (it, i) {
           ul.appendChild(h("li", {}, [
             h("input", { type: "checkbox", checked: it.on, "aria-label": "Tampilkan " + it.id, onchange: function (e) { it.on = e.target.checked; A.saveJSON("layout"); } }),
