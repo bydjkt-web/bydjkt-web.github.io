@@ -4,6 +4,7 @@ h1: Kelebihan dan Kekurangan Mobil Listrik untuk Pemakaian Harian di Indonesia
 slug: kelebihan-dan-kekurangan-mobil-listrik
 keyword: kelebihan dan kekurangan mobil listrik
 description: Kelebihan dan kekurangan mobil listrik untuk pemakaian harian di Indonesia: biaya energi, perawatan, charging, dan jarak tempuh. Baca sebelum membeli.
+answer: Mobil listrik cocok untuk Anda yang punya parkir tetap, jarak harian konsisten, dan bisa mengisi daya di rumah atau kantor. Kelebihannya biaya energi dan perawatan lebih rendah; kekurangannya harga awal lebih tinggi dan infrastruktur pengisian belum merata.
 date: 2026-10-15
 category: Panduan
 status: published
@@ -89,6 +90,18 @@ Langkah praktis sebelum membeli:
 3. Bandingkan total biaya kepemilikan, bukan hanya harga beli.
 4. Lakukan test drive untuk merasakan kenyamanan dan visibilitas.
 5. Minta simulasi cicilan agar tahu beban bulanan yang realistis.
+
+## Pertanyaan yang Sebaiknya Dijawab Sebelum Membeli
+
+Daftar kelebihan dan kekurangan baru berguna jika Anda mengaitkannya dengan kebiasaan sendiri. Coba jawab lima pertanyaan ini dengan jujur:
+
+1. Apakah Anda punya tempat parkir tetap yang memungkinkan pemasangan pengisi daya?
+2. Berapa jarak yang Anda tempuh dalam sehari, dan seberapa sering Anda bepergian jauh?
+3. Apakah rute perjalanan rutin Anda memiliki stasiun pengisian umum?
+4. Berapa anggaran awal dan seberapa penting penghematan biaya energi jangka panjang bagi Anda?
+5. Apakah ada kendaraan lain di rumah sebagai cadangan untuk perjalanan jauh?
+
+Jika sebagian besar jawabannya mendukung, mobil listrik kemungkinan cocok. Jika tidak, plug-in hybrid atau mencoba langsung lewat test drive bisa menjadi langkah awal yang lebih aman.
 
 ## FAQ
 

@@ -124,6 +124,14 @@ def check_page(f, seen):
         ok(len([h for h in p.h if h[0] == "h2"]) >= 3, "WARN", "minimal 3 subjudul H2")
         ok(len([l for l in internal if l.startswith("/byd-") or l == "/harga-byd/"]) >= 2, "WARN", "minimal 2 link internal ke model/harga")
         ok(any('"BlogPosting"' in b for b in p.ld), "WARN", "schema BlogPosting")
+        # AEO/GEO
+        raw = f.read_text(encoding="utf-8")
+        art = raw.split("<article", 1)[-1].split("</article>", 1)[0]
+        ok('class="ans"' in raw, "WARN", "AEO: kotak 'Jawaban singkat' di awal artikel (isi kolom Jawaban singkat)")
+        qh = [h for h in p.h if h[0] in ("h2", "h3") and re.search(r"^(apa|apakah|berapa|bagaimana|kenapa|mengapa|siapa|kapan|mana|dimana|di mana)\b|\?\s*$", h[1].strip().lower())]
+        ok(len(qh) >= 2, "WARN", f"AEO: minimal 2 subjudul berbentuk pertanyaan ({len(qh)})")
+        ok(any(t in art for t in ("<ul", "<ol", "<table")), "WARN", "AEO: ada daftar atau tabel (mudah dikutip AI)")
+        ok(any('"speakable"' in b for b in p.ld), "WARN", "AEO: schema speakable")
     return rel, res, p, False
 
 
@@ -153,6 +161,22 @@ def main():
                 base = l.split("#")[0].split("?")[0]
                 if base and base not in pages and not (DOCS / base.lstrip("/")).exists():
                     print(f"FAIL link rusak di {f.relative_to(DOCS)}: {l}"); fails += 1
+    # ---- AEO/GEO tingkat situs (saran, tidak menggagalkan)
+    print("AEO/GEO situs:")
+    site = []
+    rb = (DOCS / "robots.txt").read_text(encoding="utf-8") if (DOCS / "robots.txt").exists() else ""
+    site.append(("llms.txt tersedia", (DOCS / "llms.txt").exists()))
+    site.append(("robots.txt mengatur crawler AI (GPTBot/PerplexityBot/dll)", "GPTBot" in rb))
+    site.append(("halaman Tentang Kami (isi 'Tentang dealer' di Pengaturan Situs)", (DOCS / "tentang-kami/index.html").exists()))
+    home = (DOCS / "index.html").read_text(encoding="utf-8") if (DOCS / "index.html").exists() else ""
+    site.append(("schema AutoDealer punya sameAs", '"sameAs"' in home))
+    site.append(("schema AutoDealer punya telepon/alamat peta (geo atau hasMap)", '"geo"' in home or '"hasMap"' in home))
+    mods = [f for f in files if re.match(r"^byd-.*", f.parent.name)]
+    site.append((f"jawaban singkat di semua halaman model ({sum(1 for f in mods if 'class=\"ans\"' in f.read_text(encoding='utf-8'))}/{len(mods)})", all('class="ans"' in f.read_text(encoding="utf-8") for f in mods) if mods else True))
+    site.append(("testimoni customer tayang", (DOCS / "testimoni/index.html").exists()))
+    site.append(("serah terima customer tayang", (DOCS / "serah-terima/index.html").exists()))
+    for label, good in site:
+        print(f"  {'OK  ' if good else 'SARAN'} {label}")
     sm = (DOCS / "sitemap.xml").read_text(encoding="utf-8")
     n_sm = sm.count("<loc>")
     indexable = len([f for f in files if f.name != "404.html"])

@@ -42,7 +42,7 @@ DOMAIN = SITE["domain"].rstrip("/")
 PRICE_DATE = SITE.get("price_date") or NOW.date().isoformat()
 PRICE_LABEL = SITE.get("price_date_label", "")
 BULAN = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"]
-RESERVED = {"testimoni", "serah-terima", "blog", "admin", "assets", "img", "harga-byd", "test-drive", "feed.xml", "sitemap.xml", "robots.txt", "404.html"}
+RESERVED = {"tentang-kami", "llms.txt", "testimoni", "serah-terima", "blog", "admin", "assets", "img", "harga-byd", "test-drive", "feed.xml", "sitemap.xml", "robots.txt", "404.html"}
 
 ARTICLES = content.load_items("articles", "article")
 LANDING = content.load_items("pages", "page")
@@ -361,16 +361,28 @@ def socials():
 
 
 def dealer_ld():
-    d = {"@context": "https://schema.org", "@type": "AutoDealer", "@id": url("/#dealer"), "name": NAME, "url": url("/"),
-         "image": url("/assets/og-default.png"),
+    d = {"@context": "https://schema.org", "@type": "AutoDealer", "@id": url("/#dealer"), "name": NAME, "legalName": SITE.get("legal_name") or NAME, "url": url("/"),
+         "image": url("/assets/og-default.png"), "logo": url("/assets/og-default.png"),
          "description": "Dealer mobil listrik BYD: konsultasi, simulasi kredit, dan booking test drive.",
-         "brand": {"@type": "Brand", "name": "BYD"}, "areaServed": "ID",
+         "brand": {"@type": "Brand", "name": "BYD"}, "areaServed": "ID", "knowsAbout": ["mobil listrik BYD", "harga OTR mobil listrik", "kredit mobil listrik", "test drive BYD"],
          "address": {"@type": "PostalAddress", "streetAddress": SITE["address"], "addressLocality": SITE["city"],
                      "addressRegion": SITE["region"], "postalCode": SITE["postal"], "addressCountry": "ID"},
          "openingHours": SITE.get("hours_schema", "Mo-Sa 09:00-18:00")}
     if SITE["wa_number"] != "6281234567890":
         d["telephone"] = "+" + SITE["wa_number"]
+        d["contactPoint"] = {"@type": "ContactPoint", "telephone": "+" + SITE["wa_number"], "contactType": "sales", "availableLanguage": "id", "areaServed": "ID"}
+    try:
+        if SITE.get("lat") and SITE.get("lng"):
+            d["geo"] = {"@type": "GeoCoordinates", "latitude": float(SITE["lat"]), "longitude": float(SITE["lng"])}
+    except (TypeError, ValueError):
+        WARN.append("Latitude/longitude di Pengaturan harus angka (contoh -6.2088)")
+    if re.match(r"https?://", SITE.get("maps_url", "") or ""):
+        d["hasMap"] = SITE["maps_url"]
+    if SITE.get("founded"):
+        d["foundingDate"] = str(SITE["founded"])
     sa = [u for _, u in socials()]
+    if re.match(r"https?://", SITE.get("gbp_url", "") or ""):
+        sa.append(SITE["gbp_url"])
     if sa:
         d["sameAs"] = sa
     return d
@@ -415,6 +427,8 @@ def header():
 
 def social_links():
     o = ""
+    if about_ok():
+        o += '<li><a href="/tentang-kami/">Tentang kami</a></li>'
     if testi_items():
         o += '<li><a href="/testimoni/">Testimoni customer</a></li>'
     if hand_items():
@@ -752,6 +766,48 @@ def build_social_pages():
                    HAND.get("title") or "Serah Terima Unit BYD", HAND.get("description") or "", "Serah Terima", ld, lm)
 
 
+# ------------------------------------------------------------------ AEO: JAWABAN SINGKAT
+SPEAK = {"@type": "SpeakableSpecification", "cssSelector": ["h1", ".ans"]}
+
+
+def ans_box(text_html, updated=None):
+    if not text_html:
+        return ""
+    up = f'<small>Diperbarui {tgl(updated)}</small>' if updated else ""
+    return f'<div class="ans" role="note"><strong>Jawaban singkat</strong><p>{text_html}</p>{up}</div>'
+
+
+def model_answer(m):
+    if (m.get("answer") or "").strip():
+        return md.inline(m["answer"].strip())
+    if not m.get("variants"):
+        return ""
+    lo = min(v["price"] for v in m["variants"])
+    r = range_info(m)
+    parts = [f'{esc(m["name"])} dijual mulai {esc(juta(lo))} OTR Jakarta ({esc(PRICE_LABEL)})']
+    tp = m["type"].strip()
+    tp = tp if tp.split()[0].isupper() else tp[:1].lower() + tp[1:]
+    parts[0] += f' dan berupa {esc(tp)}'
+    if r:
+        parts[0] += f', dengan jarak tempuh {"hingga " if not r[3] else ""}{r[0]} km{" mode listrik" if r[3] else ""}'
+    parts[0] += "."
+    if len(m["variants"]) > 1:
+        parts.append(f'Tersedia {len(m["variants"])} varian: {esc(", ".join(v["name"] for v in m["variants"]))}.')
+    return " ".join(parts)
+
+
+def prices_answer():
+    pm = [m for m in MODELS if m.get("variants")]
+    if not pm:
+        return ""
+    lo = min(pm, key=lambda m: min(v["price"] for v in m["variants"]))
+    hi = max(pm, key=lambda m: max(v["price"] for v in m["variants"]))
+    nv = sum(len(m["variants"]) for m in pm)
+    return (f'Harga mobil listrik BYD mulai {esc(juta(min(v["price"] for v in lo["variants"])))} ({esc(lo["name"])}) hingga '
+            f'{esc(juta(max(v["price"] for v in hi["variants"])))} ({esc(hi["name"])}), harga OTR Jakarta {esc(PRICE_LABEL)}. '
+            f'Tersedia {len(pm)} model dan {nv} varian di {esc(NAME)}.')
+
+
 def range_info(m):
     """(km, label, pct, hybrid) dari variants[].range_km; PHEV memakai jarak mode listrik."""
     best = 0
@@ -844,6 +900,88 @@ def build_home():
 
 
 # ------------------------------------------------------------------ MODEL
+# ------------------------------------------------------------------ TENTANG KAMI (E-E-A-T) + llms.txt + robots
+def about_ok():
+    return len((SITE.get("about_text") or "").strip()) >= 80
+
+
+def build_about():
+    if not about_ok():
+        return
+    path = "/tentang-kami/"
+    crumb_items = [("Beranda", "/"), ("Tentang Kami", path)]
+    paras = "".join(f"<p>{md.inline(x.strip())}</p>" for x in SITE["about_text"].strip().split("\n\n") if x.strip())
+    maps = f'<tr><th>Peta</th><td><a href="{esc(SITE["maps_url"])}" rel="noopener">Buka di Google Maps</a></td></tr>' if re.match(r"https?://", SITE.get("maps_url", "") or "") else ""
+    gbp = f'<tr><th>Google Business Profile</th><td><a href="{esc(SITE["gbp_url"])}" rel="noopener me">Lihat profil dan ulasan Google</a></td></tr>' if re.match(r"https?://", SITE.get("gbp_url", "") or "") else ""
+    tel = f'<tr><th>WhatsApp</th><td><a href="{wa_url()}" data-wa="about" rel="noopener">{esc(SITE["phone_display"])}</a></td></tr>'
+    table = (f'<div class="tw"><table><tbody><tr><th>Nama</th><td>{esc(NAME)}</td></tr><tr><th>Badan usaha</th><td>{esc(SITE.get("legal_name") or NAME)}</td></tr>'
+             f'<tr><th>Alamat</th><td>{esc(SITE["address"])}, {esc(SITE["city"])}, {esc(SITE["region"])} {esc(SITE["postal"])}</td></tr>'
+             f'<tr><th>Jam operasional</th><td>{esc(SITE["hours"])}</td></tr>{tel}<tr><th>Merek</th><td>BYD</td></tr>{maps}{gbp}</tbody></table></div>')
+    edit = (f'<h2>Cara Kami Menyusun Harga dan Konten</h2><p>Harga OTR dan varian bersumber dari price list dealer dan terakhir diperbarui {esc(tgl(PRICE_DATE))}. '
+            f'Perbandingan dengan merek lain memakai data yang dipublikasikan produsen atau media otomotif, dan selalu dicantumkan sumber serta tanggalnya. '
+            f'Harga dapat berbeda antar daerah dan berubah tanpa pemberitahuan, sehingga angka final dikonfirmasi oleh sales. '
+            f'Menemukan data yang keliru? Beri tahu kami lewat <a href="{wa_url("Halo, saya ingin melaporkan koreksi data di website")}" data-wa="about-koreksi" rel="noopener">WhatsApp</a> dan kami perbaiki.</p>')
+    team = f'<h2>Tim Penulis</h2><p>Konten ditulis oleh {esc(SITE.get("author_name") or NAME)} ({esc(SITE.get("author_role", ""))}).</p>'
+    body = (f'<section class="sub"><div class="wrap">{crumbs(crumb_items)}<h1>Tentang {esc(NAME)}</h1><p>{esc(SITE.get("tagline", ""))}</p></div></section>'
+            f'<section class="s"><div class="wrap art">{paras}<h2>Data Dealer</h2>{table}{team}{edit}</div></section>' + lead_section(alt=True))
+    ld = [breadcrumb_ld(crumb_items), {"@context": "https://schema.org", "@type": "AboutPage", "name": f"Tentang {NAME}", "url": url(path), "inLanguage": "id-ID",
+                                       "about": {"@id": url("/#dealer")}, "mainEntity": {"@id": url("/#dealer")}}, dealer_ld()]
+    add(path, page(f"Tentang {NAME}: Dealer Mobil Listrik BYD", f"Profil {NAME}: alamat, jam operasional, kontak, dan cara kami menyusun harga serta konten mobil listrik BYD.", path, body, ld), PRICE_DATE)
+
+
+AI_SEARCH = ["OAI-SearchBot", "ChatGPT-User", "PerplexityBot", "Claude-SearchBot", "Claude-User"]
+AI_TRAIN = ["GPTBot", "ClaudeBot", "Google-Extended", "Applebot-Extended", "CCBot", "Bytespider"]
+
+
+def robots_txt():
+    mode = (SITE.get("ai_crawlers") or "allow").strip().lower()
+    out = ["User-agent: *", "Allow: /", ""]
+    if mode == "allow":
+        out += ["# Crawler AI diizinkan agar konten bisa dikutip di jawaban AI (AEO/GEO)"]
+        for b in AI_SEARCH + AI_TRAIN:
+            out += [f"User-agent: {b}", "Allow: /", ""]
+    elif mode == "search_only":
+        out += ["# AI untuk pencarian/jawaban diizinkan, pelatihan model diblokir"]
+        for b in AI_SEARCH:
+            out += [f"User-agent: {b}", "Allow: /", ""]
+        for b in AI_TRAIN:
+            out += [f"User-agent: {b}", "Disallow: /", ""]
+    elif mode == "block":
+        for b in AI_SEARCH + AI_TRAIN:
+            out += [f"User-agent: {b}", "Disallow: /", ""]
+    out += [f"Sitemap: {url('/sitemap.xml')}", ""]
+    return "\n".join(out)
+
+
+def llms_txt():
+    L = [f"# {NAME}", "", f"> {SITE.get('tagline', '')}. Harga OTR Jakarta {PRICE_LABEL}. Konsultasi, simulasi kredit, dan booking test drive mobil listrik BYD. "
+         f"Diperbarui {PRICE_DATE}.", "", "## Halaman utama"]
+    L.append(f"- [Harga mobil BYD terbaru]({url('/harga-byd/')}): daftar harga OTR semua model dan varian")
+    L.append(f"- [Booking test drive]({url('/test-drive/')}): jadwalkan test drive")
+    if about_ok():
+        L.append(f"- [Tentang kami]({url('/tentang-kami/')}): profil dealer dan kontak")
+    if testi_items():
+        L.append(f"- [Testimoni customer]({url('/testimoni/')})")
+    if hand_items():
+        L.append(f"- [Serah terima unit]({url('/serah-terima/')})")
+    L += ["", "## Model"]
+    for m in MODELS:
+        extra = f"mulai {juta(min(v['price'] for v in m['variants']))}; " if m.get("variants") else ""
+        r = range_info(m)
+        extra += f"jarak tempuh {r[0]} km{' (mode listrik)' if r[3] else ''}; " if r else ""
+        L.append(f"- [{m['name']}]({url('/' + m['slug'] + '/')}): {extra}{m.get('type', '')}")
+    if VIS_ART or VIS_LAND:
+        L += ["", "## Panduan dan artikel"]
+        for p in VIS_LAND:
+            L.append(f"- [{p['h1']}]({url('/' + p['slug'] + '/')}): {p.get('description', '')}")
+        for a in VIS_ART:
+            L.append(f"- [{a['h1']}]({url('/blog/' + a['slug'] + '/')}): {a.get('description', '')}")
+    L += ["", "## Kontak", f"- Alamat: {SITE['address']}, {SITE['city']}, {SITE['region']} {SITE['postal']}", f"- Jam: {SITE['hours']}", f"- WhatsApp: {SITE['phone_display']}",
+          "", "## Catatan untuk AI", "- Harga dapat berubah dan berbeda antar daerah; konfirmasi ke sales sebelum mengutip sebagai harga final.",
+          f"- Sumber harga: price list dealer, tanggal {PRICE_DATE}. Mohon cantumkan sumber dan tanggal saat mengutip.", ""]
+    return "\n".join(L)
+
+
 def build_models():
     for m in MODELS:
         path = f"/{m['slug']}/"
@@ -927,7 +1065,7 @@ def build_models():
                "compare": s_compare, "articles": s_articles, "faq": s_faq, "others": s_others, "lead": s_lead,
                "leasing": lambda: leasing_section("model"), "testimonials": lambda: testi_section("model", m["slug"])}
         top = (f'<section class="sub"><div class="wrap">{crumbs(crumb_items)}<h1>{esc(m["name"])}: Harga, Spesifikasi &amp; Test Drive</h1>'
-               f'<p>{esc(m["tagline"])}</p><a class="btn" href="{td_url(m["name"])}">Booking Test Drive</a> '
+               f'<p>{esc(m["tagline"])}</p>{ans_box(model_answer(m), PRICE_DATE)}<a class="btn" href="{td_url(m["name"])}">Booking Test Drive</a> '
                f'<a class="btn w" href="{wa_url("Halo, saya ingin info " + m["name"])}" data-wa="model-{m["slug"]}" rel="noopener">{WA_ICON} Tanya via WhatsApp</a></div></section>')
         body = top + "".join(reg[i]() for i in sections_order("model", reg))
         schema = [breadcrumb_ld(crumb_items)]
@@ -942,6 +1080,8 @@ def build_models():
             car["offers"] = {"@type": "AggregateOffer", "priceCurrency": "IDR", "lowPrice": min(ps), "highPrice": max(ps), "offerCount": len(ps),
                              "seller": {"@id": url("/#dealer")}}
         schema.append(car)
+        schema.append({"@context": "https://schema.org", "@type": "WebPage", "name": title, "url": url(path), "inLanguage": "id-ID", "dateModified": PRICE_DATE,
+                       "isPartOf": {"@id": url("/#dealer")}, "about": {"@type": "Car", "name": m["name"]}, "speakable": SPEAK})
         ogi = images.og_url(imgs[0]["src"]) if imgs else None
         add(path, page(title, desc, path, body, schema, og_image=ogi), PRICE_DATE)
 
@@ -958,7 +1098,7 @@ def build_prices():
             for v in m.get("variants", []):
                 rows += (f'<tr><td><a href="/{m["slug"]}/">{esc(m["name"])}</a></td><td>{esc(v["name"])}</td><td>{juta(v["price"])}</td>'
                          f'<td>{dash(range_text(v))}</td></tr>')
-        return (f'<section class="s"><div class="wrap art"><p>{esc(fmt(p["intro"]))}</p><div class="tw"><table><thead><tr><th>Model</th><th>Varian</th>'
+        return (f'<section class="s"><div class="wrap art">{ans_box(prices_answer(), PRICE_DATE)}<p>{esc(fmt(p["intro"]))}</p><div class="tw"><table><thead><tr><th>Model</th><th>Varian</th>'
                 f'<th>Harga OTR Jakarta</th><th>Jarak tempuh</th></tr></thead><tbody>{rows}</tbody></table></div>'
                 f'<p class="note">Harga dapat berubah tanpa pemberitahuan dan berbeda antar daerah. Konfirmasi ke sales {esc(NAME)}. Jarak tempuh sesuai price list dealer atau standar yang tertera.</p></div></section>')
 
@@ -1040,13 +1180,13 @@ def build_article(a):
     body = (f'<section class="sub"><div class="wrap">{crumbs(crumb_items)}<h1>{esc(a["h1"])}</h1>'
             f'<p class="meta">{esc(a["category"])} · Diterbitkan {tgl(a["date"])}'
             + (f' · Diperbarui {tgl(a["updated"])}' if a["updated"] != a["date"] else "") + f' · {max(1, round(wc / 200))} menit baca</p>{pill}</div></section>'
-            f'<article class="s"><div class="wrap art">{cover}{toc_html(heads) if la.get("toc", True) else ""}{body_html}{faq_block}'
+            f'<article class="s"><div class="wrap art">{ans_box(md.inline(a["answer"].strip()) if a.get("answer", "").strip() else "")}{cover}{toc_html(heads) if la.get("toc", True) else ""}{body_html}{faq_block}'
             f'{model_box(a) if la.get("model_box", True) else ""}{auth}{cta_box(MBY[a["models"][0]]["name"] if a["models"] and a["models"][0] in MBY else "")}</div></article>{rel}')
     ogi = images.og_url(a["cover"]) if a["cover"] else None
     art_ld = {"@context": "https://schema.org", "@type": "BlogPosting", "headline": a["h1"][:110], "description": a["description"],
               "datePublished": a["dt"].isoformat(), "dateModified": a["updated"], "inLanguage": "id-ID", "mainEntityOfPage": url(path),
               "image": url(ogi or "/assets/og-default.png"), "wordCount": wc, "articleSection": a["category"],
-              "keywords": ", ".join([a["keyword"]] + a["secondary"]), "author": author_ld(a),
+              "keywords": ", ".join([a["keyword"]] + a["secondary"]), "author": author_ld(a), "speakable": SPEAK,
               "publisher": {"@type": "Organization", "name": NAME, "url": url("/")}}
     schema = [breadcrumb_ld(crumb_items), art_ld] + ([faq_ld(faqs)] if faqs else [])
     extra = f'<meta property="article:published_time" content="{a["dt"].isoformat()}"><meta property="article:modified_time" content="{a["updated"]}">'
@@ -1062,9 +1202,9 @@ def build_landing(p):
     sup_html = (f'<section class="s alt"><div class="wrap"><h2>Artikel Pendukung</h2><div class="grid">{"".join(article_card(a) for a in sup)}</div></div></section>') if sup else ""
     faq_block = f'<h2 id="faq">FAQ</h2>{faq_html(faqs)}' if faqs else ""
     body = (f'<section class="sub"><div class="wrap">{crumbs(crumb_items)}<h1>{esc(p["h1"])}</h1><p class="meta">Diperbarui {tgl(p["updated"])}</p></div></section>'
-            f'<article class="s"><div class="wrap art">{toc_html(heads)}{body_html}{faq_block}{cta_box()}</div></article>{sup_html}{lead_section(alt=False)}')
+            f'<article class="s"><div class="wrap art">{ans_box(md.inline(p["answer"].strip()) if p.get("answer", "").strip() else "")}{toc_html(heads)}{body_html}{faq_block}{cta_box()}</div></article>{sup_html}{lead_section(alt=False)}')
     wp = {"@context": "https://schema.org", "@type": "CollectionPage" if sup else "WebPage", "name": p["h1"], "url": url(path),
-          "description": p["description"], "inLanguage": "id-ID", "dateModified": p["updated"]}
+          "description": p["description"], "inLanguage": "id-ID", "dateModified": p["updated"], "speakable": SPEAK}
     schema = [breadcrumb_ld(crumb_items), wp] + ([faq_ld(faqs)] if faqs else [])
     add(path, page(p["title"], p["description"], path, body, schema), p["updated"])
     p["_words"], p["_path"] = words(body_html), path
@@ -1169,7 +1309,8 @@ def finalize():
         return "".join(f"<image:image><image:loc>{esc(u)}</image:loc><image:caption>{esc(c)}</image:caption></image:image>" for u, c in PAGE_IMAGES.get(p, []))
     urls = "".join(f"<url><loc>{url(p)}</loc><lastmod>{lm}</lastmod>{_im(p)}</url>" for p, _, lm, idx in OUT_PAGES if idx)
     (OUT / "sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">' + urls + "</urlset>", encoding="utf-8")
-    (OUT / "robots.txt").write_text(f"User-agent: *\nAllow: /\n\nSitemap: {url('/sitemap.xml')}\n", encoding="utf-8")
+    (OUT / "robots.txt").write_text(robots_txt(), encoding="utf-8")
+    (OUT / "llms.txt").write_text(llms_txt(), encoding="utf-8")
     (OUT / ".nojekyll").write_text("")
     write_feed()
     if "DOMAIN-ANDA" not in DOMAIN:
@@ -1227,7 +1368,7 @@ def validate():
 def main():
     validate()
     write_all()
-    build_home(); build_models(); build_prices(); build_testdrive(); build_social_pages()
+    build_home(); build_models(); build_prices(); build_testdrive(); build_social_pages(); build_about()
     for a in VIS_ART:
         build_article(a)
     for p in VIS_LAND:

@@ -4,6 +4,7 @@ h1: Biaya Charging Mobil Listrik di Rumah: Cara Menghitungnya dengan Mudah
 slug: biaya-charging-mobil-listrik-di-rumah
 keyword: biaya charging mobil listrik di rumah
 description: Hitung biaya charging mobil listrik di rumah dengan rumus sederhana, contoh BYD Dolphin, tips menekan tagihan, dan syarat daya listrik yang aman.
+answer: Ongkos mengisi daya mobil listrik di rumah dihitung dengan rumus kWh yang diisi × tarif listrik per kWh. Sebagai ilustrasi, BYD Dolphin (baterai 55,4 kWh) pada tarif Rp1.445 per kWh sekitar Rp80 ribu untuk isi penuh teoritis, atau sekitar Rp88 ribu dengan cadangan rugi pengisian 10 persen.
 date: 2026-10-15
 category: Panduan
 status: published
@@ -71,6 +72,17 @@ Pengisian di rumah paling nyaman jika mobil parkir tetap di dekat sumber listrik
 ## Perbandingan dengan Pengisian di Stasiun Umum
 
 Pengisian cepat di stasiun umum sangat berguna saat bepergian jauh, tetapi tarifnya umumnya lebih tinggi dari tarif listrik rumah. Strategi yang sering dipakai pengguna: isi di rumah untuk rutinitas harian dan gunakan stasiun umum hanya saat perjalanan jauh atau keadaan mendesak.
+
+## Kesalahan Umum Saat Menghitung Biaya Charging
+
+Ada beberapa hal yang sering membuat hitungan meleset dari tagihan sebenarnya, dan semuanya mudah dihindari jika Anda tahu sebelumnya:
+
+- **Memakai kapasitas baterai penuh sebagai patokan.** Pengguna harian jarang mengisi dari kosong ke penuh, sehingga biaya sekali isi biasanya jauh lebih kecil dari hitungan teoritis.
+- **Mengabaikan golongan tarif.** Tarif per kWh bergantung pada golongan daya dan ketentuan PLN yang berlaku. Selalu cek angka di tagihan Anda, bukan angka rata-rata dari internet.
+- **Lupa menghitung beban rumah lain.** Mengisi daya sambil menyalakan AC, pemanas air, dan alat berdaya besar lain dapat menaikkan beban dan tagihan secara bersamaan.
+- **Menyamakan pengisian di rumah dengan stasiun umum.** Tarif stasiun pengisian umum, terutama pengisian cepat, ditetapkan operatornya dan bisa berbeda dari tarif listrik rumah.
+
+Dengan menghindari empat hal ini, estimasi Anda akan jauh lebih dekat dengan kenyataan. Jika ragu, mulailah dengan mencatat berapa kWh yang terpakai selama sebulan pertama, lalu sesuaikan rumus di atas dengan data Anda sendiri. Catatan sederhana di ponsel sudah cukup: tanggal pengisian, persentase baterai sebelum dan sesudah, serta angka kWh pada meteran bila tersedia. Setelah dua atau tiga pekan, Anda akan melihat pola pemakaian yang jauh lebih akurat daripada estimasi mana pun.
 
 ## Pilih Mobil Listrik Sesuai Kebutuhan
 

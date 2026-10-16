@@ -72,6 +72,7 @@ def load_items(folder, kind):
             "tier": meta.get("tier", "easy"),
             "intent": meta.get("intent", "info"),
             "description": meta.get("description", ""),
+            "answer": meta.get("answer", ""),
             "date": dt.date().isoformat(),
             "updated": (parse_dt(meta.get("updated", "")) or dt).date().isoformat(),
             "publish_at": meta.get("publish_at", ""),

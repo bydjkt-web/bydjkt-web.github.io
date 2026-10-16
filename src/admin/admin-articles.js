@@ -2,7 +2,7 @@
 (function (root) {
   "use strict";
   var A = root.A, h = A.h;
-  var KEYS = ["title", "h1", "slug", "keyword", "secondary", "tier", "intent", "description", "date", "updated", "publish_at", "status", "category", "cover", "cover_alt", "author", "models", "placements", "pillar", "in_footer"];
+  var KEYS = ["title", "h1", "slug", "keyword", "secondary", "tier", "intent", "description", "answer", "date", "updated", "publish_at", "status", "category", "cover", "cover_alt", "author", "models", "placements", "pillar", "in_footer"];
   var FM = /^---\n([\s\S]*?)\n---\n?([\s\S]*)$/;
 
   A.parseFM = function (text) {
@@ -40,7 +40,7 @@
   };
   A.seoOf = function (meta, body, kind) {
     return SEO.check({ kind: kind === "pages" ? "page" : "article", title: meta.title, h1: meta.h1 || meta.title, slug: meta.slug, keyword: meta.keyword, description: meta.description,
-      body: body, cover: meta.cover, cover_alt: meta.cover_alt, tier: meta.tier, models: (meta.models || "").split(",").filter(Boolean) }, A.S.rules);
+      body: body, cover: meta.cover, cover_alt: meta.cover_alt, answer: meta.answer, tier: meta.tier, models: (meta.models || "").split(",").filter(Boolean) }, A.S.rules);
   };
 
   function listScreen(folder, label, kind) {
@@ -110,6 +110,7 @@
       var slugTouched = rest !== "baru";
       card1.appendChild(tf("slug", "Slug URL", { hint: "Huruf kecil & tanda hubung; memuat keyword. Jangan diubah setelah tayang." }));
       card1.appendChild(tf("description", "Meta description (70–160 karakter)", { area: true }));
+      card1.appendChild(tf("answer", "Jawaban singkat untuk AEO/GEO (20–70 kata)", { area: true, hint: "Tampil sebagai kotak di awal halaman. Jawab pertanyaan utama langsung, lengkap dengan angka dan tanggal bila ada." }));
       card1.appendChild(tf("secondary", "Keyword pendukung (pisahkan dengan titik koma)"));
       card1.appendChild(h("div", { class: "grid2" }, [sel("tier", "Tier keyword", [["hard", "Hard (kompetitif)"], ["medium", "Medium"], ["easy", "Easy"]]), sel("intent", "Intent", ["komersial", "informasional", "transaksional", "navigasional"])]));
       left.appendChild(card1);

@@ -4,6 +4,7 @@ h1: Mobil Listrik 300 Jutaan: Perbandingan BYD M6 DM-i, Wuling Binguo, dan Aion 
 slug: mobil-listrik-300-jutaan
 keyword: mobil listrik 300 jutaan
 description: Mobil listrik 300 jutaan 2026: bandingkan BYD M6 DM-i, Wuling Binguo EV Lite, dan Aion UT dari harga, baterai, dan jarak tempuh sebelum membeli.
+answer: Jika butuh tujuh kursi dan bensin sebagai cadangan, BYD M6 DM-i berbeda format dari pilihan lain; untuk hatchback listrik murni, Binguo dan Aion UT sebanding. Karena tipenya berbeda, pilih berdasarkan kebutuhan, bukan siapa yang menang.
 date: 2026-10-15
 updated: 2026-10-15
 status: draft

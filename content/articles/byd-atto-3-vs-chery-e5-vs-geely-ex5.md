@@ -4,6 +4,7 @@ h1: BYD Atto 3 vs Chery E5 vs Geely EX5: Perbandingan SUV Listrik Rp400 Jutaan
 slug: byd-atto-3-vs-chery-e5-vs-geely-ex5
 keyword: byd atto 3 vs chery e5
 description: BYD Atto 3 vs Chery E5 dan Geely EX5: bandingkan harga, baterai, tenaga, dan jarak tempuh SUV listrik Rp400 jutaan sebelum memilih.
+answer: Atto 3 unggul pada harga dan paket bantuan berkendara menurut price list dealer. Chery E5 menawarkan baterai lebih besar dengan klaim WLTP 430 km, sedangkan Geely EX5 berada di harga lebih tinggi dengan klaim 495 km. Pilihan terbaik tergantung prioritas Anda.
 date: 2026-10-15
 updated: 2026-10-15
 status: draft

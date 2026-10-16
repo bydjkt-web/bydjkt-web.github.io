@@ -4,6 +4,7 @@ h1: BYD Atto 1 vs Geely EX2 vs Changan Lumin: Perbandingan Mobil Listrik Rp200 J
 slug: byd-atto-1-vs-geely-ex2-vs-changan-lumin
 keyword: byd atto 1 vs geely ex2
 description: BYD Atto 1 vs Geely EX2 dan Changan Lumin: bandingkan harga, baterai, jarak tempuh, dan ukuran kabin untuk memilih mobil listrik Rp200 jutaan.
+answer: Jika butuh kabin lima penumpang dan harga terendah di kelas hatchback, Atto 1 dan Geely EX2 layak dibandingkan langsung. Untuk satu sampai dua orang di dalam kota, Changan Lumin bisa memadai. Tidak ada pemenang mutlak: semuanya bergantung pada jarak harian, penumpang, dan anggaran.
 date: 2026-10-15
 updated: 2026-10-15
 status: draft
