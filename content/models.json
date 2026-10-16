@@ -10,16 +10,33 @@
     "powertrain": "BEV",
     "keyword": "BYD Atto 1",
     "tagline": "Mobil listrik paling terjangkau di jajaran BYD, mulai Rp199 juta OTR Jakarta.",
-    "images": [],
+    "images": [
+      {
+        "src": "/img/214400.webp",
+        "alt": "Atto 1 Premium"
+      }
+    ],
     "intro": [
       "BYD Atto 1 adalah pintu masuk paling terjangkau ke dunia mobil listrik BYD. Formatnya hatchback compact yang mudah diparkir dan lincah di jalan kota, sehingga cocok untuk mobilitas harian di area perkotaan.",
       "Tersedia tiga varian dengan jarak tempuh 300 km (Standard dan Dynamic) hingga 380 km (Premium) menurut price list dealer. Hubungi sales kami untuk membandingkan varian secara langsung, lengkap dengan simulasi cicilan."
     ],
     "highlights": [
-      { "title": "Harga paling terjangkau di lineup BYD", "text": "Mulai Rp199 juta OTR Jakarta untuk varian Standard, sesuai price list dealer." },
-      { "title": "Jarak tempuh 300–380 km", "text": "Varian Standard dan Dynamic hingga 300 km, varian Premium hingga 380 km (angka sesuai price list dealer)." },
-      { "title": "Dua pilihan baterai", "text": "Baterai 30,08 kWh pada varian Standard dan 38,88 kWh pada varian Premium." },
-      { "title": "Ringkas untuk dalam kota", "text": "Format hatchback compact yang mudah dimanuver dan diparkir di area padat." }
+      {
+        "title": "Harga paling terjangkau di lineup BYD",
+        "text": "Mulai Rp199 juta OTR Jakarta untuk varian Standard, sesuai price list dealer."
+      },
+      {
+        "title": "Jarak tempuh 300–380 km",
+        "text": "Varian Standard dan Dynamic hingga 300 km, varian Premium hingga 380 km (angka sesuai price list dealer)."
+      },
+      {
+        "title": "Dua pilihan baterai",
+        "text": "Baterai 30,08 kWh pada varian Standard dan 38,88 kWh pada varian Premium."
+      },
+      {
+        "title": "Ringkas untuk dalam kota",
+        "text": "Format hatchback compact yang mudah dimanuver dan diparkir di area padat."
+      }
     ],
     "best_for": [
       "Pengguna yang baru beralih ke mobil listrik",
@@ -28,22 +45,77 @@
       "Anda yang mencari mobil listrik dengan anggaran sekitar Rp200 jutaan"
     ],
     "specs": [
-      { "label": "Segmen", "value": "Hatchback listrik compact" },
-      { "label": "Baterai", "value": "30,08 kWh (Standard), 38,88 kWh (Premium). Untuk Dynamic, tanyakan sales." },
-      { "label": "Jarak tempuh", "value": "300 km (Standard, Dynamic), 380 km (Premium), sesuai price list dealer" },
-      { "label": "Daya dan torsi", "value": "74 hp, torsi 135 Nm" }
+      {
+        "label": "Segmen",
+        "value": "Hatchback listrik compact"
+      },
+      {
+        "label": "Baterai",
+        "value": "30,08 kWh (Standard), 38,88 kWh (Premium). Untuk Dynamic, tanyakan sales."
+      },
+      {
+        "label": "Jarak tempuh",
+        "value": "300 km (Standard, Dynamic), 380 km (Premium), sesuai price list dealer"
+      },
+      {
+        "label": "Daya dan torsi",
+        "value": "74 hp, torsi 135 Nm"
+      }
     ],
     "variants": [
-      { "name": "Standard", "price": 199000000, "range_km": "300", "range_std": "price list dealer", "battery": "30,08 kWh", "power": "74 hp", "seats": "", "note": "", "verify": false },
-      { "name": "Dynamic", "price": 210000000, "range_km": "300", "range_std": "price list dealer", "battery": "", "power": "74 hp", "seats": "", "note": "", "verify": false },
-      { "name": "Premium", "price": 245000000, "range_km": "380", "range_std": "price list dealer", "battery": "38,88 kWh", "power": "74 hp", "seats": "", "note": "", "verify": false }
+      {
+        "name": "Standard",
+        "price": 199000000,
+        "range_km": "300",
+        "range_std": "price list dealer",
+        "battery": "30,08 kWh",
+        "power": "74 hp",
+        "seats": "",
+        "note": "",
+        "verify": false
+      },
+      {
+        "name": "Dynamic",
+        "price": 210000000,
+        "range_km": "300",
+        "range_std": "price list dealer",
+        "battery": "",
+        "power": "74 hp",
+        "seats": "",
+        "note": "",
+        "verify": false
+      },
+      {
+        "name": "Premium",
+        "price": 245000000,
+        "range_km": "380",
+        "range_std": "price list dealer",
+        "battery": "38,88 kWh",
+        "power": "74 hp",
+        "seats": "",
+        "note": "",
+        "verify": false
+      }
     ],
     "compare_variant": "Premium",
-    "compare": ["geely-ex2-pro", "geely-ex2-max", "changan-lumin"],
+    "compare": [
+      "geely-ex2-pro",
+      "geely-ex2-max",
+      "changan-lumin"
+    ],
     "faq": [
-      { "q": "Berapa harga BYD Atto 1?", "a": "Berdasarkan price list dealer, harga OTR Jakarta BYD Atto 1 adalah Rp199 juta (Standard), Rp210 juta (Dynamic), dan Rp245 juta (Premium). Harga dapat berubah, konfirmasi ke sales kami." },
-      { "q": "Berapa jarak tempuh BYD Atto 1?", "a": "Price list dealer mencantumkan jarak tempuh 300 km untuk varian Standard dan Dynamic, serta 380 km untuk varian Premium. Jarak tempuh nyata dipengaruhi gaya berkendara, kondisi jalan, dan penggunaan AC." },
-      { "q": "Apakah BYD Atto 1 bisa dibeli secara kredit?", "a": "Bisa. Kami membantu simulasi cicilan dan pengajuan pembiayaan. Isi form di halaman ini untuk mendapat simulasi sesuai uang muka dan tenor yang Anda inginkan." }
+      {
+        "q": "Berapa harga BYD Atto 1?",
+        "a": "Berdasarkan price list dealer, harga OTR Jakarta BYD Atto 1 adalah Rp199 juta (Standard), Rp210 juta (Dynamic), dan Rp245 juta (Premium). Harga dapat berubah, konfirmasi ke sales kami."
+      },
+      {
+        "q": "Berapa jarak tempuh BYD Atto 1?",
+        "a": "Price list dealer mencantumkan jarak tempuh 300 km untuk varian Standard dan Dynamic, serta 380 km untuk varian Premium. Jarak tempuh nyata dipengaruhi gaya berkendara, kondisi jalan, dan penggunaan AC."
+      },
+      {
+        "q": "Apakah BYD Atto 1 bisa dibeli secara kredit?",
+        "a": "Bisa. Kami membantu simulasi cicilan dan pengajuan pembiayaan. Isi form di halaman ini untuk mendapat simulasi sesuai uang muka dan tenor yang Anda inginkan."
+      }
     ]
   },
   {
@@ -63,10 +135,22 @@
       "Tersedia dua keluarga varian: Classic (baterai lebih kecil, harga lebih terjangkau) dan Cross (baterai lebih besar, jarak tempuh listrik lebih panjang, fitur lebih lengkap). Varian Captain Seat memiliki 6 kursi."
     ],
     "highlights": [
-      { "title": "Plug-in hybrid: listrik plus bensin", "text": "Mesin bensin 1.5 L menemani motor listrik sehingga tidak bergantung pada ketersediaan stasiun pengisian." },
-      { "title": "Jarak tempuh listrik hingga 110 km", "text": "Varian Cross berbaterai 18,3 kWh dengan jarak tempuh listrik hingga 110 km. Varian Classic berbaterai 7,4 kWh dengan jarak tempuh listrik hingga 40 km." },
-      { "title": "Harga mulai Rp298 juta", "text": "Varian Classic Standard Rp298 juta OTR Jakarta, sesuai price list dealer." },
-      { "title": "Kabin 6 atau 7 kursi", "text": "Varian Captain Seat berkursi 6 dengan kursi kapten di baris kedua, varian lain 7 kursi." }
+      {
+        "title": "Plug-in hybrid: listrik plus bensin",
+        "text": "Mesin bensin 1.5 L menemani motor listrik sehingga tidak bergantung pada ketersediaan stasiun pengisian."
+      },
+      {
+        "title": "Jarak tempuh listrik hingga 110 km",
+        "text": "Varian Cross berbaterai 18,3 kWh dengan jarak tempuh listrik hingga 110 km. Varian Classic berbaterai 7,4 kWh dengan jarak tempuh listrik hingga 40 km."
+      },
+      {
+        "title": "Harga mulai Rp298 juta",
+        "text": "Varian Classic Standard Rp298 juta OTR Jakarta, sesuai price list dealer."
+      },
+      {
+        "title": "Kabin 6 atau 7 kursi",
+        "text": "Varian Captain Seat berkursi 6 dengan kursi kapten di baris kedua, varian lain 7 kursi."
+      }
     ],
     "best_for": [
       "Keluarga yang ingin mencoba kendaraan elektrifikasi tanpa khawatir soal stasiun pengisian",
@@ -74,27 +158,111 @@
       "Anda yang butuh kabin luas dengan anggaran Rp300 jutaan"
     ],
     "specs": [
-      { "label": "Segmen", "value": "MPV plug-in hybrid" },
-      { "label": "Mesin bensin", "value": "1.5 L, 4 silinder, 108 hp" },
-      { "label": "Motor listrik", "value": "194 hp" },
-      { "label": "Baterai", "value": "Classic 7,4 kWh; Cross 18,3 kWh" },
-      { "label": "Jarak tempuh listrik", "value": "Classic hingga 40 km; Cross hingga 110 km (klaim)" },
-      { "label": "Dimensi", "value": "4.710 × 1.810 × 1.690 mm" },
-      { "label": "Kursi", "value": "7 kursi; 6 kursi pada Cross Superior Captain Seat" }
+      {
+        "label": "Segmen",
+        "value": "MPV plug-in hybrid"
+      },
+      {
+        "label": "Mesin bensin",
+        "value": "1.5 L, 4 silinder, 108 hp"
+      },
+      {
+        "label": "Motor listrik",
+        "value": "194 hp"
+      },
+      {
+        "label": "Baterai",
+        "value": "Classic 7,4 kWh; Cross 18,3 kWh"
+      },
+      {
+        "label": "Jarak tempuh listrik",
+        "value": "Classic hingga 40 km; Cross hingga 110 km (klaim)"
+      },
+      {
+        "label": "Dimensi",
+        "value": "4.710 × 1.810 × 1.690 mm"
+      },
+      {
+        "label": "Kursi",
+        "value": "7 kursi; 6 kursi pada Cross Superior Captain Seat"
+      }
     ],
     "variants": [
-      { "name": "Classic Standard", "price": 298000000, "range_km": "40 (mode listrik)", "range_std": "klaim", "battery": "7,4 kWh", "power": "", "seats": "7", "note": "", "verify": false },
-      { "name": "Classic Dynamic", "price": 318000000, "range_km": "40 (mode listrik)", "range_std": "klaim", "battery": "7,4 kWh", "power": "", "seats": "7", "note": "", "verify": false },
-      { "name": "Cross Advanced", "price": 360000000, "range_km": "110 (mode listrik)", "range_std": "klaim", "battery": "18,3 kWh", "power": "", "seats": "7", "note": "", "verify": false },
-      { "name": "Cross Superior 7 Seat", "price": 380000000, "range_km": "110 (mode listrik)", "range_std": "klaim", "battery": "18,3 kWh", "power": "", "seats": "7", "note": "", "verify": false },
-      { "name": "Cross Superior Captain Seat", "price": 390000000, "range_km": "110 (mode listrik)", "range_std": "klaim", "battery": "18,3 kWh", "power": "", "seats": "6", "note": "", "verify": false }
+      {
+        "name": "Classic Standard",
+        "price": 298000000,
+        "range_km": "40 (mode listrik)",
+        "range_std": "klaim",
+        "battery": "7,4 kWh",
+        "power": "",
+        "seats": "7",
+        "note": "",
+        "verify": false
+      },
+      {
+        "name": "Classic Dynamic",
+        "price": 318000000,
+        "range_km": "40 (mode listrik)",
+        "range_std": "klaim",
+        "battery": "7,4 kWh",
+        "power": "",
+        "seats": "7",
+        "note": "",
+        "verify": false
+      },
+      {
+        "name": "Cross Advanced",
+        "price": 360000000,
+        "range_km": "110 (mode listrik)",
+        "range_std": "klaim",
+        "battery": "18,3 kWh",
+        "power": "",
+        "seats": "7",
+        "note": "",
+        "verify": false
+      },
+      {
+        "name": "Cross Superior 7 Seat",
+        "price": 380000000,
+        "range_km": "110 (mode listrik)",
+        "range_std": "klaim",
+        "battery": "18,3 kWh",
+        "power": "",
+        "seats": "7",
+        "note": "",
+        "verify": false
+      },
+      {
+        "name": "Cross Superior Captain Seat",
+        "price": 390000000,
+        "range_km": "110 (mode listrik)",
+        "range_std": "klaim",
+        "battery": "18,3 kWh",
+        "power": "",
+        "seats": "6",
+        "note": "",
+        "verify": false
+      }
     ],
     "compare_variant": "Classic Dynamic",
-    "compare": ["wuling-binguo-lite", "aion-ut-standard", "chery-e5-pure"],
+    "compare": [
+      "wuling-binguo-lite",
+      "aion-ut-standard",
+      "chery-e5-pure"
+    ],
     "faq": [
-      { "q": "Berapa harga BYD M6 DM-i?", "a": "Berdasarkan price list dealer, harga OTR Jakarta BYD M6 DM-i mulai Rp298 juta (Classic Standard) hingga Rp390 juta (Cross Superior Captain Seat)." },
-      { "q": "Apa bedanya varian Classic dan Cross?", "a": "Classic berbaterai 7,4 kWh dengan jarak tempuh listrik hingga 40 km, sedangkan Cross berbaterai 18,3 kWh dengan jarak tempuh listrik hingga 110 km dan perlengkapan lebih lengkap. Detail fitur per varian bisa dijelaskan sales kami." },
-      { "q": "Apa bedanya M6 DM-i dengan M6?", "a": "BYD M6 DM-i adalah plug-in hybrid (mesin bensin plus motor listrik), sedangkan BYD M6 adalah mobil listrik murni. Lihat halaman BYD M6 untuk varian listrik murni." }
+      {
+        "q": "Berapa harga BYD M6 DM-i?",
+        "a": "Berdasarkan price list dealer, harga OTR Jakarta BYD M6 DM-i mulai Rp298 juta (Classic Standard) hingga Rp390 juta (Cross Superior Captain Seat)."
+      },
+      {
+        "q": "Apa bedanya varian Classic dan Cross?",
+        "a": "Classic berbaterai 7,4 kWh dengan jarak tempuh listrik hingga 40 km, sedangkan Cross berbaterai 18,3 kWh dengan jarak tempuh listrik hingga 110 km dan perlengkapan lebih lengkap. Detail fitur per varian bisa dijelaskan sales kami."
+      },
+      {
+        "q": "Apa bedanya M6 DM-i dengan M6?",
+        "a": "BYD M6 DM-i adalah plug-in hybrid (mesin bensin plus motor listrik), sedangkan BYD M6 adalah mobil listrik murni. Lihat halaman BYD M6 untuk varian listrik murni."
+      }
     ]
   },
   {
@@ -114,10 +282,22 @@
       "Price list dealer mencantumkan jarak tempuh hingga 450 km (Standard) dan 600 km (Superior). Karena angka jarak tempuh dapat berbeda antar standar pengujian dan tahun model, mintalah brosur resmi saat konsultasi."
     ],
     "highlights": [
-      { "title": "Listrik murni, kabin luas", "text": "MPV 6 atau 7 kursi tanpa mesin bensin, cocok untuk keluarga besar." },
-      { "title": "Dua pilihan baterai", "text": "Standard berbaterai 55,4 kWh, Superior berbaterai 71,8 kWh (konfirmasi ke brosur resmi)." },
-      { "title": "Layar putar 12,8 inci", "text": "Layar infotainment putar dengan Apple CarPlay dan Android Auto." },
-      { "title": "Fitur keselamatan aktif", "text": "ADAS termasuk adaptive cruise control, autonomous emergency braking, blind spot detection, dan rear cross traffic alert." }
+      {
+        "title": "Listrik murni, kabin luas",
+        "text": "MPV 6 atau 7 kursi tanpa mesin bensin, cocok untuk keluarga besar."
+      },
+      {
+        "title": "Dua pilihan baterai",
+        "text": "Standard berbaterai 55,4 kWh, Superior berbaterai 71,8 kWh (konfirmasi ke brosur resmi)."
+      },
+      {
+        "title": "Layar putar 12,8 inci",
+        "text": "Layar infotainment putar dengan Apple CarPlay dan Android Auto."
+      },
+      {
+        "title": "Fitur keselamatan aktif",
+        "text": "ADAS termasuk adaptive cruise control, autonomous emergency braking, blind spot detection, dan rear cross traffic alert."
+      }
     ],
     "best_for": [
       "Keluarga besar yang ingin beralih ke mobil listrik murni",
@@ -125,24 +305,85 @@
       "Anda yang membandingkan MPV listrik dengan MPV bensin atau hybrid"
     ],
     "specs": [
-      { "label": "Segmen", "value": "MPV listrik" },
-      { "label": "Baterai", "value": "55,4 kWh (Standard); 71,8 kWh (Superior)" },
-      { "label": "Jarak tempuh", "value": "450 km (Standard); 600 km (Superior), sesuai price list dealer" },
-      { "label": "Motor", "value": "Penggerak roda depan, torsi hingga 310 Nm" },
-      { "label": "Dimensi", "value": "4.710 × 1.810 × 1.690 mm, jarak sumbu roda 2.800 mm" },
-      { "label": "Kursi", "value": "7 kursi; 6 kursi pada Superior Captain Seat" }
+      {
+        "label": "Segmen",
+        "value": "MPV listrik"
+      },
+      {
+        "label": "Baterai",
+        "value": "55,4 kWh (Standard); 71,8 kWh (Superior)"
+      },
+      {
+        "label": "Jarak tempuh",
+        "value": "450 km (Standard); 600 km (Superior), sesuai price list dealer"
+      },
+      {
+        "label": "Motor",
+        "value": "Penggerak roda depan, torsi hingga 310 Nm"
+      },
+      {
+        "label": "Dimensi",
+        "value": "4.710 × 1.810 × 1.690 mm, jarak sumbu roda 2.800 mm"
+      },
+      {
+        "label": "Kursi",
+        "value": "7 kursi; 6 kursi pada Superior Captain Seat"
+      }
     ],
     "variants": [
-      { "name": "Standard", "price": 395000000, "range_km": "450", "range_std": "price list dealer", "battery": "55,4 kWh", "power": "120 kW", "seats": "7", "note": "Angka jarak tempuh pada sumber lain berbeda; konfirmasi ke brosur.", "verify": true },
-      { "name": "Superior", "price": 435000000, "range_km": "600", "range_std": "price list dealer", "battery": "71,8 kWh", "power": "hingga 150 kW", "seats": "7", "note": "Angka jarak tempuh dan baterai pada sumber lain berbeda; konfirmasi ke brosur.", "verify": true },
-      { "name": "Superior Captain Seat", "price": 445000000, "range_km": "600", "range_std": "price list dealer", "battery": "71,8 kWh", "power": "hingga 150 kW", "seats": "6", "note": "Angka jarak tempuh dan baterai pada sumber lain berbeda; konfirmasi ke brosur.", "verify": true }
+      {
+        "name": "Standard",
+        "price": 395000000,
+        "range_km": "450",
+        "range_std": "price list dealer",
+        "battery": "55,4 kWh",
+        "power": "120 kW",
+        "seats": "7",
+        "note": "Angka jarak tempuh pada sumber lain berbeda; konfirmasi ke brosur.",
+        "verify": true
+      },
+      {
+        "name": "Superior",
+        "price": 435000000,
+        "range_km": "600",
+        "range_std": "price list dealer",
+        "battery": "71,8 kWh",
+        "power": "hingga 150 kW",
+        "seats": "7",
+        "note": "Angka jarak tempuh dan baterai pada sumber lain berbeda; konfirmasi ke brosur.",
+        "verify": true
+      },
+      {
+        "name": "Superior Captain Seat",
+        "price": 445000000,
+        "range_km": "600",
+        "range_std": "price list dealer",
+        "battery": "71,8 kWh",
+        "power": "hingga 150 kW",
+        "seats": "6",
+        "note": "Angka jarak tempuh dan baterai pada sumber lain berbeda; konfirmasi ke brosur.",
+        "verify": true
+      }
     ],
     "compare_variant": "Standard",
-    "compare": ["chery-e5-luxury", "aion-ut-premium", "geely-ex5-pro"],
+    "compare": [
+      "chery-e5-luxury",
+      "aion-ut-premium",
+      "geely-ex5-pro"
+    ],
     "faq": [
-      { "q": "Berapa harga BYD M6?", "a": "Berdasarkan price list dealer, harga OTR Jakarta BYD M6 adalah Rp395 juta (Standard), Rp435 juta (Superior), dan Rp445 juta (Superior Captain Seat)." },
-      { "q": "Berapa jarak tempuh BYD M6?", "a": "Price list dealer mencantumkan hingga 450 km (Standard) dan 600 km (Superior). Minta brosur resmi untuk standar pengujian yang digunakan." },
-      { "q": "Apakah BYD M6 cocok untuk keluarga besar?", "a": "BYD M6 berformat MPV 6 atau 7 kursi sehingga banyak dipertimbangkan keluarga besar. Test drive adalah cara terbaik untuk menilai kenyamanannya." }
+      {
+        "q": "Berapa harga BYD M6?",
+        "a": "Berdasarkan price list dealer, harga OTR Jakarta BYD M6 adalah Rp395 juta (Standard), Rp435 juta (Superior), dan Rp445 juta (Superior Captain Seat)."
+      },
+      {
+        "q": "Berapa jarak tempuh BYD M6?",
+        "a": "Price list dealer mencantumkan hingga 450 km (Standard) dan 600 km (Superior). Minta brosur resmi untuk standar pengujian yang digunakan."
+      },
+      {
+        "q": "Apakah BYD M6 cocok untuk keluarga besar?",
+        "a": "BYD M6 berformat MPV 6 atau 7 kursi sehingga banyak dipertimbangkan keluarga besar. Test drive adalah cara terbaik untuk menilai kenyamanannya."
+      }
     ]
   },
   {
@@ -162,11 +403,26 @@
       "Posisi duduk yang lebih tinggi dan kabin untuk 5 penumpang membuatnya nyaman untuk keluarga urban. Hubungi kami untuk simulasi cicilan dan jadwal test drive."
     ],
     "highlights": [
-      { "title": "Jarak tempuh hingga 410 km", "text": "Baterai LFP 49,92 kWh dengan jarak tempuh hingga 410 km menurut standar NEDC." },
-      { "title": "Tenaga 204 hp, torsi 310 Nm", "text": "Satu motor listrik dengan penggerak roda depan." },
-      { "title": "Layar 15,6 inci dan wireless charger", "text": "Infotainment layar sentuh 15,6 inci, audio 6 speaker, dan pengisi daya ponsel nirkabel." },
-      { "title": "Bantuan berkendara", "text": "Adaptive cruise control, autonomous emergency braking, lane departure warning, dan lane keeping assist." },
-      { "title": "DC fast charging", "text": "Pengisian cepat DC hingga 70 kW; 0 hingga 80 persen sekitar 40 menit." }
+      {
+        "title": "Jarak tempuh hingga 410 km",
+        "text": "Baterai LFP 49,92 kWh dengan jarak tempuh hingga 410 km menurut standar NEDC."
+      },
+      {
+        "title": "Tenaga 204 hp, torsi 310 Nm",
+        "text": "Satu motor listrik dengan penggerak roda depan."
+      },
+      {
+        "title": "Layar 15,6 inci dan wireless charger",
+        "text": "Infotainment layar sentuh 15,6 inci, audio 6 speaker, dan pengisi daya ponsel nirkabel."
+      },
+      {
+        "title": "Bantuan berkendara",
+        "text": "Adaptive cruise control, autonomous emergency braking, lane departure warning, dan lane keeping assist."
+      },
+      {
+        "title": "DC fast charging",
+        "text": "Pengisian cepat DC hingga 70 kW; 0 hingga 80 persen sekitar 40 menit."
+      }
     ],
     "best_for": [
       "Keluarga urban yang menginginkan SUV listrik dengan ukuran compact",
@@ -174,24 +430,71 @@
       "Anda yang membandingkan SUV listrik dengan SUV bensin atau hybrid"
     ],
     "specs": [
-      { "label": "Segmen", "value": "SUV listrik compact" },
-      { "label": "Baterai", "value": "49,92 kWh (LFP)" },
-      { "label": "Jarak tempuh", "value": "Hingga 410 km (NEDC)" },
-      { "label": "Daya dan torsi", "value": "204 hp (sekitar 150 kW), 310 Nm, penggerak roda depan" },
-      { "label": "Pengisian", "value": "AC 7 kW sekitar 6–7 jam; DC hingga 70 kW, 0–80% sekitar 40 menit" },
-      { "label": "Dimensi", "value": "4.455 × 1.875 × 1.615 mm, jarak sumbu roda 2.720 mm" },
-      { "label": "Bagasi", "value": "440 liter" },
-      { "label": "Kursi", "value": "5 kursi" }
+      {
+        "label": "Segmen",
+        "value": "SUV listrik compact"
+      },
+      {
+        "label": "Baterai",
+        "value": "49,92 kWh (LFP)"
+      },
+      {
+        "label": "Jarak tempuh",
+        "value": "Hingga 410 km (NEDC)"
+      },
+      {
+        "label": "Daya dan torsi",
+        "value": "204 hp (sekitar 150 kW), 310 Nm, penggerak roda depan"
+      },
+      {
+        "label": "Pengisian",
+        "value": "AC 7 kW sekitar 6–7 jam; DC hingga 70 kW, 0–80% sekitar 40 menit"
+      },
+      {
+        "label": "Dimensi",
+        "value": "4.455 × 1.875 × 1.615 mm, jarak sumbu roda 2.720 mm"
+      },
+      {
+        "label": "Bagasi",
+        "value": "440 liter"
+      },
+      {
+        "label": "Kursi",
+        "value": "5 kursi"
+      }
     ],
     "variants": [
-      { "name": "Advanced Plus", "price": 415000000, "range_km": "410", "range_std": "NEDC", "battery": "49,92 kWh", "power": "150 kW (204 hp)", "seats": "5", "note": "", "verify": false }
+      {
+        "name": "Advanced Plus",
+        "price": 415000000,
+        "range_km": "410",
+        "range_std": "NEDC",
+        "battery": "49,92 kWh",
+        "power": "150 kW (204 hp)",
+        "seats": "5",
+        "note": "",
+        "verify": false
+      }
     ],
     "compare_variant": "Advanced Plus",
-    "compare": ["chery-e5-pure", "aion-ut-premium", "geely-ex5-pro"],
+    "compare": [
+      "chery-e5-pure",
+      "aion-ut-premium",
+      "geely-ex5-pro"
+    ],
     "faq": [
-      { "q": "Berapa harga BYD Atto 3?", "a": "Berdasarkan price list dealer, BYD Atto 3 varian Advanced Plus Rp415 juta OTR Jakarta. Harga dapat berubah, konfirmasi ke sales kami." },
-      { "q": "Berapa jarak tempuh BYD Atto 3 Advanced Plus?", "a": "Hingga 410 km menurut standar NEDC dengan baterai 49,92 kWh. Jarak tempuh nyata biasanya lebih pendek dan dipengaruhi gaya berkendara serta kondisi jalan." },
-      { "q": "Apakah BYD Atto 3 cocok untuk keluarga?", "a": "Atto 3 adalah SUV listrik compact 5 kursi dengan bagasi 440 liter. Untuk kebutuhan penumpang lebih banyak, bandingkan juga dengan BYD M6." }
+      {
+        "q": "Berapa harga BYD Atto 3?",
+        "a": "Berdasarkan price list dealer, BYD Atto 3 varian Advanced Plus Rp415 juta OTR Jakarta. Harga dapat berubah, konfirmasi ke sales kami."
+      },
+      {
+        "q": "Berapa jarak tempuh BYD Atto 3 Advanced Plus?",
+        "a": "Hingga 410 km menurut standar NEDC dengan baterai 49,92 kWh. Jarak tempuh nyata biasanya lebih pendek dan dipengaruhi gaya berkendara serta kondisi jalan."
+      },
+      {
+        "q": "Apakah BYD Atto 3 cocok untuk keluarga?",
+        "a": "Atto 3 adalah SUV listrik compact 5 kursi dengan bagasi 440 liter. Untuk kebutuhan penumpang lebih banyak, bandingkan juga dengan BYD M6."
+      }
     ]
   },
   {
@@ -211,9 +514,18 @@
       "Jarak tempuh hingga 650 km menurut standar NEDC dan akselerasi 0 hingga 100 km/jam sekitar 5,9 detik. Hubungi kami untuk jadwal test drive dan simulasi pembiayaan."
     ],
     "highlights": [
-      { "title": "Tenaga 308 hp, torsi 360 Nm", "text": "Motor listrik 230 kW dengan akselerasi 0–100 km/jam sekitar 5,9 detik." },
-      { "title": "Jarak tempuh hingga 650 km", "text": "Baterai 82,56 kWh dengan jarak tempuh hingga 650 km menurut standar NEDC." },
-      { "title": "Sedan listrik premium", "text": "Posisi di lineup BYD sebagai sedan performa untuk pengemudi yang menyukai sensasi berkendara." }
+      {
+        "title": "Tenaga 308 hp, torsi 360 Nm",
+        "text": "Motor listrik 230 kW dengan akselerasi 0–100 km/jam sekitar 5,9 detik."
+      },
+      {
+        "title": "Jarak tempuh hingga 650 km",
+        "text": "Baterai 82,56 kWh dengan jarak tempuh hingga 650 km menurut standar NEDC."
+      },
+      {
+        "title": "Sedan listrik premium",
+        "text": "Posisi di lineup BYD sebagai sedan performa untuk pengemudi yang menyukai sensasi berkendara."
+      }
     ],
     "best_for": [
       "Pengemudi yang mengutamakan performa dan sensasi berkendara",
@@ -221,21 +533,57 @@
       "Pengguna yang sering menempuh perjalanan jauh dan butuh baterai besar"
     ],
     "specs": [
-      { "label": "Segmen", "value": "Sedan listrik" },
-      { "label": "Baterai", "value": "82,56 kWh" },
-      { "label": "Daya dan torsi", "value": "230 kW (sekitar 308 hp), 360 Nm" },
-      { "label": "Jarak tempuh", "value": "Hingga 650 km (NEDC)" },
-      { "label": "0–100 km/jam", "value": "Sekitar 5,9 detik" }
+      {
+        "label": "Segmen",
+        "value": "Sedan listrik"
+      },
+      {
+        "label": "Baterai",
+        "value": "82,56 kWh"
+      },
+      {
+        "label": "Daya dan torsi",
+        "value": "230 kW (sekitar 308 hp), 360 Nm"
+      },
+      {
+        "label": "Jarak tempuh",
+        "value": "Hingga 650 km (NEDC)"
+      },
+      {
+        "label": "0–100 km/jam",
+        "value": "Sekitar 5,9 detik"
+      }
     ],
     "variants": [
-      { "name": "Premium", "price": 869000000, "range_km": "650", "range_std": "NEDC", "battery": "82,56 kWh", "power": "230 kW (308 hp)", "seats": "5", "note": "", "verify": false }
+      {
+        "name": "Premium",
+        "price": 869000000,
+        "range_km": "650",
+        "range_std": "NEDC",
+        "battery": "82,56 kWh",
+        "power": "230 kW (308 hp)",
+        "seats": "5",
+        "note": "",
+        "verify": false
+      }
     ],
     "compare_variant": "Premium",
-    "compare": ["mazda-6e"],
+    "compare": [
+      "mazda-6e"
+    ],
     "faq": [
-      { "q": "Berapa tenaga BYD Seal?", "a": "Varian Premium memiliki motor listrik dengan daya maksimum 230 kW atau sekitar 308 daya kuda dan torsi maksimal 360 Nm." },
-      { "q": "Berapa harga BYD Seal?", "a": "Berdasarkan price list dealer, BYD Seal Premium Rp869 juta OTR Jakarta. Konfirmasi ke sales kami untuk harga yang berlaku hari ini." },
-      { "q": "Apakah BYD Seal bisa dicicil?", "a": "Bisa. Kami membantu simulasi cicilan sesuai uang muka dan tenor yang Anda inginkan." }
+      {
+        "q": "Berapa tenaga BYD Seal?",
+        "a": "Varian Premium memiliki motor listrik dengan daya maksimum 230 kW atau sekitar 308 daya kuda dan torsi maksimal 360 Nm."
+      },
+      {
+        "q": "Berapa harga BYD Seal?",
+        "a": "Berdasarkan price list dealer, BYD Seal Premium Rp869 juta OTR Jakarta. Konfirmasi ke sales kami untuk harga yang berlaku hari ini."
+      },
+      {
+        "q": "Apakah BYD Seal bisa dicicil?",
+        "a": "Bisa. Kami membantu simulasi cicilan sesuai uang muka dan tenor yang Anda inginkan."
+      }
     ]
   },
   {
@@ -255,9 +603,18 @@
       "Akselerasi 0 hingga 100 km/jam sekitar 6,7 detik. Angka jarak tempuh pada price list dealer dan sumber lain berbeda, jadi mintalah brosur resmi untuk standar pengujian yang dipakai."
     ],
     "highlights": [
-      { "title": "Tenaga 230 kW, torsi 380 Nm", "text": "Akselerasi 0–100 km/jam sekitar 6,7 detik." },
-      { "title": "Baterai 82,56 kWh", "text": "Kapasitas besar untuk perjalanan jauh bersama keluarga." },
-      { "title": "SUV premium", "text": "Salah satu model tertinggi di jajaran BYD Indonesia dengan kabin lega dan fitur premium." }
+      {
+        "title": "Tenaga 230 kW, torsi 380 Nm",
+        "text": "Akselerasi 0–100 km/jam sekitar 6,7 detik."
+      },
+      {
+        "title": "Baterai 82,56 kWh",
+        "text": "Kapasitas besar untuk perjalanan jauh bersama keluarga."
+      },
+      {
+        "title": "SUV premium",
+        "text": "Salah satu model tertinggi di jajaran BYD Indonesia dengan kabin lega dan fitur premium."
+      }
     ],
     "best_for": [
       "Keluarga yang menginginkan SUV listrik berukuran lebih besar",
@@ -265,21 +622,58 @@
       "Anda yang sering bepergian jarak jauh bersama keluarga"
     ],
     "specs": [
-      { "label": "Segmen", "value": "SUV listrik" },
-      { "label": "Baterai", "value": "82,56 kWh" },
-      { "label": "Daya dan torsi", "value": "230 kW, 380 Nm" },
-      { "label": "Jarak tempuh", "value": "650 km menurut price list dealer; sumber lain mencantumkan 567 km (NEDC)" },
-      { "label": "0–100 km/jam", "value": "Sekitar 6,7 detik" }
+      {
+        "label": "Segmen",
+        "value": "SUV listrik"
+      },
+      {
+        "label": "Baterai",
+        "value": "82,56 kWh"
+      },
+      {
+        "label": "Daya dan torsi",
+        "value": "230 kW, 380 Nm"
+      },
+      {
+        "label": "Jarak tempuh",
+        "value": "650 km menurut price list dealer; sumber lain mencantumkan 567 km (NEDC)"
+      },
+      {
+        "label": "0–100 km/jam",
+        "value": "Sekitar 6,7 detik"
+      }
     ],
     "variants": [
-      { "name": "Extended", "price": 879000000, "range_km": "650", "range_std": "price list dealer", "battery": "82,56 kWh", "power": "230 kW", "seats": "5", "note": "Sumber lain mencantumkan 567 km (NEDC); konfirmasi ke brosur.", "verify": true }
+      {
+        "name": "Extended",
+        "price": 879000000,
+        "range_km": "650",
+        "range_std": "price list dealer",
+        "battery": "82,56 kWh",
+        "power": "230 kW",
+        "seats": "5",
+        "note": "Sumber lain mencantumkan 567 km (NEDC); konfirmasi ke brosur.",
+        "verify": true
+      }
     ],
     "compare_variant": "Extended",
-    "compare": ["xpeng-g6-pro-awd", "suzuki-e-vitara"],
+    "compare": [
+      "xpeng-g6-pro-awd",
+      "suzuki-e-vitara"
+    ],
     "faq": [
-      { "q": "Apa spesifikasi BYD Sealion 7 Extended?", "a": "Varian Extended menggunakan baterai 82,56 kWh dengan motor listrik berdaya maksimum 230 kW dan torsi 380 Nm." },
-      { "q": "Berapa harga BYD Sealion 7?", "a": "Berdasarkan price list dealer, BYD Sealion 7 Extended Rp879 juta OTR Jakarta. Harga dapat berubah, konfirmasi ke sales kami." },
-      { "q": "Apakah ada test drive BYD Sealion 7?", "a": "Silakan booking melalui form di halaman ini. Ketersediaan unit demo akan dikonfirmasi oleh tim kami." }
+      {
+        "q": "Apa spesifikasi BYD Sealion 7 Extended?",
+        "a": "Varian Extended menggunakan baterai 82,56 kWh dengan motor listrik berdaya maksimum 230 kW dan torsi 380 Nm."
+      },
+      {
+        "q": "Berapa harga BYD Sealion 7?",
+        "a": "Berdasarkan price list dealer, BYD Sealion 7 Extended Rp879 juta OTR Jakarta. Harga dapat berubah, konfirmasi ke sales kami."
+      },
+      {
+        "q": "Apakah ada test drive BYD Sealion 7?",
+        "a": "Silakan booking melalui form di halaman ini. Ketersediaan unit demo akan dikonfirmasi oleh tim kami."
+      }
     ]
   },
   {
@@ -301,12 +695,38 @@
     "highlights": [],
     "best_for": [],
     "specs": [
-      { "label": "Baterai", "value": "55,4 kWh" },
-      { "label": "Jarak tempuh", "value": "Hingga 420 km (NEDC)" }
+      {
+        "label": "Baterai",
+        "value": "55,4 kWh"
+      },
+      {
+        "label": "Jarak tempuh",
+        "value": "Hingga 420 km (NEDC)"
+      }
     ],
     "variants": [
-      { "name": "Dynamic", "price": 369000000, "range_km": "420", "range_std": "NEDC", "battery": "55,4 kWh", "power": "", "seats": "", "note": "", "verify": false },
-      { "name": "Premium", "price": 429000000, "range_km": "420", "range_std": "NEDC", "battery": "55,4 kWh", "power": "", "seats": "", "note": "", "verify": false }
+      {
+        "name": "Dynamic",
+        "price": 369000000,
+        "range_km": "420",
+        "range_std": "NEDC",
+        "battery": "55,4 kWh",
+        "power": "",
+        "seats": "",
+        "note": "",
+        "verify": false
+      },
+      {
+        "name": "Premium",
+        "price": 429000000,
+        "range_km": "420",
+        "range_std": "NEDC",
+        "battery": "55,4 kWh",
+        "power": "",
+        "seats": "",
+        "note": "",
+        "verify": false
+      }
     ],
     "compare_variant": "Dynamic",
     "compare": [],
@@ -330,10 +750,23 @@
     "highlights": [],
     "best_for": [],
     "specs": [
-      { "label": "Jarak tempuh", "value": "730 km (price list dealer)" }
+      {
+        "label": "Jarak tempuh",
+        "value": "730 km (price list dealer)"
+      }
     ],
     "variants": [
-      { "name": "D9", "price": 1080000000, "range_km": "730", "range_std": "price list dealer", "battery": "", "power": "", "seats": "", "note": "", "verify": false }
+      {
+        "name": "D9",
+        "price": 1080000000,
+        "range_km": "730",
+        "range_std": "price list dealer",
+        "battery": "",
+        "power": "",
+        "seats": "",
+        "note": "",
+        "verify": false
+      }
     ],
     "compare_variant": "D9",
     "compare": [],
@@ -357,10 +790,23 @@
     "highlights": [],
     "best_for": [],
     "specs": [
-      { "label": "Jarak tempuh", "value": "701 km (price list dealer)" }
+      {
+        "label": "Jarak tempuh",
+        "value": "701 km (price list dealer)"
+      }
     ],
     "variants": [
-      { "name": "Z9 GT", "price": 2250000000, "range_km": "701", "range_std": "price list dealer", "battery": "", "power": "", "seats": "", "note": "", "verify": false }
+      {
+        "name": "Z9 GT",
+        "price": 2250000000,
+        "range_km": "701",
+        "range_std": "price list dealer",
+        "battery": "",
+        "power": "",
+        "seats": "",
+        "note": "",
+        "verify": false
+      }
     ],
     "compare_variant": "Z9 GT",
     "compare": [],
