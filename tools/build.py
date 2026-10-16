@@ -108,13 +108,49 @@ def darken(hexcol, f=0.8):
     return "#%02x%02x%02x" % (int(r * f), int(g * f), int(b * f))
 
 
-ACC = (SITE.get("theme") or {}).get("accent", "#d4001a")
-if ACC.lower() == "#00806d":  # warna bawaan lama -> warna baru
-    ACC = "#d4001a"
-if not re.fullmatch(r"#[0-9a-fA-F]{6}", ACC or ""):
-    WARN.append(f"Warna tema tidak valid '{ACC}', memakai default")
-    ACC = "#d4001a"
-CSS = minify_css((SRC / "assets/style.css").read_text(encoding="utf-8")) + f":root{{--acc:{ACC};--acc2:{darken(ACC)}}}"
+THEME = content.load_json("theme.json", {})
+LEASING = content.load_json("leasing.json", {})
+_HEX = re.compile(r"#[0-9a-fA-F]{6}")
+_DEF = {"dark": "#243746", "primary": "#3d5a6c", "accent": "#2b6a8a", "paper": "#f1f4f6"}
+
+
+def _col(key):
+    v = str(THEME.get(key) or "").strip()
+    if not _HEX.fullmatch(v):
+        if v:
+            WARN.append(f"Warna tema '{key}' tidak valid ({v}), memakai default")
+        return _DEF[key]
+    return v.lower()
+
+
+def mix(a, b, t):
+    """Campur warna a dengan b; t = porsi b (0..1)."""
+    pa = [int(a[i:i + 2], 16) for i in (1, 3, 5)]
+    pb = [int(b[i:i + 2], 16) for i in (1, 3, 5)]
+    return "#%02x%02x%02x" % tuple(round(x + (y - x) * t) for x, y in zip(pa, pb))
+
+
+def _lum(h):
+    c = [int(h[i:i + 2], 16) / 255 for i in (1, 3, 5)]
+    c = [x / 12.92 if x <= 0.03928 else ((x + 0.055) / 1.055) ** 2.4 for x in c]
+    return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]
+
+
+def contrast(a, b):
+    la, lb = sorted((_lum(a), _lum(b)), reverse=True)
+    return (la + 0.05) / (lb + 0.05)
+
+
+DARK, PRIMARY, ACC, PAPER = _col("dark"), _col("primary"), _col("accent"), _col("paper")
+ONACC = "#ffffff" if contrast(ACC, "#ffffff") >= contrast(ACC, "#101820") else "#101820"
+if contrast(ACC, ONACC) < 4.5:
+    WARN.append(f"Kontras teks tombol rendah ({contrast(ACC, ONACC):.1f}:1) pada warna aksen {ACC}")
+if contrast(DARK, "#ffffff") < 7:
+    WARN.append(f"Warna gelap {DARK} kurang gelap untuk teks putih (kontras {contrast(DARK, '#ffffff'):.1f}:1)")
+THEME_VARS = (f":root{{--paper:{PAPER};--ink:{DARK};--ink2:{mix(DARK, PAPER, .22)};--line:{mix(PAPER, DARK, .15)};--soft:{mix(PAPER, DARK, .06)};"
+              f"--acc:{ACC};--acc2:{darken(ACC)};--onacc:{ONACC};--ev:{PRIMARY};--evl:{mix(PRIMARY, '#ffffff', .78)};--evb:{mix(PRIMARY, '#ffffff', .55)};"
+              f"--ig:{mix(DARK, PRIMARY, .5)};--it:{mix(DARK, '#ffffff', .8)};--it2:{mix(DARK, '#ffffff', .72)}}}")
+CSS = minify_css((SRC / "assets/style.css").read_text(encoding="utf-8")) + THEME_VARS
 
 BOLT = ("<svg viewBox='0 0 32 32' aria-hidden='true'><rect width='32' height='32' rx='8' fill='currentColor'/>"
         "<path d='M18 4 8 18h7l-1 10 10-14h-7z' fill='#fff'/></svg>")
@@ -353,7 +389,7 @@ def head(title, desc, path, og_type="website", schema=None, robots="index,follow
     wh = '<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">'
     return (f'<!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
             f'<title>{esc(title)}</title><meta name="description" content="{esc(desc)}"><link rel="canonical" href="{canon}">'
-            f'<meta name="robots" content="{robots},max-image-preview:large"><meta name="theme-color" content="{ACC}">'
+            f'<meta name="robots" content="{robots},max-image-preview:large"><meta name="theme-color" content="{DARK}">'
             f'<link rel="icon" href="{FAVICON}"><link rel="alternate" type="application/rss+xml" title="{esc(NAME)}" href="/feed.xml">'
             f'<meta property="og:type" content="{og_type}"><meta property="og:site_name" content="{esc(NAME)}">'
             f'<meta property="og:title" content="{esc(title)}"><meta property="og:description" content="{esc(desc)}">'
@@ -518,13 +554,49 @@ def section_on(group, sid):
     return False
 
 
+DEFAULT_AFTER = {("home", "leasing"): "models", ("model", "leasing"): "others"}
+
+
 def sections_order(group, registry):
     ids = [s["id"] for s in LAYOUT.get(group, []) if s.get("on", True) and s["id"] in registry]
-    for k in registry:  # section baru yang belum ada di layout.json ikut ditampilkan di akhir
-        if k not in [s["id"] for s in LAYOUT.get(group, [])]:
+    known = [s["id"] for s in LAYOUT.get(group, [])]
+    for k in registry:  # section baru yang belum ada di layout.json: taruh setelah jangkarnya, atau di akhir
+        if k in known:
+            continue
+        anchor = DEFAULT_AFTER.get((group, k))
+        if anchor in ids:
+            ids.insert(ids.index(anchor) + 1, k)
+        else:
             ids.append(k)
     return ids
 
+
+def leasing_section(where):
+    """Slider logo mitra leasing. Kosong (tidak dirender) jika tidak ada logo/nama."""
+    if not LEASING.get("show_" + where, True):
+        return ""
+    items = []
+    for it in LEASING.get("items", []):
+        name = (it.get("name") or "").strip()
+        logo = (it.get("logo") or "").strip()
+        if logo and images.resolve(logo):
+            inner = img_tag(logo, name or "Logo leasing", "(max-width:600px) 45vw, 220px")
+        elif name:
+            inner = esc(name)
+        else:
+            continue
+        link = (it.get("url") or "").strip()
+        if re.match(r"https?://", link):
+            items.append(f'<a class="lpi" href="{esc(link)}" target="_blank" rel="noopener nofollow" aria-label="{esc(name)}">{inner}</a>')
+        else:
+            items.append(f"<div>{inner}</div>")
+    if not items:
+        return ""
+    ap = ' data-auto="1"' if LEASING.get("autoplay", True) else ""
+    return (f'<section class="s"><div class="wrap"><div class="lp"><div class="row-h"><div><h2>{esc(LEASING.get("title") or "Mitra Leasing")}</h2>'
+            f'<p>{esc(LEASING.get("intro", ""))}</p></div><div class="sl-nav" aria-label="Geser logo leasing">'
+            f'<button type="button" data-lp="-1" aria-label="Sebelumnya">&#8592;</button><button type="button" data-lp="1" aria-label="Berikutnya">&#8594;</button></div></div>'
+            f'<div class="lpt" tabindex="0" role="region" aria-label="Mitra leasing"{ap}>{"".join(items)}</div><div class="lpd" aria-hidden="true"></div></div></div></section>')
 
 
 def range_info(m):
@@ -610,7 +682,7 @@ def build_home():
     def s_faq():
         return f'<section class="s"><div class="wrap art"><h2>{esc(h["faq_title"])}</h2>{faq_html(faq_pairs(h.get("faq")))}</div></section>'
 
-    reg = {"hero": s_hero, "models": s_models, "why": s_why, "articles": s_articles, "usecases": s_usecases, "lead": s_lead, "faq": s_faq}
+    reg = {"hero": s_hero, "models": s_models, "leasing": lambda: leasing_section("home"), "why": s_why, "articles": s_articles, "usecases": s_usecases, "lead": s_lead, "faq": s_faq}
     body = "".join(reg[i]() for i in sections_order("home", reg))
     schema = [dealer_ld(), {"@context": "https://schema.org", "@type": "WebSite", "name": NAME, "url": url("/"), "inLanguage": "id-ID"}]
     if h.get("faq"):
@@ -699,7 +771,8 @@ def build_models():
             return lead_section(m["name"], alt=False)
 
         reg = {"gallery": s_gallery, "summary": s_summary, "highlights": s_highlights, "variants": s_variants, "specs": s_specs,
-               "compare": s_compare, "articles": s_articles, "faq": s_faq, "others": s_others, "lead": s_lead}
+               "compare": s_compare, "articles": s_articles, "faq": s_faq, "others": s_others, "lead": s_lead,
+               "leasing": lambda: leasing_section("model")}
         top = (f'<section class="sub"><div class="wrap">{crumbs(crumb_items)}<h1>{esc(m["name"])}: Harga, Spesifikasi &amp; Test Drive</h1>'
                f'<p>{esc(m["tagline"])}</p><a class="btn" href="{td_url(m["name"])}">Booking Test Drive</a> '
                f'<a class="btn w" href="{wa_url("Halo, saya ingin info " + m["name"])}" data-wa="model-{m["slug"]}" rel="noopener">{WA_ICON} Tanya via WhatsApp</a></div></section>')

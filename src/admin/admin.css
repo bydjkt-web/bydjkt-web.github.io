@@ -86,3 +86,24 @@ table.t th{background:var(--soft)}
   .bar{left:0}
   main.ad{padding:14px 14px 130px}
 }
+
+/* Tampilan: warna template + mitra leasing */
+.two{display:grid;gap:16px;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);align-items:start}
+@media(max-width:900px){.two{grid-template-columns:1fr}}
+.presets{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px}
+.preset{border:2px solid var(--line);border-radius:10px;padding:8px;background:#fff;cursor:pointer;text-align:left;font:inherit}
+.preset.sel{border-color:#2b6a8a;box-shadow:0 0 0 2px rgba(43,106,138,.25)}
+.preset .sw{display:flex;height:32px;border-radius:6px;overflow:hidden;margin-bottom:6px}.preset .sw i{flex:1}
+.preset span{font-weight:700;font-size:.9rem}
+.colrow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:end;margin-bottom:10px}
+.pick{display:flex;gap:8px;align-items:center}.pick input[type=color]{width:44px;height:40px;padding:2px;border:1px solid var(--line);border-radius:8px;background:#fff;cursor:pointer}.pick input[type=text]{width:100px;font-family:monospace}
+.tprev{border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--paper);margin-bottom:10px}
+.pp-promo{background:var(--ev);color:#fff;font-size:11px;text-align:center;padding:4px}
+.pp-hero{background:linear-gradient(135deg,var(--ink),var(--ig));color:#fff;padding:18px}.pp-hero b{display:block;font-size:17px;line-height:1.15;margin-bottom:10px}
+.pp-btn{display:inline-block;background:var(--acc);color:var(--onacc);font-size:11px;font-weight:700;padding:6px 12px;border-radius:6px}
+.pp-body{padding:12px;background:var(--paper)}.pp-card{background:#fff;border:1px solid var(--line);border-radius:8px;padding:8px;font-size:12px}.pp-card em{font-style:normal;color:var(--acc);font-weight:700}
+.pp-card i{display:block;height:6px;background:#e1e8ee;border-radius:2px;margin-top:6px}.pp-card u{display:block;height:6px;width:55%;background:var(--ev);border-radius:2px}
+.tcheck .ok{color:#14532d;font-size:.85rem}.tcheck .bad{color:#9a3412;font-weight:600;font-size:.85rem}
+.lrow{display:flex;flex-wrap:wrap;gap:14px;padding:12px 0;border-bottom:1px solid var(--line)}
+.lbox{width:180px;aspect-ratio:3/1;background:#f1f4f6;border:1px solid var(--line);border-radius:8px;display:flex;align-items:center;justify-content:center;color:#7f93a1;font-size:.8rem;font-weight:700;flex:none}
+.lbox img{max-width:100%;max-height:100%;object-fit:contain}.lf{flex:1 1 260px;min-width:0}

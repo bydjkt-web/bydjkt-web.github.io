@@ -1,6 +1,6 @@
 /* BYD Harmony — CSS tunggal (di-inline oleh build.py). Font display self-hosted, body memakai font sistem agar cepat. */
 @font-face{font-family:"Display";src:url(/assets/fonts/display.woff2) format("woff2");font-weight:200 800;font-display:swap}
-:root{--paper:#f4f5f2;--ink:#101820;--ink2:#47535f;--line:#d9ddd6;--soft:#eceee8;--acc:#d4001a;--acc2:#a80015;--ev:#0d6b5b;--evl:#bfe3da;--w:1160px;--disp:"Display",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+:root{--paper:#f4f5f2;--ink:#101820;--ink2:#47535f;--line:#d9ddd6;--soft:#eceee8;--acc:#2b6a8a;--acc2:#215470;--onacc:#fff;--ev:#3d5a6c;--evl:#d9e5ec;--evb:#8fb8cc;--ig:#304858;--it:#cdd9e0;--it2:#b9c8d2;--w:1160px;--disp:"Display",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
 body{margin:0;font:16px/1.65 system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;color:var(--ink);background:var(--paper)}
@@ -15,7 +15,7 @@ p{margin:0 0 1em}
 .wrap{max-width:var(--w);margin:0 auto;padding:0 20px}
 .skip{position:absolute;left:-999px;top:0;background:#fff;padding:8px 12px;z-index:60}
 .skip:focus{left:8px}
-.promo{background:var(--acc);color:#fff;font-weight:600;font-size:.9rem;text-align:center;padding:7px 0}
+.promo{background:var(--ev);color:#fff;font-weight:600;font-size:.9rem;text-align:center;padding:7px 0}
 .promo a{color:#fff;margin-left:8px}
 header.top{position:sticky;top:0;z-index:30;background:rgba(244,245,242,.96);border-bottom:1px solid var(--line);backdrop-filter:saturate(1.4) blur(8px)}
 .bar{display:flex;align-items:center;justify-content:space-between;min-height:62px;gap:12px}
@@ -30,7 +30,7 @@ nav.d a:not(.btn):hover{border-color:var(--acc)}
 .m div{position:absolute;right:0;top:100%;background:#fff;border:1px solid var(--line);border-radius:12px;padding:8px;min-width:210px;box-shadow:0 14px 34px rgba(16,24,32,.16)}
 .m a{display:block;padding:11px 12px;color:var(--ink);text-decoration:none;font-weight:600;border-radius:8px}
 .m a:hover{background:var(--soft)}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 22px;border-radius:8px;background:var(--acc);color:#fff;font-weight:700;text-decoration:none;border:0;cursor:pointer;font-size:1rem;min-height:46px;font-family:inherit;transition:background .15s,transform .15s}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 22px;border-radius:8px;background:var(--acc);color:var(--onacc);font-weight:700;text-decoration:none;border:0;cursor:pointer;font-size:1rem;min-height:46px;font-family:inherit;transition:background .15s,transform .15s}
 .btn:hover{background:var(--acc2)}
 .btn:active{transform:translateY(1px)}
 .btn svg{width:20px;height:20px;flex:none}
@@ -40,12 +40,12 @@ nav.d a:not(.btn):hover{border-color:var(--acc)}
 .btn.w:hover{background:#1ebe5b}
 .btn.sm{padding:8px 16px;min-height:40px;font-size:.92rem}
 /* ---------- HERO: dark, dengan pemilih anggaran ---------- */
-.hero{background:var(--ink);color:#fff;padding:52px 0 60px;overflow:hidden}
+.hero{background:linear-gradient(135deg,var(--ink),var(--ig));color:#fff;padding:52px 0 60px;overflow:hidden}
 .hero .wrap{display:grid;gap:40px;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);align-items:center}
-.hero p.lead{font-size:1.14rem;max-width:34em;color:#c9d3db}
+.hero p.lead{font-size:1.14rem;max-width:34em;color:var(--it)}
 .hero .cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:24px}
 .badges{display:flex;flex-wrap:wrap;gap:8px;margin:24px 0 0;padding:0;list-style:none}
-.badges li{border:1px solid rgba(255,255,255,.22);padding:5px 13px;border-radius:6px;font-size:.88rem;color:#dbe3e9}
+.badges li{border:1px solid rgba(255,255,255,.22);padding:5px 13px;border-radius:6px;font-size:.88rem;color:var(--it)}
 .budget{background:var(--paper);color:var(--ink);border-radius:16px;padding:22px 22px 18px;box-shadow:0 24px 60px rgba(0,0,0,.35)}
 .budget h2{font-size:1.25rem;margin-bottom:2px}
 .budget .sub2{font-size:.9rem;color:var(--ink2);margin:0 0 14px}
@@ -87,8 +87,8 @@ section.s.alt{background:var(--soft)}
 .mc .top{background:var(--ink);color:#fff;padding:18px 18px 16px;min-height:132px;display:flex;flex-direction:column;justify-content:flex-end;gap:10px}
 .mc .top img{display:block;width:calc(100% + 36px);margin:-18px -18px 6px;max-width:none;height:150px;object-fit:cover}
 .mc .big{font:800 2.5rem/1 var(--disp);letter-spacing:-.03em}
-.mc .big small{font-size:1rem;font-weight:600;margin-left:4px;color:#b7c4cf}
-.mc .rg{color:#b7c4cf}.mc .rg b{color:#fff}.mc .rg i{background:rgba(255,255,255,.18)}.mc .rg i::after{background:#4fd1b5}
+.mc .big small{font-size:1rem;font-weight:600;margin-left:4px;color:var(--it2)}
+.mc .rg{color:var(--it2)}.mc .rg b{color:#fff}.mc .rg i{background:rgba(255,255,255,.18)}.mc .rg i::after{background:var(--evb)}
 .mc .bd{padding:16px 18px 18px;display:flex;flex-direction:column;gap:4px;flex:1}
 .mc .tp{font-size:.85rem;color:var(--ink2)}
 .mc h3{margin:0}
@@ -125,7 +125,7 @@ details.q div{padding:0 4px 16px;color:var(--ink2);max-width:46em}
 form.lead{display:grid;gap:14px}
 form.lead label{display:grid;gap:5px;font-weight:600;font-size:.93rem}
 form.lead input,form.lead select{font:inherit;padding:12px 14px;border:1.5px solid #bcc5cc;border-radius:8px;background:#fff;color:var(--ink);min-height:46px;width:100%}
-form.lead input:focus,form.lead select:focus{outline:3px solid rgba(212,0,26,.25);border-color:var(--acc)}
+form.lead input:focus,form.lead select:focus{outline:3px solid color-mix(in srgb,var(--acc) 28%,transparent);border-color:var(--acc)}
 .row2{display:grid;gap:14px;grid-template-columns:1fr 1fr}
 .chk{display:flex!important;grid-template-columns:none!important;align-items:center;gap:10px;font-weight:500!important}
 form.lead .chk input{width:20px;min-height:20px;height:20px;flex:none;padding:0}
@@ -143,10 +143,10 @@ form.lead .chk input{width:20px;min-height:20px;height:20px;flex:none;padding:0}
 .toc b{display:block;margin-bottom:4px}
 .toc ol{margin:0;padding-left:1.2em}
 .cta-box{background:var(--ink);color:#fff;border-radius:14px;padding:26px;margin:2em 0}
-.cta-box p{color:#c9d3db}
+.cta-box p{color:var(--it)}
 .cta-box a.btn{margin-top:6px}
-footer.ft{background:var(--ink);color:#c0cad3;padding:48px 0 96px;font-size:.93rem}
-footer.ft a{color:#e8eef2}
+footer.ft{background:var(--ink);color:var(--it2);padding:48px 0 96px;font-size:.93rem}
+footer.ft a{color:#fff}
 footer.ft h2{font-size:1rem;color:#fff}
 .fg{display:grid;gap:28px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
 .fg ul{list-style:none;margin:0;padding:0}
@@ -189,3 +189,18 @@ details.src ul{padding-left:1.2em;margin:.5em 0}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}.js .rg:not(.on) i::after{transform:none}}
 
 .sub .btn{margin:8px 8px 0 0}
+
+/* ---------- slider mitra leasing (logo persegi panjang 3:1) ---------- */
+.lp{background:#fff;border:1px solid var(--line);border-radius:16px;padding:28px 28px 22px}
+.lp .row-h{margin-bottom:18px}.lp h2{font-size:clamp(1.3rem,3vw,1.8rem);margin-bottom:.2em}.lp .row-h p{margin:0;color:var(--ink2)}
+.lp .sl-nav{margin:0}.lp .sl-nav button{border-radius:50%}
+.lpt{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;padding:2px}
+.lpt::-webkit-scrollbar{display:none}
+.lpt>*{flex:0 0 calc((100% - 56px)/5);aspect-ratio:3/1;scroll-snap-align:start;background:var(--paper);border:1px solid var(--line);border-radius:10px;display:flex;align-items:center;justify-content:center;padding:10px 16px;color:var(--ink2);font-weight:700;text-decoration:none;text-align:center;font-size:.9rem}
+.lpt img{max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain}
+a.lpi:hover{border-color:var(--ink)}
+.lpd{display:flex;justify-content:center;gap:8px;margin-top:16px}
+.lpd i{width:6px;height:6px;border-radius:3px;background:var(--line);transition:width .2s,background .2s}.lpd i.on{width:22px;background:var(--ev)}
+@media(max-width:900px){.lpt>*{flex-basis:calc((100% - 28px)/3)}}
+@media(max-width:600px){.lp{padding:20px 16px 16px}.lpt>*{flex-basis:calc((100% - 14px)/2)}}
+.sl-nav[hidden]{display:none}
