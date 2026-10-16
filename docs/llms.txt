@@ -1,0 +1,30 @@
+# BYD Harmony
+
+> Dealer mobil listrik BYD. Harga OTR Jakarta Oktober 2026. Konsultasi, simulasi kredit, dan booking test drive mobil listrik BYD. Diperbarui 2026-10-15.
+
+## Halaman utama
+- [Harga mobil BYD terbaru](https://bydjkt-web.github.io/win-byd-website/harga-byd/): daftar harga OTR semua model dan varian
+- [Booking test drive](https://bydjkt-web.github.io/win-byd-website/test-drive/): jadwalkan test drive
+
+## Model
+- [BYD Atto 1](https://bydjkt-web.github.io/win-byd-website/byd-atto-1/): mulai Rp199 juta; jarak tempuh 380 km; Hatchback listrik compact
+- [BYD M6 DM-i](https://bydjkt-web.github.io/win-byd-website/byd-m6-dm/): mulai Rp298 juta; jarak tempuh 110 km (mode listrik); MPV plug-in hybrid
+- [BYD M6](https://bydjkt-web.github.io/win-byd-website/byd-m6/): mulai Rp395 juta; jarak tempuh 600 km; MPV listrik
+- [BYD Atto 3](https://bydjkt-web.github.io/win-byd-website/byd-atto-3/): mulai Rp415 juta; jarak tempuh 410 km; SUV listrik compact
+- [BYD Seal](https://bydjkt-web.github.io/win-byd-website/byd-seal/): mulai Rp869 juta; jarak tempuh 650 km; Sedan listrik performa
+- [BYD Sealion 7](https://bydjkt-web.github.io/win-byd-website/byd-sealion-7/): mulai Rp879 juta; jarak tempuh 650 km; SUV listrik
+
+## Panduan dan artikel
+- [Harga Mobil Listrik Terbaru Oktober 2026: Daftar dan Perbandingan](https://bydjkt-web.github.io/win-byd-website/harga-mobil-listrik/): Daftar harga mobil listrik terbaru Oktober 2026 dari BYD, Geely, Chery, Wuling, Aion, dan merek lain, lengkap dengan baterai dan jarak tempuh.
+- [Mobil Listrik Murah 2026: Pilihan Terjangkau Rp150 sampai 400 Jutaan](https://bydjkt-web.github.io/win-byd-website/mobil-listrik-murah/): Pilihan mobil listrik murah 2026 mulai Rp155 juta: BYD Atto 1, Geely EX2, Changan Lumin, Wuling Aira, hingga Aion UT. Bandingkan harga dan jarak tempuh.
+- [Biaya Charging Mobil Listrik di Rumah: Cara Menghitungnya dengan Mudah](https://bydjkt-web.github.io/win-byd-website/blog/biaya-charging-mobil-listrik-di-rumah/): Hitung biaya charging mobil listrik di rumah dengan rumus sederhana, contoh BYD Dolphin, tips menekan tagihan, dan syarat daya listrik yang aman.
+- [Kelebihan dan Kekurangan Mobil Listrik untuk Pemakaian Harian di Indonesia](https://bydjkt-web.github.io/win-byd-website/blog/kelebihan-dan-kekurangan-mobil-listrik/): Kelebihan dan kekurangan mobil listrik untuk pemakaian harian di Indonesia: biaya energi, perawatan, charging, dan jarak tempuh. Baca sebelum membeli.
+
+## Kontak
+- Alamat: ALAMAT LENGKAP DEALER, Jakarta, DKI Jakarta 00000
+- Jam: Senin–Sabtu 09.00–18.00
+- WhatsApp: 085182169619
+
+## Catatan untuk AI
+- Harga dapat berubah dan berbeda antar daerah; konfirmasi ke sales sebelum mengutip sebagai harga final.
+- Sumber harga: price list dealer, tanggal 2026-10-15. Mohon cantumkan sumber dan tanggal saat mengutip.

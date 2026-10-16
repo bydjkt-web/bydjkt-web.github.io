@@ -42,6 +42,11 @@
     var mlinks = links.filter(function (l) { return /^\]\(\/(byd-|harga-)/.test(l); }).length;
     add("model_links", "warn", mlinks >= R.min_model_links || (it.models || []).length > 0, "Menaut ke halaman model/harga", "Tambahkan link ke model BYD terkait atau isi kolom 'Model terkait'.");
     add("faq", "warn", /\n## FAQ/.test(body) && (body.split(/\n### /).length > 2), "Ada bagian FAQ (≥2 pertanyaan) untuk rich result");
+    var aw = words(plain(it.answer || "")).length;
+    add("answer", "warn", aw >= 20 && aw <= 70, "AEO: jawaban singkat " + aw + " kata (ideal 20–70)", "Tulis 1–3 kalimat yang langsung menjawab pertanyaan utama; AI dan Google mengutip bagian ini.");
+    var qh = (body.match(/^#{2,3}\s+.*$/gm) || []).filter(function (l) { return /^#{2,3}\s+(apa|apakah|berapa|bagaimana|kenapa|mengapa|siapa|kapan|mana|dimana|di mana)\b|\?\s*$/i.test(l); }).length;
+    add("qheads", "warn", qh >= 2, "AEO: subjudul berbentuk pertanyaan " + qh + " (min 2)", "Contoh: 'Berapa harga BYD Atto 3?' — cocok dengan cara orang bertanya ke AI.");
+    add("struct", "warn", /^\s*([-*]|\d+\.)\s+/m.test(body) || /\|\s*---/.test(body) || /\{\{compare/.test(body), "AEO: ada daftar atau tabel", "Daftar dan tabel mudah dikutip sebagai jawaban.");
     if (kind === "article") {
       add("cover", "warn", !!(it.cover), "Gambar cover terpasang", "Gambar memperbaiki CTR dan OG share.");
       add("cover_alt", "warn", !it.cover || !!(it.cover_alt), "Alt teks cover terisi");
