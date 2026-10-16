@@ -15,6 +15,14 @@
       "h": 92,
       "kb": 9,
       "file": "leasing-2.webp"
+    },
+    {
+      "src": "/img/leasing-3.webp",
+      "alt": "Logo leasing",
+      "w": 320,
+      "h": 320,
+      "kb": 6,
+      "file": "leasing-3.webp"
     }
   ]
 }
