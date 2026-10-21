@@ -80,7 +80,8 @@ def juta(n):
     return "Rp" + f"{n / 1_000_000:g}".replace(".", ",") + " juta"
 
 
-def wa_url(text="Halo, saya ingin info harga mobil listrik BYD."):
+def wa_url(text=None):
+    text = text or ((SITE.get("sales") or {}).get("wa_message") or "").strip() or "Halo, saya ingin info harga mobil listrik BYD."
     return f"https://wa.me/{SITE['wa_number']}?text=" + urllib.parse.quote(text)
 
 
@@ -147,9 +148,25 @@ if contrast(ACC, ONACC) < 4.5:
     WARN.append(f"Kontras teks tombol rendah ({contrast(ACC, ONACC):.1f}:1) pada warna aksen {ACC}")
 if contrast(DARK, "#ffffff") < 7:
     WARN.append(f"Warna gelap {DARK} kurang gelap untuk teks putih (kontras {contrast(DARK, '#ffffff'):.1f}:1)")
-THEME_VARS = (f":root{{--paper:{PAPER};--ink:{DARK};--ink2:{mix(DARK, PAPER, .22)};--line:{mix(PAPER, DARK, .15)};--soft:{mix(PAPER, DARK, .06)};"
-              f"--acc:{ACC};--acc2:{darken(ACC)};--onacc:{ONACC};--ev:{PRIMARY};--evl:{mix(PRIMARY, '#ffffff', .78)};--evb:{mix(PRIMARY, '#ffffff', .55)};"
-              f"--ig:{mix(DARK, PRIMARY, .5)};--it:{mix(DARK, '#ffffff', .8)};--it2:{mix(DARK, '#ffffff', .72)}}}")
+MODE_DARK = str(THEME.get("mode") or "") == "dark"
+STYLE_MD = str(THEME.get("style") or "") == "modern"  # gaya Modern = Editorial + susunan beranda baru (navbar kaca, video, statistik, panel, sorotan)
+STYLE_ED = STYLE_MD or str(THEME.get("style") or "") == "editorial"
+HTML_MODE = (' data-mode="dark"' if MODE_DARK else "") + (' data-style="editorial"' if STYLE_ED else "") + (' data-layout="modern"' if STYLE_MD else "")
+if MODE_DARK:
+    # Mode gelap (mockup): latar halaman gelap, kartu sedikit lebih terang, teks terang. --ink tetap dipakai sebagai warna permukaan gelap (hero, footer, banner).
+    _TXT = "#e9edf5"
+    if contrast(PAPER, _TXT) < 7:
+        WARN.append(f"Mode gelap: latar {PAPER} kurang gelap untuk teks terang (kontras {contrast(PAPER, _TXT):.1f}:1)")
+    _LK = mix(ACC, "#ffffff", .32)
+    THEME_VARS = (f":root{{--paper:{PAPER};--ink:{DARK};--ink2:#9aa6bb;--line:{mix(PAPER, '#ffffff', .13)};--soft:{mix(PAPER, '#ffffff', .035)};"
+                  f"--card:{mix(PAPER, '#ffffff', .07)};--txt:{_TXT};--lk:{_LK};--hdr:{PAPER};--bd:{mix(PAPER, '#ffffff', .22)};"
+                  f"--acc:{ACC};--acc2:{darken(ACC)};--onacc:{ONACC};--ev:{PRIMARY};--evl:{mix(PAPER, '#ffffff', .14)};--evb:{mix(PRIMARY, '#ffffff', .25)};"
+                  f"--ig:{mix(DARK, PRIMARY, .35)};--it:{mix(DARK, '#ffffff', .8)};--it2:{mix(DARK, '#ffffff', .72)}}}")
+else:
+    THEME_VARS = (f":root{{--paper:{PAPER};--ink:{DARK};--ink2:{mix(DARK, PAPER, .22)};--line:{mix(PAPER, DARK, .15)};--soft:{mix(PAPER, DARK, .06)};"
+                  f"--card:#ffffff;--txt:{DARK};--lk:{darken(ACC)};--hdr:{PAPER}f5;--bd:{mix(PAPER, DARK, .28)};"
+                  f"--acc:{ACC};--acc2:{darken(ACC)};--onacc:{ONACC};--ev:{PRIMARY};--evl:{mix(PRIMARY, '#ffffff', .78)};--evb:{mix(PRIMARY, '#ffffff', .55)};"
+                  f"--ig:{mix(DARK, PRIMARY, .5)};--it:{mix(DARK, '#ffffff', .8)};--it2:{mix(DARK, '#ffffff', .72)}}}")
 _BS = SRC / "assets/vendor/bootstrap-lite.css"  # subset Bootstrap 5.3 (grid + utilitas), hasil build tools/vendor
 CSS = (_BS.read_text(encoding="utf-8") if _BS.exists() else "") + minify_css((SRC / "assets/style.css").read_text(encoding="utf-8")) + THEME_VARS
 
@@ -368,6 +385,8 @@ def dealer_ld():
          "address": {"@type": "PostalAddress", "streetAddress": SITE["address"], "addressLocality": SITE["city"],
                      "addressRegion": SITE["region"], "postalCode": SITE["postal"], "addressCountry": "ID"},
          "openingHours": SITE.get("hours_schema", "Mo-Sa 09:00-18:00")}
+    if SITE.get("email"):
+        d["email"] = SITE["email"]
     if SITE["wa_number"] != "6281234567890":
         d["telephone"] = "+" + SITE["wa_number"]
         d["contactPoint"] = {"@type": "ContactPoint", "telephone": "+" + SITE["wa_number"], "contactType": "sales", "availableLanguage": "id", "areaServed": "ID"}
@@ -400,29 +419,62 @@ def head(title, desc, path, og_type="website", schema=None, robots="index,follow
     cfg = {"name": NAME, "wa": SITE["wa_number"], "firebase": SITE["firebase"]}
     ogi = url(og_image or "/assets/og-default.png")
     wh = '<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">'
-    return (f'<!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
+    return (f'<!doctype html><html lang="id"{HTML_MODE}><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
             f'<title>{esc(title)}</title><meta name="description" content="{esc(desc)}"><link rel="canonical" href="{canon}">'
             f'<meta name="robots" content="{robots},max-image-preview:large"><meta name="theme-color" content="{DARK}">'
             f'<link rel="icon" href="{FAVICON}"><link rel="alternate" type="application/rss+xml" title="{esc(NAME)}" href="/feed.xml">'
             f'<meta property="og:type" content="{og_type}"><meta property="og:site_name" content="{esc(NAME)}">'
             f'<meta property="og:title" content="{esc(title)}"><meta property="og:description" content="{esc(desc)}">'
             f'<meta property="og:url" content="{canon}"><meta property="og:locale" content="id_ID"><meta property="og:image" content="{ogi}">{wh}'
-            f'<meta name="twitter:card" content="summary_large_image"><link rel="preload" href="/assets/fonts/display.woff2" as="font" type="font/woff2" crossorigin>'
+            f'<meta name="twitter:card" content="summary_large_image"><link rel="preload" href="/assets/fonts/{'display-ed' if STYLE_ED else 'display'}.woff2" as="font" type="font/woff2" crossorigin>'
             f'<script>document.documentElement.className="js"</script>{extra}{gsc}<style>{CSS}</style>'
             f'{"".join(ld(s) for s in (schema or []))}{ga}<script>window.SITE_CONFIG={json.dumps(cfg)}</script></head>')
 
 
-def header():
+NEW_NAV = [{"label": "Beranda", "href": "/"}, {"label": "Model", "href": "/#model"}, {"label": "Harga", "href": "/harga-byd/"},
+           {"label": "Promo", "href": "/#promo"}, {"label": "Delivery", "href": "/serah-terima/"}, {"label": "Testimoni", "href": "/testimoni/"},
+           {"label": "Artikel", "href": "/blog/"}, {"label": "Kontak", "href": "/#lead"}]
+LEGACY_NAV = [("Model", "/#model"), ("Harga", "/harga-byd/"), ("Mobil Listrik Murah", "/mobil-listrik-murah/"), ("Blog", "/blog/")]
+PIN_ICON = "<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' aria-hidden='true'><path d='M12 21s7-5.5 7-11a7 7 0 0 0-14 0c0 5.5 7 11 7 11z'/><circle cx='12' cy='10' r='2.5'/></svg>"
+IG_ICON = "<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' aria-hidden='true'><rect x='3' y='3' width='18' height='18' rx='5'/><circle cx='12' cy='12' r='4'/><circle cx='17.5' cy='6.5' r='1' fill='currentColor' stroke='none'/></svg>"
+FB_ICON = "<svg viewBox='0 0 24 24' fill='currentColor' aria-hidden='true'><path d='M14 8h3V4h-3a4 4 0 0 0-4 4v2H7v4h3v6h4v-6h3l1-4h-4V8z'/></svg>"
+MAIL_ICON = "<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' aria-hidden='true'><rect x='3' y='5' width='18' height='14' rx='2'/><path d='m3 7 9 6 9-6'/></svg>"
+MENU_ICON = "<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' aria-hidden='true'><path d='M4 7h16M4 12h16M4 17h16'/></svg>"
+
+
+def nav_items():
+    nav = SITE.get("nav") or []
+    if [(n.get("label"), n.get("href")) for n in nav] == LEGACY_NAV:
+        nav = NEW_NAV
+    out = []
+    for n in nav:
+        hr = n.get("href", "")
+        if (hr == "/serah-terima/" and not hand_items()) or (hr == "/testimoni/" and not testi_items()) or (hr == "/#promo" and not promo_items()):
+            continue  # menu hanya muncul bila halaman/bagiannya benar-benar ada
+        out.append(n)
+    return out
+
+
+def header(path=""):
     promo = ""
     pr = SITE.get("promo") or {}
     if pr.get("enabled") and pr.get("text"):
         link = f' <a href="{esc(pr.get("link", "/test-drive/"))}">Selengkapnya</a>' if pr.get("link") else ""
         promo = f'<div class="promo"><div class="wrap">{esc(pr["text"])}{link}</div></div>'
-    nav = "".join(f'<a href="{esc(n["href"])}">{esc(n["label"])}</a>' for n in SITE.get("nav", []))
+    model_paths = {f"/{m['slug']}/" for m in MODELS}
+
+    def on(n):
+        hr = n.get("href", "")
+        if hr == "/#model":
+            return path in model_paths
+        return "#" not in hr and hr == path
+
+    nav = "".join(f'<a href="{esc(n["href"])}"{" aria-current=page" if on(n) else ""}>{esc(n["label"])}</a>' for n in nav_items())
+    wa = f'<a class="btn hwa" href="{wa_url()}" data-wa="header" rel="noopener" aria-label="Chat WhatsApp">{WA_ICON}<span>WhatsApp</span></a>'
     return (f'<a class="skip" href="#main">Lewati ke konten</a>{promo}<header class="top"><div class="wrap bar">'
             f'<a class="logo" href="/" aria-label="{esc(NAME)} beranda">{BOLT}<span>{esc(NAME)}</span></a>'
-            f'<nav class="d" aria-label="Menu utama">{nav}<a class="btn sm" href="/test-drive/">Test Drive</a></nav>'
-            f'<details class="m"><summary>Menu</summary><div>{nav}<a href="/test-drive/">Test Drive</a></div></details></div></header>')
+            f'<nav class="d" aria-label="Menu utama">{nav}</nav>{wa}'
+            f'<details class="m"><summary aria-label="Buka menu">{MENU_ICON}</summary><div>{nav}<a href="/test-drive/">Booking Test Drive</a></div></details></div></header>')
 
 
 def social_links():
@@ -440,15 +492,18 @@ def footer():
     mod = "".join(f'<li><a href="/{m["slug"]}/">{esc(m["name"])}</a></li>' for m in MODELS)
     extra = "".join(f'<li><a href="/{p["slug"]}/">{esc(p["h1"])}</a></li>' for p in VIS_LAND if p["in_footer"])
     soc = "".join(f'<li><a href="{esc(u)}" rel="noopener me">{esc(n)}</a></li>' for n, u in socials())
-    soc_block = f'<div><h2>Ikuti Kami</h2><ul>{soc}</ul></div>' if soc else ""
+    mail = f'<li><a href="mailto:{esc(SITE["email"])}">{esc(SITE["email"])}</a></li>' if SITE.get("email") else ""
+    sl = SITE.get("sales") or {}
+    who = f'<p><strong>{esc(sl["name"])}</strong><br>{esc(sl.get("role", ""))}</p>' if (sl.get("name") or "").strip() else ""
     fab = (f'<a class="wafab" href="{wa_url()}" data-wa="floating" rel="noopener" aria-label="Chat WhatsApp">{WA_ICON}<span>Chat WhatsApp</span></a>'
            if SITE.get("show_floating_wa", True) else "")
-    return (f'<footer class="ft"><div class="wrap"><div class="fg"><div><h2>{esc(NAME)}</h2><p>{esc(SITE["tagline"])}.<br>{esc(SITE["address"])}<br>'
-            f'{esc(SITE["city"])}, {esc(SITE["region"])}<br>{esc(SITE["hours"])}</p>'
+    return (f'<footer class="ft"><div class="wrap"><div class="fg"><div><h2>{esc(NAME)}</h2><p>{esc(SITE["tagline"])}.</p>{who}'
             f'<p><a href="{wa_url()}" data-wa="footer" rel="noopener">WhatsApp {esc(SITE["phone_display"])}</a></p></div>'
             f'<div><h2>Model BYD</h2><ul>{mod}</ul></div>'
             f'<div><h2>Informasi</h2><ul><li><a href="/harga-byd/">Harga mobil BYD terbaru</a></li><li><a href="/test-drive/">Booking test drive</a></li>'
-            f'<li><a href="/blog/">Blog &amp; perbandingan</a></li>{social_links()}{extra}</ul></div>{soc_block}</div>'
+            f'<li><a href="/blog/">Blog &amp; perbandingan</a></li>{social_links()}{extra}</ul></div>'
+            f'<div><h2>Kontak &amp; Lokasi</h2><p>{esc(SITE["address"])}<br>{esc(SITE["city"])}, {esc(SITE["region"])}<br>{esc(SITE["hours"])}</p>'
+            f'<ul>{mail}{soc}</ul></div></div>'
             f'<p class="legal">{esc(SITE.get("footer_note", ""))} © {NOW.year} {esc(SITE.get("legal_name") or NAME)}.</p></div></footer>'
             f'{fab}<script defer src="/assets/app.js"></script></body></html>')
 
@@ -496,7 +551,7 @@ def faq_pairs(lst):
 
 
 def page(title, desc, path, body, schema=None, og_type="website", robots="index,follow", og_image=None, extra=""):
-    return (head(title, desc, path, og_type, schema, robots, og_image, extra) + "<body>" + header() + '<main id="main">' + body + "</main>" + footer())
+    return (head(title, desc, path, og_type, schema, robots, og_image, extra) + "<body>" + header(path) + '<main id="main">' + body + "</main>" + footer())
 
 
 def add(path, html_, lastmod=None, index=True):
@@ -578,7 +633,8 @@ def section_on(group, sid):
     return False
 
 
-DEFAULT_AFTER = {("home", "leasing"): ["models"], ("home", "handover"): ["why", "models"], ("home", "testimonials"): ["handover", "why", "models"],
+DEFAULT_AFTER = {("home", "promo"): ["models"], ("home", "credit"): ["video", "promo", "models"], ("home", "cta"): ["faq"], ("home", "budget"): ["hero"], ("home", "video"): ["promo", "models"], ("home", "stats"): ["credit", "video", "promo", "models"],
+                 ("home", "panels"): ["stats", "credit", "video", "promo", "models"], ("home", "spotlight"): ["panels", "stats", "credit", "video", "promo", "models"], ("home", "leasing"): ["models"], ("home", "handover"): ["why", "models"], ("home", "testimonials"): ["handover", "why", "models"],
                  ("model", "leasing"): ["others"], ("model", "testimonials"): ["articles", "compare", "specs"]}
 
 
@@ -629,7 +685,75 @@ def leasing_section(where):
 # ------------------------------------------------------------------ TESTIMONI & SERAH TERIMA
 TESTI = content.load_json("testimonials.json", {})
 HAND = content.load_json("handovers.json", {})
+PROMOS = content.load_json("promos.json", {})
 PAGE_IMAGES = {}  # path -> [(url gambar, keterangan)] untuk sitemap gambar
+
+
+def hl(t):
+    """Escape + bungkus kata terakhir judul dengan <span class=hl> (diwarnai hanya pada gaya Editorial)."""
+    t = fmt(t or "").strip()
+    a, _, b = t.rpartition(" ")
+    return f'{esc(a)} <span class="hl">{esc(b)}</span>' if a else esc(t)
+
+
+def ey(t):
+    return f'<p class="ey">{esc(t)}</p>'
+
+
+def credit_section():
+    pm = [m for m in MODELS if m.get("variants")]
+    if not pm:
+        return ""
+    cfg = SITE.get("credit") or {}
+    try:
+        rate = float(str(cfg.get("rate") or 5).replace(",", "."))
+    except ValueError:
+        rate = 5.0
+    data = [{"n": m["name"], "v": [{"n": v["name"], "p": v["price"]} for v in m["variants"]]} for m in pm]
+    opts = "".join(f'<option value="{k}">{esc(m["name"])}</option>' for k, m in enumerate(pm))
+    return (f'<section class="s" id="simulasi"><div class="wrap"><div class="calc" data-credit=\'{esc(json.dumps(data, ensure_ascii=False, separators=(",", ":")))}\' data-rate="{rate}">'
+            f'<span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{WHY_ICONS[1]}"/></svg></span>'
+            f'{ey("Simulasi Kredit")}<h2>{hl(cfg.get("title") or "Hitung Estimasi Angsuran")}</h2>'
+            f'<p>{esc(cfg.get("text") or "Perkirakan cicilan bulanan mobil listrik BYD sesuai uang muka dan tenor. Angka final mengikuti leasing dan dikonfirmasi sales kami.")}</p>'
+            f'<form class="cf" onsubmit="return false"><label>Model<select id="cm">{opts}</select></label><label>Varian<select id="cv"></select></label>'
+            f'<label>Uang muka: <output id="cdpo">30%</output><input id="cdp" type="range" min="10" max="70" step="5" value="30"></label>'
+            f'<label>Tenor<select id="ct"><option value="1">1 tahun</option><option value="2">2 tahun</option><option value="3">3 tahun</option><option value="4">4 tahun</option><option value="5" selected>5 tahun</option></select></label></form>'
+            f'<div class="cres" aria-live="polite"><small>Perkiraan cicilan</small><strong id="cr">Rp ... / bulan</strong><span id="cdet"></span></div>'
+            f'<a class="btn" id="cwa" href="{wa_url()}" data-wa="credit" rel="noopener">{WA_ICON} Minta simulasi resmi</a>'
+            f'<p class="note">Estimasi dengan bunga flat {rate:g}% per tahun (asumsi, bukan penawaran). Harga OTR Jakarta ({esc(PRICE_LABEL)}); biaya asuransi, provisi, dan administrasi belum termasuk.</p></div></div></section>')
+
+
+def promo_items():
+    """Promo aktif: tidak dimatikan, ada judul + isi, dan belum lewat tanggal berlaku (dicek tiap build; cron per jam menyembunyikan promo kedaluwarsa)."""
+    today = NOW.strftime("%Y-%m-%d")
+    out = []
+    for p in PROMOS.get("items", []):
+        if p.get("on", True) is False or not (p.get("title") or "").strip() or not (p.get("text") or "").strip():
+            continue
+        u = str(p.get("until") or "")[:10]
+        if u and u < today:
+            continue
+        out.append(p)
+    return out[:int(PROMOS.get("max", 3) or 3)]
+
+
+def promo_section():
+    its = promo_items()
+    if not its:
+        return ""
+    cards = ""
+    for k, p in enumerate(its):
+        pic = ""
+        if p.get("image") and images.resolve(p["image"]):
+            pic = f'<div class="pmi">{img_tag(p["image"], p.get("alt") or p["title"], "(max-width:820px) 100vw, 420px")}</div>'
+        paras = "".join(f"<p>{md.inline(t.strip())}</p>" for t in re.split(r"\n\s*\n", p["text"].strip()) if t.strip())
+        until = f'<p class="until">Berlaku sampai {esc(id_date(p["until"]))}. Syarat dan ketentuan berlaku.</p>' if p.get("until") else ""
+        badge = f'<span class="pill">{esc(p["badge"])}</span>' if p.get("badge") else ""
+        msg = f"Halo, saya tertarik dengan promo: {p['title'].strip()}. Boleh minta info lengkapnya?"
+        cards += (f'<article class="pm{" nopic" if not pic else ""}" data-aos="fade-up">{pic}<div class="pmb">{badge}<h3>{esc(p["title"])}</h3>{paras}{until}'
+                  f'<a class="btn" href="{wa_url(msg)}" data-wa="promo" rel="noopener">{WA_ICON} {esc(p.get("cta") or "Tanya promo ini")}</a></div></article>')
+    return (f'<section class="s alt" id="promo"><div class="wrap">{ey("Penawaran Terbaru")}<h2>{hl(PROMOS.get("title") or "Promo BYD Terbaru")}</h2>'
+            f'<p>{esc(PROMOS.get("intro") or "Penawaran yang sedang berlaku. Tanyakan syarat dan ketentuannya ke sales kami.")}</p><div class="pms">{cards}</div></div></section>')
 
 
 def id_date(iso):
@@ -706,7 +830,8 @@ def _slider(cards, per, title, intro, link, cls, sid="", alt=False, auto=0):
            '<button type="button" data-sw="1" aria-label="Berikutnya">&#8594;</button></div>')
     more = f'<p style="margin-top:14px"><a class="btn o sm" style="color:var(--acc2)" href="{link[0]}">{esc(link[1])}</a></p>' if link else ""
     idattr = f' id="{sid}"' if sid else ""
-    return (f'<section class="s{" alt" if alt else ""}"{idattr}><div class="wrap"><div class="row-h"><div><h2>{esc(title)}</h2><p>{esc(intro)}</p></div>{nav}</div>'
+    eyt = {"serah-terima": "Momen Pelanggan", "testimoni": "Testimoni"}.get(sid, "")
+    return (f'<section class="s{" alt" if alt else ""}"{idattr}><div class="wrap"><div class="row-h"><div>{ey(eyt) if eyt else ""}<h2>{hl(title)}</h2><p>{esc(intro)}</p></div>{nav}</div>'
             f'<div class="swiper bhs {cls}" data-per="{per}" data-auto="{auto}" data-aos="fade-up"><div class="swiper-wrapper">{slides}</div><div class="swiper-pagination"></div></div>{more}</div></section>')
 
 
@@ -828,12 +953,163 @@ def rg_html(m, dark=False):
     return f'<div class="rg"><i style="--w:{r[2]}%"></i><b>{"" if r[3] else "hingga "}{r[0]} km{" listrik" if r[3] else ""}</b></div>'
 
 
+WHY_ICONS = ["M13 2 4 14h7l-1 8 10-12h-7z",
+             "M12 3v18M16 7.5c0-1.4-1.8-2.5-4-2.5s-4 1.1-4 2.5 1.8 2.4 4 2.5 4 1.1 4 2.5-1.8 2.5-4 2.5-4-1.1-4-2.5",
+             "M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.5-.5-.5-2.5z",
+             "M5 16l1.5-5a2 2 0 0 1 1.9-1.4h7.2a2 2 0 0 1 1.9 1.4L19 16M4 16h16v3H4zM7 19v1.5M17 19v1.5",
+             "M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-11V6l7-3zM9 12l2 2 4-4"]
+
+
+YT_RE = re.compile(r"(?:youtu\.be/|youtube(?:-nocookie)?\.com/(?:watch\?(?:.*&)?v=|embed/|shorts/))([A-Za-z0-9_-]{11})")
+PLAY_ICON = "<svg viewBox='0 0 24 24' fill='currentColor' aria-hidden='true'><path d='M8 5v14l11-7z'/></svg>"
+
+
+def media_url(u):
+    u = (u or "").strip()
+    return u if re.match(r"(https://|/)[^\s\"'<>]+$", u) else ""
+
+
+def video_html(v, label):
+    """Video: YouTube (dimuat saat diklik, tanpa cookie) atau berkas .mp4/.webm. Kosong bila URL tidak valid."""
+    url = media_url(v.get("url"))
+    if not url:
+        return ""
+    poster = ""
+    if v.get("poster") and images.resolve(v["poster"]):
+        poster = img_tag(v["poster"], v.get("alt") or label, "(max-width:820px) 100vw, 1100px")
+    m = YT_RE.search(url)
+    if m:
+        return (f'<button class="vplay" type="button" data-yt="{m.group(1)}" aria-label="Putar video: {esc(label)}">{poster}'
+                f'<span class="pbtn">{PLAY_ICON}</span></button>')
+    if re.search(r"\.(mp4|webm)(\?|$)", url):
+        pt = ""
+        if v.get("poster") and images.resolve(v["poster"]):
+            pt = f' poster="{images.resolve(v["poster"])}"'
+        return f'<video class="vfile" controls playsinline preload="none"{pt} aria-label="{esc(label)}"><source src="{esc(url)}"></video>'
+    return ""
+
+
+def video_section():
+    v = PG["home"].get("video") or {}
+    title = (v.get("title") or "Lihat Langsung di Jalan").strip()
+    box = video_html(v, title)
+    if not box:
+        return ""
+    return (f'<section class="s alt vsec" id="video"><div class="wrap">{ey(v.get("eyebrow") or "Video")}<h2>{hl(title)}</h2>'
+            + (f'<p>{esc(v["text"])}</p>' if v.get("text") else "") + f'<div class="vbox">{box}</div></div></section>')
+
+
+def stats_items():
+    h = PG["home"]
+    out = [(str(s.get("value", "")), str(s.get("unit", "")), str(s.get("label", ""))) for s in (h.get("stats") or []) if str(s.get("value", "")).strip()]
+    if out or not STYLE_MD:
+        return out
+    pm = [m for m in MODELS if m.get("variants")]
+    if not pm:
+        return []
+    lo = min(v["price"] for m in pm for v in m["variants"]) // 1_000_000
+    out = [(str(lo), "juta", "Harga mulai OTR Jakarta"), (str(len(pm)), "model", f"Pilihan BYD di {NAME}")]
+    rg = [(range_info(m)[0], m) for m in pm if range_info(m) and not range_info(m)[3]]
+    if rg:
+        km, m = max(rg, key=lambda x: x[0])
+        out.append((str(km), "km", f"Jarak tempuh maksimum, {m['name']}"))
+    return out
+
+
+def stats_section():
+    its = stats_items()
+    if not its:
+        return ""
+    cells = "".join(f'<div><b>{esc(v)}<em>{esc(u)}</em></b><span>{esc(l)}</span></div>' for v, u, l in its[:4])
+    return f'<section class="s stsec"><div class="wrap"><div class="stats n{min(len(its), 4)}">{cells}</div><p class="note">Harga OTR Jakarta ({esc(PRICE_LABEL)}). Jarak tempuh menurut price list dealer.</p></div></section>'
+
+
+def panels_items():
+    h = PG["home"]
+    out = []
+    for p in h.get("panels") or []:
+        if (p.get("title") or "").strip():
+            out.append({"tag": p.get("tag", ""), "title": p["title"], "text": p.get("text", ""), "image": p.get("image"), "link": p.get("link", "")})
+    if out or not STYLE_MD:
+        return out
+    groups = {}
+    for m in MODELS:
+        if m.get("variants"):
+            groups.setdefault(m.get("body") or m.get("type") or "Model", []).append(m)
+    for body, ms in list(groups.items())[:4]:
+        lo = min(v["price"] for m in ms for v in m["variants"])
+        out.append({"tag": f"{len(ms)} model", "title": body, "text": ", ".join(m["name"] for m in ms) + f". Mulai {juta(lo)}.", "image": None, "link": f"/{ms[0]['slug']}/"})
+    return out
+
+
+def panels_section():
+    its = panels_items()
+    if not its:
+        return ""
+    h = PG["home"]
+    cards = ""
+    for p in its[:6]:
+        pic = img_tag(p["image"], p.get("alt") or p["title"], "(max-width:700px) 100vw, 560px") if p.get("image") and images.resolve(p["image"]) else ""
+        tag = f'<span class="tag">{esc(p["tag"])}</span>' if p.get("tag") else ""
+        inner = f'{pic}{tag}<h3>{esc(p["title"])}</h3><p>{esc(p.get("text", ""))}</p>'
+        lk = media_url(p.get("link"))
+        cards += (f'<a class="pnl{" pic" if pic else ""}" href="{esc(lk)}">{inner}</a>' if lk else f'<div class="pnl{" pic" if pic else ""}">{inner}</div>')
+    return (f'<section class="s pnsec" id="unggulan"><div class="wrap">{ey(h.get("panels_eyebrow") or "Pilihan")}<h2>{hl(h.get("panels_title") or "Mana yang cocok untuk Anda")}</h2>'
+            f'<div class="pgrid">{cards}</div></div></section>')
+
+
+def spotlight_section():
+    h = PG["home"]
+    sp = h.get("spotlight") or {}
+    pm = [m for m in MODELS if m.get("variants")]
+    m = next((x for x in pm if x["slug"] == sp.get("slug")), None)
+    if not m and not STYLE_MD:
+        return ""
+    if not m:
+        cand = [(range_info(x)[0], x) for x in pm if range_info(x) and not range_info(x)[3]]
+        if not cand:
+            return ""
+        m = max(cand, key=lambda x: x[0])[1]
+    items = [(str(i.get("value", "")), str(i.get("label", ""))) for i in (sp.get("items") or []) if str(i.get("value", "")).strip()]
+    if not items:
+        r = range_info(m)
+        lo = min(v["price"] for v in m["variants"])
+        if r:
+            items.append((f"{r[0]} km", "Jarak tempuh maksimum" if not r[3] else "Jarak tempuh mode listrik"))
+        items.append((juta(lo), "Harga OTR Jakarta, varian termurah"))
+        items.append((m.get("body") or m.get("type", ""), m.get("type", "")))
+    li = "".join(f"<li><b>{esc(v)}</b><span>{esc(l)}</span></li>" for v, l in items[:4])
+    src = sp.get("image") or (m["images"][0]["src"] if m.get("images") else "")
+    pic = f'<div class="spp">{img_tag(src, m["name"], "(max-width:820px) 100vw, 540px")}</div>' if src and images.resolve(src) else ""
+    return (f'<section class="s alt spsec"><div class="wrap spin{" nopic" if not pic else ""}"><div>{ey(sp.get("eyebrow") or "Sorotan")}<h2>{hl(sp.get("title") or m["name"])}</h2>'
+            f'<ul>{li}</ul><a class="btn" href="/{m["slug"]}/">Lihat {esc(m["name"])}</a></div>{pic}</div></section>')
+
+
 def build_home():
     h = PG["home"]
     lead_txt = fmt(h.get("lead", ""))
 
-    def s_hero():
-        badges = "".join(f"<li>{esc(b)}</li>" for b in h.get("badges", []))
+    def profile():
+        sl = SITE.get("sales") or {}
+        nm = (sl.get("name") or "").strip()
+        if not nm:
+            return ""
+        ph = sl.get("photo")
+        av = img_tag(ph, nm, "160px", eager=True) if ph and images.resolve(ph) else f'<span class="ini" aria-hidden="true">{esc(nm[:1].upper())}</span>'
+        loc = (sl.get("branch") or SITE.get("city") or "").strip()
+        chip = f'<span class="chip">{PIN_ICON}{esc(loc)}</span>' if loc else ""
+        ic = [(WA_ICON, "WhatsApp", wa_url(), ' data-wa="profile" rel="noopener"')]
+        if SITE.get("instagram"):
+            ic.append((IG_ICON, "Instagram @" + SITE["instagram"].lstrip("@"), "https://instagram.com/" + SITE["instagram"].lstrip("@"), ' rel="noopener me"'))
+        if SITE.get("facebook"):
+            ic.append((FB_ICON, "Facebook", SITE["facebook"], ' rel="noopener me"'))
+        if SITE.get("email"):
+            ic.append((MAIL_ICON, "Email", "mailto:" + SITE["email"], ""))
+        icons = "".join(f'<a href="{esc(u)}" aria-label="{esc(l)}"{x}>{i}</a>' for i, l, u, x in ic)
+        return (f'<div class="prof"><div class="avt">{av}</div><div class="pn">{esc(nm)}</div><div class="pr2">{esc(sl.get("role", ""))}</div>{chip}'
+                f'<div class="soc">{icons}</div></div>')
+
+    def budget_html():
         pm = sorted([m for m in MODELS if m.get("variants")], key=lambda m: min(v["price"] for v in m["variants"]))
         items = ""
         for m in pm:
@@ -846,9 +1122,30 @@ def build_home():
                  f'<input id="bud" type="range" min="{max(100, (lo_all - 20) // 10 * 10)}" max="1000" step="10" value="400">'
                  f'<ul class="bm" id="bm">{items}</ul><p class="cnt" id="budcnt" aria-live="polite"></p>'
                  f'<p class="note" style="margin:6px 0 0">Harga OTR Jakarta ({esc(PRICE_LABEL)}), harga mulai varian termurah. Jarak tempuh menurut price list dealer.</p></div>') if pm else ""
-        return (f'<section class="hero"><div class="wrap"><div><h1>{esc(fmt(h["h1"]))}</h1><p class="lead">{esc(lead_txt)}</p><div class="cta">'
-                f'<a class="btn w" href="{wa_url()}" data-wa="hero" rel="noopener">{WA_ICON} {esc(h.get("cta_primary", "Chat WhatsApp"))}</a>'
-                f'<a class="btn o" href="#lead">{esc(h.get("cta_secondary", "Booking Test Drive"))}</a></div><ul class="badges">{badges}</ul></div>{panel}</div></section>')
+        return panel
+
+    def s_hero():
+        panel = "" if STYLE_MD else budget_html()
+        sl = SITE.get("sales") or {}
+        eyebrow = h.get("eyebrow") or f'{SITE["tagline"]} · {SITE["city"]}'
+        cards = h.get("info_cards") or [{"label": "Lokasi", "value": (sl.get("branch") or SITE["city"])},
+                                         {"label": "Test Drive", "value": "Jadwal fleksibel"}, {"label": "Simulasi Kredit", "value": "Gratis, tanpa ribet"}]
+        info = "".join(f'<li><span>{esc(c.get("label", ""))}</span><strong>{esc(c.get("value", ""))}</strong></li>' for c in cards if c.get("value"))
+        if STYLE_MD:
+            vid = media_url(h.get("hero_video"))
+            if vid and re.search(r"\.(mp4|webm)(\?|$)", vid):
+                pt = f' poster="{images.resolve(h["hero_image"])}"' if h.get("hero_image") and images.resolve(h["hero_image"]) else ""
+                media = f'<div class="mhm"><video autoplay muted loop playsinline preload="metadata"{pt} aria-hidden="true"><source src="{esc(vid)}"></video></div>'
+            else:
+                src = h.get("hero_image") or next((m["images"][0]["src"] for m in MODELS if m.get("images")), "")
+                media = f'<div class="mhm">{img_tag(src, h.get("hero_alt") or h["h1"], "(max-width:900px) 100vw, 560px", eager=True)}</div>' if src and images.resolve(src) else ""
+            return (f'<section class="hero c mh"><div class="wrap mhin{"" if media else " nomedia"}"><div class="mht">{profile()}<p class="eyb">{esc(eyebrow.upper())}</p><h1>{hl(h["h1"])}</h1><p class="lead">{esc(lead_txt)}</p><div class="cta">'
+                    f'<a class="btn" href="{wa_url()}" data-wa="hero" rel="noopener">{WA_ICON} {esc(h.get("cta_primary", "Chat WhatsApp"))}</a>'
+                    f'<a class="btn o" href="#lead">{esc(h.get("cta_secondary", "Booking Test Drive"))}</a></div><ul class="infos">{info}</ul></div>{media}</div></section>')
+        return (f'<section class="hero c"><div class="wrap">{profile()}<p class="eyb">{esc(eyebrow.upper())}</p><h1>{hl(h["h1"])}</h1><p class="lead">{esc(lead_txt)}</p><div class="cta">'
+                f'<a class="btn" href="{wa_url()}" data-wa="hero" rel="noopener">{WA_ICON} {esc(h.get("cta_primary", "Chat WhatsApp"))}</a>'
+                f'<a class="btn o" href="#lead">{esc(h.get("cta_secondary", "Booking Test Drive"))}</a></div>'
+                f'<ul class="infos">{info}</ul>{panel}</div></section>')
 
     def s_models():
         cards = ""
@@ -862,14 +1159,15 @@ def build_home():
             hy = " + mesin bensin" if r and r[3] else ""
             cards += (f'<div class="swiper-slide"><a class="mc" href="/{m["slug"]}/"><div class="top">{pic}{big}</div><div class="bd"><span class="tp">{esc(m["type"])}{hy}</span>'
                       f'<h3>{esc(m["name"])}</h3><span class="pr">{price_line(m)}</span><span class="more">Lihat detail dan harga</span></div></a></div>')
-        return (f'<section class="s" id="model"><div class="wrap"><div class="row-h"><div><h2>{esc(h["models_title"])}</h2><p>{esc(h.get("models_intro", ""))}</p></div>'
+        return (f'<section class="s" id="model"><div class="wrap"><div class="row-h"><div>{ey("Koleksi Model")}<h2>{hl(h["models_title"])}</h2><p>{esc(h.get("models_intro", ""))}</p></div>'
                 f'<div class="sl-nav" aria-label="Geser model"><button type="button" data-sw="-1" aria-label="Model sebelumnya">&#8592;</button><button type="button" data-sw="1" aria-label="Model berikutnya">&#8594;</button></div></div>'
-                f'<div class="swiper bhs msl" data-per="4" data-mid="2.2" data-mob="1.15"><div class="swiper-wrapper">{cards}</div><div class="swiper-pagination"></div></div>'
+                f'<div class="swiper bhs msl" data-per="4" data-mid="2.2" data-mob="1.15"><div class="swiper-wrapper">{cards}</div><div class="swiper-pagination"></div></div><p class="swipe">Geser untuk melihat model</p>'
                 f'<p class="note">Harga OTR Jakarta, {esc(PRICE_LABEL)}; dapat berubah. Lihat <a href="/harga-byd/">daftar harga mobil BYD terbaru</a>.</p></div></section>')
 
     def s_why():
-        items = "".join(f'<div data-aos="fade-up" data-aos-delay="{k * 80}"><h3>{esc(i["title"])}</h3><p>{esc(i["text"])}</p></div>' for k, i in enumerate(h.get("why_items", [])))
-        return (f'<section class="s alt"><div class="wrap"><h2>{esc(h["why_title"])}</h2><div class="feat">{items}</div>'
+        items = "".join(f'<div data-aos="fade-up" data-aos-delay="{k * 80}"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{WHY_ICONS[k % len(WHY_ICONS)]}"/></svg></span>'
+                        f'<h3>{esc(i["title"])}</h3><p>{esc(i["text"])}</p></div>' for k, i in enumerate(h.get("why_items", [])))
+        return (f'<section class="s alt"><div class="wrap">{ey("Keunggulan")}<h2>{hl(h["why_title"])}</h2><div class="feat">{items}</div>'
                 f'<p style="margin-top:18px">{md.inline(h.get("why_links", ""))}</p></div></section>')
 
     def s_articles():
@@ -877,7 +1175,7 @@ def build_home():
         arts = arts_for("home", limit=n, fill=True)
         if not arts:
             return ""
-        return (f'<section class="s"><div class="wrap"><h2>{esc(h.get("articles_title", "Artikel Terbaru"))}</h2>'
+        return (f'<section class="s"><div class="wrap">{ey("Wawasan")}<h2>{hl(h.get("articles_title", "Artikel Terbaru"))}</h2>'
                 f'<div class="grid">{"".join(article_card(a) for a in arts)}</div>'
                 f'<p style="margin-top:16px"><a class="btn o sm" style="color:var(--acc2)" href="/blog/">Semua artikel</a></p></div></section>')
 
@@ -891,8 +1189,18 @@ def build_home():
     def s_faq():
         return f'<section class="s"><div class="wrap art"><h2>{esc(h["faq_title"])}</h2>{faq_html(faq_pairs(h.get("faq")))}</div></section>'
 
-    reg = {"hero": s_hero, "models": s_models, "leasing": lambda: leasing_section("home"), "handover": hand_section, "testimonials": lambda: testi_section("home"), "why": s_why, "articles": s_articles, "usecases": s_usecases, "lead": s_lead, "faq": s_faq}
-    body = "".join(reg[i]() for i in sections_order("home", reg))
+    def s_cta():
+        return (f'<section class="s ctasec"><div class="wrap"><div class="ctab">{ey("Hubungi Kami")}<h2>{hl(h.get("cta_title") or "Siap konsultasi?")}</h2>'
+                f'<p>{esc(h.get("cta_text") or "Kirim pesan sekarang, kami bantu pilihkan model dan skema pembelian yang paling pas.")}</p>'
+                f'<a class="btn" href="{wa_url()}" data-wa="cta" rel="noopener">{WA_ICON} Chat WhatsApp Sekarang</a></div></div></section>')
+
+    def s_budget():
+        p = budget_html() if STYLE_MD else ""
+        return f'<section class="s bdsec"><div class="wrap">{p}</div></section>' if p else ""
+
+    reg = {"hero": s_hero, "budget": s_budget, "models": s_models, "leasing": lambda: leasing_section("home"), "handover": hand_section, "testimonials": lambda: testi_section("home"),
+           "promo": promo_section, "video": video_section, "credit": credit_section, "stats": stats_section, "panels": panels_section, "spotlight": spotlight_section, "why": s_why, "articles": s_articles, "usecases": s_usecases, "lead": s_lead, "faq": s_faq, "cta": s_cta}
+    body = '<div class="hm">' + "".join(reg[i]() for i in sections_order("home", reg)) + "</div>"
     schema = [dealer_ld(), {"@context": "https://schema.org", "@type": "WebSite", "name": NAME, "url": url("/"), "inLanguage": "id-ID"}]
     if h.get("faq"):
         schema.append(faq_ld(faq_pairs(h["faq"])))
@@ -990,16 +1298,19 @@ def build_models():
         crumb_items = [("Beranda", "/"), ("Model BYD", "/#model"), (m["name"], path)]
         imgs = [i for i in m.get("images", []) if images.resolve(i["src"])]
 
-        def s_gallery():
+        def gallery_div():
             if not imgs:
                 return ""
             big = imgs[0]
             thumbs = "".join(
                 f'<a href="{images.resolve(i["src"])}" data-gal aria-label="Perbesar foto {k + 2}">'
                 f'{img_tag(i["src"], i.get("alt") or m["name"], "(max-width:600px) 50vw, 280px")}</a>' for k, i in enumerate(imgs[1:]))
-            return (f'<section class="s" style="padding-bottom:0"><div class="wrap"><div class="gal"><a class="big" href="{images.resolve(big["src"])}" data-gal '
-                    f'aria-label="Perbesar foto utama">{img_tag(big["src"], big.get("alt") or m["name"], "(max-width:820px) 100vw, 760px", eager=True)}</a>'
-                    f'<div class="th">{thumbs}</div></div></div></section>')
+            return (f'<div class="gal"><a class="big" href="{images.resolve(big["src"])}" data-gal '
+                    f'aria-label="Perbesar foto utama">{img_tag(big["src"], big.get("alt") or m["name"], "(max-width:820px) 100vw, 640px", eager=True)}</a>'
+                    f'<div class="th">{thumbs}</div></div>')
+
+        def s_gallery():
+            return ""  # galeri kini tampil berdampingan dengan judul di bagian atas halaman (lihat 'top')
 
         def s_summary():
             body = "".join(f"<p>{md.inline(p)}</p>" for p in m.get("intro", []))
@@ -1064,9 +1375,18 @@ def build_models():
         reg = {"gallery": s_gallery, "summary": s_summary, "highlights": s_highlights, "variants": s_variants, "specs": s_specs,
                "compare": s_compare, "articles": s_articles, "faq": s_faq, "others": s_others, "lead": s_lead,
                "leasing": lambda: leasing_section("model"), "testimonials": lambda: testi_section("model", m["slug"])}
-        top = (f'<section class="sub"><div class="wrap">{crumbs(crumb_items)}<h1>{esc(m["name"])}: Harga, Spesifikasi &amp; Test Drive</h1>'
-               f'<p>{esc(m["tagline"])}</p>{ans_box(model_answer(m), PRICE_DATE)}<a class="btn" href="{td_url(m["name"])}">Booking Test Drive</a> '
-               f'<a class="btn w" href="{wa_url("Halo, saya ingin info " + m["name"])}" data-wa="model-{m["slug"]}" rel="noopener">{WA_ICON} Tanya via WhatsApp</a></div></section>')
+        gal_known = [x["id"] for x in LAYOUT.get("model", [])]
+        gal = gallery_div() if (section_on("model", "gallery") or "gallery" not in gal_known) else ""
+        lo = min((v["price"] for v in m.get("variants", [])), default=0)
+        pricebox = (f'<div class="from">Harga mulai</div><div class="pbig">{esc(juta(lo))}</div>'
+                    f'<p class="note">OTR Jakarta, {esc(PRICE_LABEL)}. Harga dapat berubah, konfirmasi ke sales.</p>') if lo else ""
+        bro = (m.get("brochure") or "").strip()
+        brochure = f'<p class="bro"><a href="{esc(bro)}" rel="noopener" target="_blank">Unduh brosur &rarr;</a></p>' if re.match(r"(https?://|/)", bro) else ""
+        top = (f'<section class="sub mtop"><div class="wrap">{crumbs(crumb_items)}<div class="mgrid{"" if gal else " nogal"}">{gal}<div class="minfo">'
+               f'<span class="pill">{esc(m["type"])}</span><h1>{esc(m["name"])}: Harga, Spesifikasi &amp; Test Drive</h1>'
+               f'<p class="tl">{esc(m["tagline"])}</p>{ans_box(model_answer(m), PRICE_DATE)}{pricebox}'
+               f'<div class="ctas"><a class="btn" href="{wa_url("Halo, saya ingin info " + m["name"])}" data-wa="model-{m["slug"]}" rel="noopener">{WA_ICON} Tanya harga {esc(m["name"])}</a>'
+               f'<a class="btn o" href="{td_url(m["name"])}">Booking test drive</a></div>{brochure}</div></div></div></section>')
         body = top + "".join(reg[i]() for i in sections_order("model", reg))
         schema = [breadcrumb_ld(crumb_items)]
         if m.get("faq"):
@@ -1297,6 +1617,8 @@ def write_all():
         shutil.copy(SRC / "assets/vendor" / f, OUT / "assets/vendor" / f)
     (OUT / "assets/fonts").mkdir(exist_ok=True)
     shutil.copy(SRC / "assets/fonts/display.woff2", OUT / "assets/fonts/display.woff2")
+    if (SRC / "assets/fonts/display-ed.woff2").exists():
+        shutil.copy(SRC / "assets/fonts/display-ed.woff2", OUT / "assets/fonts/display-ed.woff2")
     og_default()
 
 

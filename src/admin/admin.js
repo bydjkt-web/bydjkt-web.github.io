@@ -3,11 +3,12 @@
   "use strict";
   var h = Forms.h;
   var A = root.A = { S: {}, routes: {}, h: h, cur: null };
-  var JSONS = { site: "site.json", layout: "layout.json", pages: "pages.json", models: "models.json", comps: "competitors.json", media: "media.json", keywords: "keywords.json", topics: "topics.json", rules: "seo-rules.json", theme: "theme.json", leasing: "leasing.json", testi: "testimonials.json", hand: "handovers.json" };
+  var JSONS = { site: "site.json", layout: "layout.json", pages: "pages.json", models: "models.json", comps: "competitors.json", media: "media.json", keywords: "keywords.json", topics: "topics.json", rules: "seo-rules.json", theme: "theme.json", leasing: "leasing.json", testi: "testimonials.json", hand: "handovers.json", promos: "promos.json" };
   var DEFAULTS = { site: {}, layout: {}, pages: {}, models: [], comps: [], media: { items: [] }, keywords: { keywords: [] }, topics: { topics: [] }, rules: {},
     theme: { preset: "atlantic", dark: "#243746", primary: "#3d5a6c", accent: "#2b6a8a", paper: "#f1f4f6", presets: [{id:"atlantic",name:"Atlantic Grey",dark:"#243746",primary:"#3d5a6c",accent:"#2b6a8a",paper:"#f1f4f6"},{id:"merah",name:"Merah BYD",dark:"#101820",primary:"#0d6b5b",accent:"#d4001a",paper:"#f4f5f2"},{id:"biru",name:"Biru Terang",dark:"#14213d",primary:"#1d4ed8",accent:"#0b5cff",paper:"#f3f7fe"},{id:"sporty",name:"Hitam Sporty",dark:"#0b0b0d",primary:"#8a1020",accent:"#e10b22",paper:"#f2f2f2"}] },
     testi: { h1: "Testimoni Customer BYD Harmony", title: "Testimoni Customer BYD Harmony | Pengalaman Beli BYD", description: "Cerita dan pengalaman customer yang membeli mobil listrik BYD di BYD Harmony: proses pembelian, test drive, hingga serah terima unit.", intro: "Pengalaman nyata customer BYD Harmony, dari konsultasi, test drive, sampai unit diserahkan. Testimoni ditampilkan dengan izin customer.", home_title: "Kata Customer BYD Harmony", show_home: true, show_model: true, home_count: 6, items: [] },
     hand: { h1: "Serah Terima Unit BYD ke Customer", title: "Serah Terima Unit BYD | Momen Customer BYD Harmony", description: "Dokumentasi momen serah terima unit mobil listrik BYD kepada customer BYD Harmony: foto penyerahan kunci, unit baru, dan senyum pemilik baru.", intro: "Momen penyerahan unit BYD kepada pemilik barunya. Foto dan nama ditampilkan dengan izin customer.", home_title: "Momen Serah Terima Unit", show_home: true, home_count: 6, items: [] },
+    promos: { title: "Promo BYD Terbaru", intro: "Penawaran yang sedang berlaku. Tanyakan syarat dan ketentuannya ke sales kami.", max: 3, items: [] },
     leasing: { show_home: true, show_model: true, autoplay: true, title: "Mitra Leasing Resmi", intro: "Pengajuan kredit mobil listrik BYD lewat lembaga pembiayaan yang bekerja sama dengan kami.", items: [] } };
 
   A.toast = function (msg, err) {
@@ -41,8 +42,8 @@
   /* ---- kerangka halaman ---- */
   var NAV = [
     ["dashboard", "Dashboard"], ["#", "Konten"], ["artikel", "Artikel"], ["halaman", "Halaman Pilar"], ["model", "Model Mobil"], ["pesaing", "Data Pesaing"],
-    ["testimoni", "Testimoni Customer"], ["serah-terima", "Serah Terima Unit"], ["konten/home", "Beranda"], ["konten/prices", "Halaman Harga"], ["konten/testdrive", "Test Drive"], ["konten/blog", "Blog (index)"],
-    ["#", "Tampilan"], ["tema", "Warna Template"], ["leasing", "Mitra Leasing"], ["layout", "Layout & Urutan"], ["media", "Media Gambar"], ["pengaturan", "Pengaturan Situs"],
+    ["promo", "Promo"], ["testimoni", "Testimoni Customer"], ["serah-terima", "Serah Terima Unit"], ["konten/home", "Beranda"], ["konten/prices", "Halaman Harga"], ["konten/testdrive", "Test Drive"], ["konten/blog", "Blog (index)"],
+    ["#", "Tampilan"], ["sales", "Profil Sales"], ["tema", "Warna Template"], ["leasing", "Mitra Leasing"], ["layout", "Layout & Urutan"], ["media", "Media Gambar"], ["pengaturan", "Pengaturan Situs"],
     ["#", "SEO & Distribusi"], ["jadwal", "Jadwal Terbit"], ["rencana", "Rencana & Keyword"], ["laporan", "Laporan"],
     ["#", "Alat"], ["zip", "Upload ZIP ke GitHub"]
   ];
@@ -118,16 +119,29 @@
     m.appendChild(card);
   };
 
+  var GELAP = { id: "gelap", name: "Gelap Premium (merah)", dark: "#0e1420", primary: "#e5182d", accent: "#e5182d", paper: "#0a0e16", mode: "dark" };
+  var EDITORIAL = { id: "editorial", name: "Editorial Terang (merah muda)", dark: "#0f1530", primary: "#e0267f", accent: "#d6197a", paper: "#fff7fb", style: "editorial" };
+  var MODERN = { id: "modern", name: "Modern (Atlantic Grey)", dark: "#243746", primary: "#3d5a6c", accent: "#2b6a8a", paper: "#f1f4f6", style: "modern" };
+  if (DEFAULTS.theme.presets) DEFAULTS.theme.presets.push(GELAP, EDITORIAL, MODERN);
   var F = Forms;
   var faqF = { k: "faq", t: "objlist", label: "FAQ (juga jadi schema FAQPage)", titleKey: "q", fields: [{ k: "q", label: "Pertanyaan", t: "text" }, { k: "a", label: "Jawaban", t: "area", rows: 3 }] };
   var seoF = [{ k: "title", label: "Title (30–60 karakter)", t: "text" }, { k: "description", label: "Meta description (70–160 karakter)", t: "area", rows: 2 }, { k: "h1", label: "H1", t: "text" }];
   var PAGE_FORMS = {
     home: seoF.concat([{ k: "lead", label: "Teks pembuka", t: "area", rows: 2, hint: "Boleh pakai {name} dan {price_date}" }, { k: "badges", label: "Badge", t: "strlist" }, { k: "cta_primary", label: "Tombol utama", t: "text" }, { k: "cta_secondary", label: "Tombol kedua", t: "text" },
+      { k: "eyebrow", label: "Teks kecil di atas judul (kosong = tagline + kota)", t: "text" },
+      { k: "info_cards", label: "Kartu info di bawah tombol (mis. Lokasi, Test Drive, Simulasi Kredit)", t: "objlist", titleKey: "label", fields: [{ k: "label", label: "Label", t: "text" }, { k: "value", label: "Isi", t: "text" }] },
+      { k: "hero_image", label: "Gaya Modern: foto hero (kosong = foto model pertama)", t: "image" }, { k: "hero_video", label: "Gaya Modern: video hero .mp4/.webm (tautan https atau /path, kosong = pakai foto)", t: "text" },
+      { k: "video", label: "Bagian video (kosong = tidak tampil)", t: "obj", fields: [{ k: "title", label: "Judul", t: "text" }, { k: "text", label: "Teks pendek", t: "text" }, { k: "url", label: "Tautan YouTube atau berkas .mp4/.webm", t: "text" }, { k: "poster", label: "Gambar sampul (opsional)", t: "image" }] },
+      { k: "stats", label: "Angka besar (Modern memakai data model bila kosong)", t: "objlist", titleKey: "label", fields: [{ k: "value", label: "Angka", t: "text" }, { k: "unit", label: "Satuan (km, juta, ...)", t: "text" }, { k: "label", label: "Keterangan", t: "text" }] },
+      { k: "panels_title", label: "Judul bagian panel pilihan", t: "text" },
+      { k: "panels", label: "Panel pilihan (Modern mengelompokkan model per bodi bila kosong)", t: "objlist", titleKey: "title", fields: [{ k: "tag", label: "Label kecil", t: "text" }, { k: "title", label: "Judul", t: "text" }, { k: "text", label: "Teks", t: "area", rows: 2 }, { k: "image", label: "Foto latar", t: "image" }, { k: "link", label: "Tautan (mis. /byd-seal/)", t: "text" }] },
+      { k: "spotlight", label: "Sorotan model (Modern memilih model dengan jarak tempuh terjauh bila kosong)", t: "obj", fields: [{ k: "slug", label: "Slug model (mis. byd-seal)", t: "text" }, { k: "title", label: "Judul", t: "text" }, { k: "image", label: "Foto", t: "image" }, { k: "items", label: "Poin angka", t: "objlist", titleKey: "label", fields: [{ k: "value", label: "Angka", t: "text" }, { k: "label", label: "Keterangan", t: "text" }] }] },
       { k: "models_title", label: "Judul bagian model", t: "text" }, { k: "models_intro", label: "Pengantar model", t: "area", rows: 2 }, { k: "why_title", label: "Judul 'Kenapa mobil listrik'", t: "text" },
       { k: "why_items", label: "Poin keunggulan", t: "objlist", titleKey: "title", fields: [{ k: "title", label: "Judul", t: "text" }, { k: "text", label: "Teks", t: "area", rows: 2 }] },
       { k: "why_links", label: "Link lanjutan (markdown)", t: "area", rows: 2 }, { k: "articles_title", label: "Judul bagian artikel", t: "text" }, { k: "articles_count", label: "Jumlah artikel ditampilkan", t: "num" },
       { k: "usecases_title", label: "Judul kebutuhan", t: "text" }, { k: "usecases", label: "Daftar kebutuhan (markdown)", t: "strlist" },
-      { k: "lead_title", label: "Judul form lead", t: "text" }, { k: "lead_text", label: "Teks form lead", t: "area", rows: 3 }, { k: "lead_bullets", label: "Poin form lead", t: "strlist" }, { k: "faq_title", label: "Judul FAQ", t: "text" }, faqF]),
+      { k: "lead_title", label: "Judul form lead", t: "text" }, { k: "lead_text", label: "Teks form lead", t: "area", rows: 3 }, { k: "lead_bullets", label: "Poin form lead", t: "strlist" }, { k: "faq_title", label: "Judul FAQ", t: "text" }, faqF,
+      { k: "cta_title", label: "Judul banner ajakan (CTA) di bawah FAQ", t: "text" }, { k: "cta_text", label: "Teks banner ajakan", t: "area", rows: 2 }]),
     prices: seoF.concat([{ k: "intro", label: "Pengantar", t: "area", rows: 3 }, { k: "guide_title", label: "Judul panduan", t: "text" }, { k: "guide_md", label: "Panduan (markdown)", t: "area", rows: 8 }, { k: "articles_title", label: "Judul artikel", t: "text" }, { k: "faq_title", label: "Judul FAQ", t: "text" }, faqF, { k: "lead_title", label: "Judul form lead", t: "text" }]),
     testdrive: seoF.concat([{ k: "intro", label: "Pengantar", t: "area", rows: 2 }, { k: "lead_title", label: "Judul form", t: "text" }, { k: "steps_title", label: "Judul langkah", t: "text" }, { k: "steps", label: "Langkah", t: "strlist" }, { k: "faq_title", label: "Judul FAQ", t: "text" }, faqF]),
     blog: seoF.concat([{ k: "intro", label: "Pengantar blog", t: "area", rows: 3 }])
@@ -141,7 +155,7 @@
 
   var SITE_FIELDS = [
     { k: "name", label: "Nama brand situs", t: "text" }, { k: "legal_name", label: "Nama badan usaha", t: "text" }, { k: "tagline", label: "Tagline", t: "text" },
-    { k: "domain", label: "Domain (https://…)", t: "url", hint: "Dipakai untuk canonical, sitemap, schema" }, { k: "wa_number", label: "Nomor WhatsApp (format 62…)", t: "text" }, { k: "phone_display", label: "Nomor tampil", t: "text" },
+    { k: "domain", label: "Domain (https://…)", t: "url", hint: "Dipakai untuk canonical, sitemap, schema" }, { k: "wa_number", label: "Nomor WhatsApp (format 62…)", t: "text" }, { k: "phone_display", label: "Nomor tampil", t: "text" }, { k: "email", label: "Email kontak (tampil di footer dan schema)", t: "text" },
     { k: "address", label: "Alamat lengkap dealer", t: "area", rows: 2 }, { k: "city", label: "Kota", t: "text" }, { k: "region", label: "Provinsi", t: "text" }, { k: "postal", label: "Kode pos", t: "text" },
     { k: "maps_url", label: "Link Google Maps dealer (https://…)", t: "url", hint: "Masuk schema (hasMap) dan halaman Tentang Kami" }, { k: "gbp_url", label: "Link Google Business Profile / ulasan Google", t: "url", hint: "Memperkuat entitas bisnis untuk Google dan AI (sameAs)" },
     { k: "lat", label: "Latitude (mis. -6.2088)", t: "text" }, { k: "lng", label: "Longitude (mis. 106.8456)", t: "text" }, { k: "founded", label: "Tahun berdiri (opsional)", t: "text" },
@@ -151,6 +165,7 @@
     { k: "price_date_label", label: "Label tanggal harga (mis. Oktober 2026)", t: "text" }, { k: "price_date", label: "Tanggal harga (YYYY-MM-DD)", t: "text" },
     { k: "author_name", label: "Nama penulis default artikel", t: "text" }, { k: "author_role", label: "Jabatan penulis", t: "text" },
         { k: "promo", t: "obj", label: "Banner promo", fields: [{ k: "enabled", label: "Tampilkan banner", t: "bool" }, { k: "text", label: "Teks promo", t: "text" }, { k: "link", label: "Link (opsional)", t: "text" }] },
+    { k: "credit", t: "obj", label: "Simulasi angsuran (beranda)", fields: [{ k: "rate", label: "Bunga flat per tahun, % (asumsi untuk estimasi, mis. 5)", t: "text" }, { k: "title", label: "Judul bagian", t: "text" }, { k: "text", label: "Teks pengantar", t: "area", rows: 2 }] },
     { k: "show_floating_wa", label: "Tombol WhatsApp melayang", t: "bool" },
     { k: "nav", label: "Menu navigasi", t: "objlist", titleKey: "label", fields: [{ k: "label", label: "Teks", t: "text" }, { k: "href", label: "Link", t: "text" }] },
     { k: "footer_note", label: "Catatan footer", t: "area", rows: 3 },
@@ -160,11 +175,21 @@
     { k: "instagram", label: "Instagram", t: "text" }, { k: "tiktok", label: "TikTok", t: "text" }, { k: "facebook", label: "Facebook", t: "text" }, { k: "youtube", label: "YouTube", t: "text" },
     { k: "firebase", t: "obj", label: "Firebase (lead ke Firestore)", fields: [{ k: "apiKey", label: "apiKey", t: "text" }, { k: "authDomain", label: "authDomain", t: "text" }, { k: "projectId", label: "projectId", t: "text" }, { k: "appId", label: "appId", t: "text" }] }
   ];
+  A.routes.sales = function () {
+    A.S.site.sales = A.S.site.sales || {};
+    A.jsonForm("Profil Sales", "site", [
+      { k: "sales", t: "obj", label: "Profil yang tampil paling atas di beranda (kosongkan nama untuk menyembunyikan)", fields: [
+        { k: "photo", label: "Foto profil (persegi atau portrait, wajah di tengah)", t: "image" }, { k: "name", label: "Nama sales", t: "text" }, { k: "role", label: "Jabatan", t: "text" },
+        { k: "branch", label: "Nama dealer / cabang (kosong = kota)", t: "text" }, { k: "wa_message", label: "Pesan WhatsApp default (otomatis terisi saat pengunjung klik tombol WhatsApp)", t: "area", rows: 2 }] },
+      { k: "wa_number", label: "Nomor WhatsApp (format 62…)", t: "text" }, { k: "phone_display", label: "Nomor tampil", t: "text" },
+      { k: "instagram", label: "Instagram (username tanpa @)", t: "text" }, { k: "facebook", label: "Facebook (link https://…)", t: "text" }, { k: "email", label: "Email", t: "text" }
+    ], null, "Foto dan nama sales tampil di bagian atas beranda, lengkap dengan tombol WhatsApp, Instagram, Facebook, dan email. Perubahan baru tayang setelah 'Simpan ke GitHub'.");
+  };
   A.routes.pengaturan = function () { A.jsonForm("Pengaturan Situs", "site", SITE_FIELDS, null, "Data dealer ini dipakai di schema AutoDealer (local SEO), footer, dan tombol WhatsApp. Isi selengkap mungkin."); };
 
   /* ---- Layout ---- */
   var SEC = { hero: "Hero (judul + tombol)", models: "Kartu model", why: "Kenapa mobil listrik", articles: "Artikel terbaru", usecases: "Cocok untuk kebutuhan", lead: "Form lead", faq: "FAQ",
-    gallery: "Galeri foto", summary: "Ringkasan", highlights: "Keunggulan", variants: "Varian & harga", specs: "Spesifikasi", compare: "Perbandingan kompetitor", others: "Model lainnya", table: "Tabel harga", leasing: "Slider mitra leasing", handover: "Serah terima unit (foto)", testimonials: "Testimoni customer", guide: "Panduan memilih" };
+    gallery: "Galeri foto", summary: "Ringkasan", highlights: "Keunggulan", variants: "Varian & harga", specs: "Spesifikasi", compare: "Perbandingan kompetitor", others: "Model lainnya", table: "Tabel harga", leasing: "Slider mitra leasing", handover: "Serah terima unit (foto)", promo: "Promo", budget: "Cek anggaran (gaya Modern)", video: "Video", stats: "Angka besar", panels: "Panel pilihan", spotlight: "Sorotan model", credit: "Simulasi angsuran", cta: "Banner ajakan (CTA)", testimonials: "Testimoni customer", guide: "Panduan memilih" };
   A.routes.layout = function () {
     var m = A.view();
     m.appendChild(h("h2", { text: "Layout & Urutan Bagian" }));
@@ -175,7 +200,7 @@
       function draw() {
         ul.innerHTML = "";
         var arr = A.S.layout[g[0]];
-        var ANCH = { home: { leasing: ["models"], handover: ["why", "models"], testimonials: ["handover", "why", "models"] }, model: { leasing: ["others"], testimonials: ["articles", "compare", "specs"] } }[g[0]] || {};
+        var ANCH = { home: { budget: ["hero"], promo: ["models"], video: ["promo", "models"], credit: ["video", "promo", "models"], stats: ["credit", "video", "promo", "models"], panels: ["stats", "credit", "video", "promo", "models"], spotlight: ["panels", "stats", "credit", "video", "promo", "models"], cta: ["faq"], leasing: ["models"], handover: ["why", "models"], testimonials: ["handover", "why", "models"] }, model: { leasing: ["others"], testimonials: ["articles", "compare", "specs"] } }[g[0]] || {};
         Object.keys(ANCH).forEach(function (id) {
           if (arr.some(function (x) { return x.id === id; })) return;
           var ids = arr.map(function (x) { return x.id; }), at = -1;
@@ -207,6 +232,7 @@
     { k: "name", label: "Nama model", t: "text" }, { k: "slug", label: "Slug URL (jangan diubah setelah tayang)", t: "text" }, { k: "published", label: "Tayang di situs", t: "bool" }, { k: "order", label: "Urutan", t: "num" },
     { k: "brand", label: "Merek", t: "text" }, { k: "type", label: "Tipe (mis. SUV listrik compact)", t: "text" }, { k: "body", label: "Bodi", t: "text" }, { k: "powertrain", label: "Penggerak", t: "select", opts: ["BEV", "PHEV", "HEV"] },
     { k: "keyword", label: "Keyword utama halaman", t: "text" }, { k: "answer", label: "Jawaban singkat (opsional; kosong = dibuat otomatis dari harga dan jarak tempuh)", t: "area", rows: 2 }, { k: "tagline", label: "Tagline (jadi meta description)", t: "area", rows: 2 },
+    { k: "brochure", label: "Link brosur resmi (PDF atau https://…, opsional; tombol 'Unduh brosur' muncul bila diisi)", t: "text" },
     { k: "images", label: "Galeri foto (maks 6; foto pertama = utama)", t: "objlist", titleKey: "src", fields: [{ k: "src", label: "Gambar", t: "image" }, { k: "alt", label: "Alt teks (jelaskan isi foto)", t: "text" }] },
     { k: "intro", label: "Paragraf pengantar", t: "strlist", area: true }, { k: "highlights", label: "Keunggulan", t: "objlist", titleKey: "title", fields: [{ k: "title", label: "Judul", t: "text" }, { k: "text", label: "Teks", t: "area", rows: 2 }] },
     { k: "best_for", label: "Cocok untuk", t: "strlist" }, { k: "specs", label: "Spesifikasi", t: "objlist", titleKey: "label", fields: [{ k: "label", label: "Label", t: "text" }, { k: "value", label: "Nilai", t: "text" }] },

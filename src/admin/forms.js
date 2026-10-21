@@ -15,7 +15,7 @@
   function blank(fields) {
     var o = {};
     fields.forEach(function (f) {
-      o[f.k] = f.t === "bool" ? false : f.t === "num" ? 0 : f.t === "strlist" || f.t === "objlist" ? [] : f.t === "obj" ? blank(f.fields) : (f.def != null ? f.def : "");
+      o[f.k] = f.t === "bool" ? (f.def != null ? f.def : false) : f.t === "num" ? 0 : f.t === "strlist" || f.t === "objlist" ? [] : f.t === "obj" ? blank(f.fields) : (f.def != null ? f.def : "");
     });
     return o;
   }

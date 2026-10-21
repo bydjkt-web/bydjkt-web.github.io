@@ -34,25 +34,30 @@
     var inputs = {};
 
     function save() { A.saveJSON("theme"); }
+    if (!(T.presets || []).some(function (x) { return x.id === "editorial"; })) (T.presets = T.presets || []).push({ id: "editorial", name: "Editorial Terang (merah muda)", dark: "#0f1530", primary: "#e0267f", accent: "#d6197a", paper: "#fff7fb", style: "editorial" });
+    if (!(T.presets || []).some(function (x) { return x.id === "modern"; })) (T.presets = T.presets || []).push({ id: "modern", name: "Modern (Atlantic Grey)", dark: "#243746", primary: "#3d5a6c", accent: "#2b6a8a", paper: "#f1f4f6", style: "modern" });
+    if (!(T.presets || []).some(function (x) { return x.id === "gelap"; })) (T.presets = T.presets || []).push({ id: "gelap", name: "Gelap Premium (merah)", dark: "#0e1420", primary: "#e5182d", accent: "#e5182d", paper: "#0a0e16", mode: "dark" });
     function paint() {
-      var d = T.dark, p = T.primary, a = T.accent, pa = T.paper;
+      var d = T.dark, p = T.primary, a = T.accent, pa = T.paper, dk = T.mode === "dark";
       var onacc = contrast(a, "#ffffff") >= contrast(a, "#101820") ? "#ffffff" : "#101820";
-      prev.setAttribute("style", "--ink:" + d + ";--ev:" + p + ";--acc:" + a + ";--onacc:" + onacc + ";--paper:" + pa + ";--ig:" + mix(d, p, .5) + ";--line:" + mix(pa, d, .15) + ";--it:" + mix(d, "#ffffff", .8));
+      prev.setAttribute("style", "--ink:" + d + ";--ev:" + p + ";--acc:" + a + ";--onacc:" + onacc + ";--paper:" + pa + ";--ig:" + mix(d, p, .5) + ";--line:" + (dk ? mix(pa, "#ffffff", .13) : mix(pa, d, .15)) + ";--it:" + mix(d, "#ffffff", .8) + (dk ? ";--card:" + mix(pa, "#ffffff", .07) + ";--txt:#e9edf5;color:#e9edf5" : ""));
       prev.innerHTML = '<div class="pp-promo">Free charging di dealer Harmony</div><div class="pp-hero"><b>Mobil Listrik BYD: Harga OTR, Promo &amp; Test Drive</b><span class="pp-btn">Test Drive</span></div>' +
         '<div class="pp-body"><div class="pp-card"><b>BYD Atto 1</b> <em>Rp199 juta</em><i><u></u></i></div></div>';
-      var msgs = [], c1 = contrast(a, onacc), c2 = contrast(d, "#ffffff"), c3 = contrast(d, pa);
+      var msgs = [], c1 = contrast(a, onacc), c2 = contrast(d, "#ffffff"), c3 = dk ? contrast(pa, "#e9edf5") : contrast(d, pa);
       msgs.push([c1 >= 4.5, "Teks tombol: kontras " + c1.toFixed(1) + ":1" + (c1 >= 4.5 ? " (baik)" : " (rendah, pilih warna tombol yang lebih gelap atau lebih terang)")]);
       msgs.push([c2 >= 7, "Teks putih di atas warna gelap: " + c2.toFixed(1) + ":1" + (c2 >= 7 ? " (baik)" : " (kurang gelap)")]);
-      msgs.push([c3 >= 7, "Teks di atas latar halaman: " + c3.toFixed(1) + ":1" + (c3 >= 7 ? " (baik)" : " (latar terlalu mirip warna gelap)")]);
+      msgs.push([c3 >= 7, "Teks di atas latar halaman: " + c3.toFixed(1) + ":1" + (c3 >= 7 ? " (baik)" : (dk ? " (latar kurang gelap untuk teks terang)" : " (latar terlalu mirip warna gelap)"))]);
       check.innerHTML = "";
       msgs.forEach(function (x) { check.appendChild(h("div", { class: x[0] ? "ok" : "bad", text: (x[0] ? "✓ " : "⚠ ") + x[1] })); });
+      var ss = document.getElementById("stylesel"); if (ss) ss.value = T.style === "editorial" || T.style === "modern" ? T.style : "standard";
+      var dk2 = document.getElementById("dkmode"); if (dk2) dk2.checked = dk;
       Array.prototype.forEach.call(grid.children, function (c) { c.classList.toggle("sel", c.getAttribute("data-id") === T.preset); });
       COLORS.forEach(function (c) { var o = inputs[c.k]; o.col.value = T[c.k]; o.txt.value = T[c.k]; });
     }
     (T.presets || []).forEach(function (pr) {
       var sw = h("div", { class: "sw" }, [h("i", { style: "flex:2;background:" + pr.dark }), h("i", { style: "background:" + pr.primary }), h("i", { style: "background:" + pr.accent }), h("i", { style: "background:" + pr.paper })]);
       grid.appendChild(h("button", { type: "button", class: "preset", "data-id": pr.id, onclick: function () {
-        T.preset = pr.id; COLORS.forEach(function (c) { T[c.k] = pr[c.k]; }); save(); paint();
+        T.preset = pr.id; T.mode = pr.mode || "light"; T.style = pr.style || "standard"; COLORS.forEach(function (c) { T[c.k] = pr[c.k]; }); save(); paint();
       } }, [sw, h("span", { text: pr.name })]));
     });
     presetBox.appendChild(grid);
@@ -68,8 +73,12 @@
     });
     manual.appendChild(h("div", { class: "row", style: "margin-top:10px" }, [h("button", { type: "button", class: "btn o sm", text: "Kembalikan ke Atlantic Grey", onclick: function () {
       var d = (T.presets || []).filter(function (x) { return x.id === "atlantic"; })[0]; if (!d) return;
-      T.preset = d.id; COLORS.forEach(function (c) { T[c.k] = d[c.k]; }); save(); paint();
+      T.preset = d.id; T.mode = "light"; T.style = "standard"; COLORS.forEach(function (c) { T[c.k] = d[c.k]; }); save(); paint();
     } })]));
+    var dkc = h("input", { type: "checkbox", id: "dkmode", onchange: function (e) { T.mode = e.target.checked ? "dark" : "light"; T.preset = "custom"; save(); paint(); } });
+    manual.insertBefore(h("label", { class: "chk", for: "dkmode" }, [dkc, " Mode gelap (latar halaman gelap, teks terang). Atur 'Warna latar halaman' ke warna gelap, mis. #0a0e16."]), manual.children[1] || null);
+    var sty = h("select", { id: "stylesel", "aria-label": "Gaya tampilan", onchange: function (e) { T.style = e.target.value; T.preset = "custom"; save(); paint(); } }, [h("option", { value: "standard", text: "Standar (rapi, ringan)" }), h("option", { value: "editorial", text: "Editorial (judul kapital lebar, kartu bulat, tombol bercahaya)" }), h("option", { value: "modern", text: "Modern (Editorial + hero dua kolom, video, statistik, panel, sorotan model)" })]);
+    manual.insertBefore(h("label", { class: "f" }, ["Gaya tampilan", sty]), manual.children[1] || null);
     side.appendChild(prev); side.appendChild(check);
     var wrap = h("div", { class: "two" }, [h("div", {}, [presetBox, manual]), h("div", {}, [side])]);
     m.appendChild(wrap);
@@ -144,6 +153,26 @@
     var n = (items || []).length, v = (items || []).filter(ok).length;
     return n + " item tersimpan, " + v + " siap tayang" + (n > v ? " (" + (n - v) + " belum lengkap atau belum ada izin)" : "") + ".";
   }
+  A.routes.promo = function () {
+    var m = A.view(), P = A.S.promos; P.items = P.items || [];
+    var today = new Date().toISOString().slice(0, 10);
+    var live = P.items.filter(function (x) { return x.on !== false && (x.title || "").trim() && (x.text || "").trim() && (!x.until || x.until >= today); }).length;
+    m.appendChild(h("h2", { text: "Promo" }));
+    m.appendChild(h("p", { class: "muted", text: "Promo tampil di beranda (bagian Promo) dan menu 'Promo'. Promo otomatis hilang setelah tanggal berlaku lewat (situs dibangun ulang tiap jam). Tulis hanya promo yang benar-benar berlaku; cantumkan syarat di dalam teks bila perlu." }));
+    m.appendChild(h("p", { class: "muted", text: P.items.length + " promo tersimpan, " + live + " sedang tayang. Maksimal yang tampil di beranda: " + (P.max || 3) + "." }));
+    var set = h("div", { class: "card" }, [h("h3", { text: "Judul bagian" })]);
+    set.appendChild(Forms.render([{ k: "title", label: "Judul bagian Promo", t: "text" }, { k: "intro", label: "Kalimat pengantar", t: "area", rows: 2 }, { k: "max", label: "Jumlah promo maksimal di beranda", t: "num" }], P, function () { A.saveJSON("promos"); }));
+    m.appendChild(set);
+    var card = h("div", { class: "card" }, [h("h3", { text: "Daftar promo" })]);
+    card.appendChild(Forms.render([{ k: "items", label: "", t: "objlist", titleKey: "title", fields: [
+      { k: "on", label: "Tayangkan promo ini", t: "bool", def: true }, { k: "badge", label: "Label kecil (mis. Semua model BYD, BYD Atto 3)", t: "text" },
+      { k: "title", label: "Judul promo", t: "text" }, { k: "text", label: "Isi promo (pisahkan paragraf dengan baris kosong)", t: "area", rows: 5 },
+      { k: "until", label: "Berlaku sampai (YYYY-MM-DD, kosong = tanpa batas)", t: "text" },
+      { k: "image", label: "Gambar / poster promo (opsional)", t: "image" }, { k: "alt", label: "Alt teks gambar", t: "text" },
+      { k: "cta", label: "Teks tombol (kosong = Tanya promo ini)", t: "text" }
+    ] }], P, function () { A.saveJSON("promos"); }));
+    m.appendChild(card);
+  };
   A.routes.testimoni = function () {
     var m = A.view(), T = A.S.testi; T.items = T.items || [];
     m.appendChild(h("h2", { text: "Testimoni Customer" }));
