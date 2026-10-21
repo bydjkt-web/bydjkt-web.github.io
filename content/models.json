@@ -116,7 +116,34 @@
         "q": "Apakah BYD Atto 1 bisa dibeli secara kredit?",
         "a": "Bisa. Kami membantu simulasi cicilan dan pengajuan pembiayaan. Isi form di halaman ini untuk mendapat simulasi sesuai uang muka dan tenor yang Anda inginkan."
       }
-    ]
+    ],
+    "video": {
+      "url": "https://youtu.be/zV0LOFXWRz4?si=TTInf6ZIn3PF7j7s",
+      "poster": ""
+    },
+    "safety": {
+      "title": "",
+      "text": "",
+      "badges": [],
+      "image": ""
+    },
+    "colors": [],
+    "exterior": {
+      "intro_title": "",
+      "image2": "",
+      "title": "",
+      "intro": "",
+      "image": "",
+      "items_title": "",
+      "items": []
+    },
+    "interior": {
+      "title": "",
+      "intro": "",
+      "image": "",
+      "items_title": "",
+      "items": []
+    }
   },
   {
     "slug": "byd-m6-dm",
