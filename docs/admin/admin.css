@@ -102,7 +102,7 @@ table.t th{background:var(--soft)}
 .pp-promo{background:var(--ev);color:#fff;font-size:11px;text-align:center;padding:4px}
 .pp-hero{background:linear-gradient(135deg,var(--ink),var(--ig));color:#fff;padding:18px}.pp-hero b{display:block;font-size:17px;line-height:1.15;margin-bottom:10px}
 .pp-btn{display:inline-block;background:var(--acc);color:var(--onacc);font-size:11px;font-weight:700;padding:6px 12px;border-radius:6px}
-.pp-body{padding:12px;background:var(--paper)}.pp-card{background:#fff;border:1px solid var(--line);border-radius:8px;padding:8px;font-size:12px}.pp-card em{font-style:normal;color:var(--acc);font-weight:700}
+.pp-body{padding:12px;background:var(--paper)}.pp-card{background:var(--card,#fff);color:var(--txt,inherit);border:1px solid var(--line);border-radius:8px;padding:8px;font-size:12px}.pp-card em{font-style:normal;color:var(--acc);font-weight:700}
 .pp-card i{display:block;height:6px;background:#e1e8ee;border-radius:2px;margin-top:6px}.pp-card u{display:block;height:6px;width:55%;background:var(--ev);border-radius:2px}
 .tcheck .ok{color:#14532d;font-size:.85rem}.tcheck .bad{color:#9a3412;font-weight:600;font-size:.85rem}
 .lrow{display:flex;flex-wrap:wrap;gap:14px;padding:12px 0;border-bottom:1px solid var(--line)}

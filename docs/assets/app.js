@@ -261,4 +261,33 @@
       });
     });
   });
+
+  /* simulasi angsuran (bunga flat, estimasi) */
+  (function () {
+    var box = document.querySelector(".calc[data-credit]"); if (!box) return;
+    var data, rate = parseFloat(box.getAttribute("data-rate")) || 5;
+    try { data = JSON.parse(box.getAttribute("data-credit")); } catch (e) { return; }
+    var m = document.getElementById("cm"), v = document.getElementById("cv"), dp = document.getElementById("cdp"), dpo = document.getElementById("cdpo"), t = document.getElementById("ct"), r = document.getElementById("cr"), d = document.getElementById("cdet"), wa = document.getElementById("cwa");
+    function rp(n) { return "Rp" + Math.round(n).toLocaleString("id-ID"); }
+    function variants() { v.innerHTML = ""; data[+m.value].v.forEach(function (x, i) { var o = document.createElement("option"); o.value = i; o.textContent = x.n; v.appendChild(o); }); }
+    function calc() {
+      var mod = data[+m.value], va = mod.v[+v.value] || mod.v[0], pr = va.p, pct = +dp.value, yrs = +t.value;
+      var down = pr * pct / 100, loan = pr - down, total = loan * (1 + rate / 100 * yrs), mo = total / (yrs * 12);
+      dpo.textContent = pct + "%"; r.textContent = rp(mo) + " / bulan";
+      d.textContent = "Harga " + rp(pr) + ", uang muka " + rp(down) + ", tenor " + yrs + " tahun";
+      var msg = "Halo, saya ingin simulasi kredit " + mod.n + " " + va.n + ", uang muka " + pct + "%, tenor " + yrs + " tahun.";
+      wa.href = wa.href.split("?")[0] + "?text=" + encodeURIComponent(msg);
+    }
+    m.addEventListener("change", function () { variants(); calc(); });
+    [v, dp, t].forEach(function (el) { el.addEventListener("input", calc); el.addEventListener("change", calc); });
+    variants(); calc();
+  })();
+  // video YouTube dimuat saat diklik (tanpa cookie, tanpa memuat skrip pihak ketiga sebelum diputar)
+  document.addEventListener("click", function (e) {
+    var b = e.target.closest && e.target.closest("[data-yt]"); if (!b) return;
+    var f = document.createElement("iframe");
+    f.src = "https://www.youtube-nocookie.com/embed/" + b.getAttribute("data-yt") + "?autoplay=1&rel=0";
+    f.title = b.getAttribute("aria-label") || "Video"; f.allow = "autoplay; encrypted-media; picture-in-picture"; f.allowFullscreen = true; f.className = "vframe";
+    b.replaceWith(f);
+  });
 })();
