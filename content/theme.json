@@ -1,13 +1,70 @@
 {
-  "preset": "atlantic",
+  "preset": "modern",
   "dark": "#243746",
   "primary": "#3d5a6c",
   "accent": "#2b6a8a",
   "paper": "#f1f4f6",
   "presets": [
-    { "id": "atlantic", "name": "Atlantic Grey", "dark": "#243746", "primary": "#3d5a6c", "accent": "#2b6a8a", "paper": "#f1f4f6" },
-    { "id": "merah", "name": "Merah BYD", "dark": "#101820", "primary": "#0d6b5b", "accent": "#d4001a", "paper": "#f4f5f2" },
-    { "id": "biru", "name": "Biru Terang", "dark": "#14213d", "primary": "#1d4ed8", "accent": "#0b5cff", "paper": "#f3f7fe" },
-    { "id": "sporty", "name": "Hitam Sporty", "dark": "#0b0b0d", "primary": "#8a1020", "accent": "#e10b22", "paper": "#f2f2f2" }
-  ]
+    {
+      "id": "atlantic",
+      "name": "Atlantic Grey",
+      "dark": "#243746",
+      "primary": "#3d5a6c",
+      "accent": "#2b6a8a",
+      "paper": "#f1f4f6"
+    },
+    {
+      "id": "merah",
+      "name": "Merah BYD",
+      "dark": "#101820",
+      "primary": "#0d6b5b",
+      "accent": "#d4001a",
+      "paper": "#f4f5f2"
+    },
+    {
+      "id": "biru",
+      "name": "Biru Terang",
+      "dark": "#14213d",
+      "primary": "#1d4ed8",
+      "accent": "#0b5cff",
+      "paper": "#f3f7fe"
+    },
+    {
+      "id": "sporty",
+      "name": "Hitam Sporty",
+      "dark": "#0b0b0d",
+      "primary": "#8a1020",
+      "accent": "#e10b22",
+      "paper": "#f2f2f2"
+    },
+    {
+      "id": "gelap",
+      "name": "Gelap Premium (merah)",
+      "dark": "#0e1420",
+      "primary": "#e5182d",
+      "accent": "#e5182d",
+      "paper": "#0a0e16",
+      "mode": "dark"
+    },
+    {
+      "id": "editorial",
+      "name": "Editorial Terang (merah muda)",
+      "dark": "#0f1530",
+      "primary": "#e0267f",
+      "accent": "#d6197a",
+      "paper": "#fff7fb",
+      "style": "editorial"
+    },
+    {
+      "id": "modern",
+      "name": "Modern (Atlantic Grey)",
+      "dark": "#243746",
+      "primary": "#3d5a6c",
+      "accent": "#2b6a8a",
+      "paper": "#f1f4f6",
+      "style": "modern"
+    }
+  ],
+  "mode": "light",
+  "style": "modern"
 }

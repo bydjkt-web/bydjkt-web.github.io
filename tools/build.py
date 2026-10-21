@@ -312,7 +312,7 @@ def pricelist_table(opts):
 def cta_box(model_name="", title=None, text=None):
     t = title or ("Ingin Mencoba " + model_name + "?" if model_name else "Ingin Mencoba Mobil Listrik BYD?")
     p = text or f"Konsultasi gratis, simulasi cicilan, dan booking test drive di {NAME}."
-    return (f'<div class="cta-box"><h2 style="color:#fff;margin-top:0">{esc(t)}</h2><p>{esc(p)}</p>'
+    return (f'<div class="cta-box"><h2>{esc(t)}</h2><p>{esc(p)}</p>'
             f'<a class="btn w" href="{td_url(model_name)}">Booking Test Drive</a> '
             f'<a class="btn o" href="{wa_url("Halo, saya ingin info " + (model_name or "mobil listrik BYD"))}" data-wa="cta" rel="noopener">Chat WhatsApp</a></div>')
 
