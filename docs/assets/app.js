@@ -57,7 +57,7 @@
       "Saya tertarik dengan " + (d.model || "mobil listrik BYD") + ".",
       "Rencana beli: " + (LABEL[d.timeline] || "-") + ". Pembayaran: " + (LABEL[d.payment] || "-") + "."
     ];
-    if (d.testDrive) lines.push("Saya ingin booking test drive.");
+    if (d.testDrive) lines.push("Saya ingin booking test drive." + (d.tdDate ? " Tanggal: " + d.tdDate + "." : "") + (d.tdTime ? " Jam: " + d.tdTime + "." : ""));
     if (d.tradeIn) lines.push("Saya ingin tukar tambah.");
     lines.push("Mohon info harga OTR & promo terbaru. Terima kasih.");
     return "https://wa.me/" + C.wa + "?text=" + encodeURIComponent(lines.join("\n"));
@@ -101,6 +101,7 @@
           if (sel.options[i].value === m || sel.options[i].text === m) { sel.selectedIndex = i; break; }
         }
       });
+      document.querySelectorAll("form.lead input[type=radio][name=model]").forEach(function (r) { if (r.value === m) r.checked = true; });
     } catch (e) {}
   })();
 
@@ -228,7 +229,9 @@
         timeline: String(f.get("timeline") || "info"),
         payment: String(f.get("payment") || "belum"),
         testDrive: !!f.get("testDrive"),
-        tradeIn: !!f.get("tradeIn")
+        tradeIn: !!f.get("tradeIn"),
+        tdDate: String(f.get("tdDate") || "").slice(0, 10),
+        tdTime: String(f.get("tdTime") || "").slice(0, 40)
       };
       if (d.name.length < 2) return say("Mohon isi nama Anda.", "err");
       if (!d.phone) return say("Nomor WhatsApp tidak valid. Contoh: 0812xxxxxxxx", "err");
@@ -343,4 +346,48 @@
       cn.forEach(function (x) { io.observe(x); });
     }
   }
+  // ---- menu Model (dropdown desktop): klik/ketuk membuka, Esc dan klik di luar menutup ----
+  document.querySelectorAll(".dd").forEach(function (dd) {
+    var b = dd.querySelector(".ddb");
+    function set(o) { dd.classList.toggle("open", o); b.setAttribute("aria-expanded", o ? "true" : "false"); }
+    b.addEventListener("click", function (e) { e.stopPropagation(); set(!dd.classList.contains("open")); });
+    document.addEventListener("click", function (e) { if (!dd.contains(e.target)) set(false); });
+    dd.addEventListener("keydown", function (e) { if (e.key === "Escape") { set(false); b.focus(); } });
+  });
+  // tanggal test drive tidak boleh sebelum hari ini
+  document.querySelectorAll("input[name=tdDate]").forEach(function (i) { var t = new Date(); t.setMinutes(t.getMinutes() - t.getTimezoneOffset()); i.min = t.toISOString().slice(0, 10); });
+
+  // ---- halaman simulasi kredit ----
+  (function () {
+    var box = document.querySelector(".cpage[data-credit]"); if (!box) return;
+    var data; try { data = JSON.parse(box.getAttribute("data-credit")); } catch (e) { return; }
+    var rate = parseFloat(box.getAttribute("data-rate")) || 5, adm = parseFloat(box.getAttribute("data-adm")) || 0, ins = parseFloat(box.getAttribute("data-ins")) || 0;
+    var $ = function (id) { return document.getElementById(id); };
+    var mi = 0, yrs = 5, tabs = box.querySelectorAll(".ctabs button"), segs = box.querySelectorAll("#pt button");
+    function rp(n) { return "Rp" + Math.round(n).toLocaleString("id-ID"); }
+    function fillV() {
+      var sel = $("pv"); sel.innerHTML = "";
+      data[mi].v.forEach(function (v, i) { var o = document.createElement("option"); o.value = i; o.textContent = v.n + " · " + rp(v.p); sel.appendChild(o); });
+      var pv = $("cpv"); pv.innerHTML = "";
+      if (data[mi].img) { var im = document.createElement("img"); im.src = data[mi].img; im.alt = ""; im.loading = "lazy"; pv.appendChild(im); pv.hidden = false; } else pv.hidden = true;
+      calc();
+    }
+    function calc() {
+      var m = data[mi], v = m.v[+$("pv").value || 0], p = v.p, dpP = +$("pdp").value, dp = p * dpP / 100, loan = p - dp;
+      var mon = loan * (1 + rate / 100 * yrs) / (yrs * 12), tdp = dp + adm + p * ins / 100 + mon;
+      $("pdo").textContent = dpP + "%"; $("pp").textContent = rp(p); $("pm").textContent = rp(mon) + " / bulan";
+      $("ptdp").textContent = rp(tdp); $("ph").textContent = rp(p); $("pk").textContent = rp(loan);
+      var ls = $("pl").value;
+      var msg = ["Halo, saya ingin simulasi kredit resmi.", "Model: " + m.n + " " + v.n + " (" + rp(p) + ").", "Uang muka " + dpP + "%, tenor " + yrs + " tahun" + (ls ? ", leasing " + ls : "") + ".",
+        "Estimasi di situs: " + rp(mon) + " per bulan. Mohon dihitungkan angka resminya."];
+      var wa = $("pwa"); wa.href = wa.href.split("?")[0] + "?text=" + encodeURIComponent(msg.join("\n"));
+      $("ptd").href = "/test-drive/?model=" + encodeURIComponent(m.n);
+    }
+    tabs.forEach(function (t) { t.addEventListener("click", function () { mi = +t.getAttribute("data-i"); tabs.forEach(function (x) { x.setAttribute("aria-selected", x === t ? "true" : "false"); }); fillV(); }); });
+    segs.forEach(function (s) { s.addEventListener("click", function () { yrs = +s.getAttribute("data-y"); segs.forEach(function (x) { x.setAttribute("aria-pressed", x === s ? "true" : "false"); }); calc(); }); });
+    ["pv", "pdp", "pl"].forEach(function (id) { $(id).addEventListener("input", calc); $(id).addEventListener("change", calc); });
+    var q = new URLSearchParams(location.search).get("model");
+    if (q) data.forEach(function (m, i) { if (m.n === q || m.s === q) { mi = i; tabs.forEach(function (x, k) { x.setAttribute("aria-selected", k === i ? "true" : "false"); }); } });
+    fillV();
+  })();
 })();
