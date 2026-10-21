@@ -84,7 +84,7 @@ def main():
     pg["home"]["feature_model"] = "byd-seal"
     (tmp / "content/pages.json").write_text(json.dumps(pg))
     rc, hm = build(tmp)
-    res["modern_custom"] = rc == 0 and 'data-yt="dQw4w9WgXcQ"' in hm and "Poin Uji" in hm and "DM-i Super" not in hm and hm.index("BYD <span class=\"hl\">Seal</span>", hm.index('class="s ftsec"')) < hm.index('id="simulasi"')
+    res["modern_custom"] = rc == 0 and 'data-yt="dQw4w9WgXcQ"' in hm and "data-auto" in hm and "Poin Uji" in hm and "DM-i Super" not in hm and hm.index("BYD <span class=\"hl\">Seal</span>", hm.index('class="s ftsec"')) < hm.index('id="simulasi"')
     res["video_bad_url_hidden"] = True
     pg["home"]["video"] = {"url": "javascript:alert(1)"}
     (tmp / "content/pages.json").write_text(json.dumps(pg))

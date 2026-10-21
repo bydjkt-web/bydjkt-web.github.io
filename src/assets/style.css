@@ -854,3 +854,16 @@ nav.d .ddp.sm a::after{display:none}
 .kst .fli .fb small{display:block;margin:0 0 2px;color:var(--it2)}
 [data-layout=modern] .kst>div:has(.flp){display:grid}
 .flp{height:100%;min-height:150px}
+
+/* ===== foto mobil hidup saat di-hover: maju, sedikit membesar, mengikuti kursor, dengan kilau lewat ===== */
+@media (hover:hover) and (pointer:fine){
+  [data-layout=modern] .mv{overflow:hidden;position:relative}
+  [data-layout=modern] .mv img{transition:transform .9s cubic-bezier(.2,.7,.2,1);will-change:transform}
+  html[data-layout=modern] .mv.mv:hover img{transform:translate(calc(var(--px,0px) + 16px),var(--py,0px)) scale(1.1)}
+  [data-layout=modern] .mv::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:3;transform:translateX(-120%);
+    background:linear-gradient(105deg,transparent 35%,rgba(255,255,255,.28) 50%,transparent 65%)}
+  [data-layout=modern] .mv:hover::after{transform:translateX(120%);transition:transform .9s ease}
+  [data-layout=modern] .mc.mv .top{overflow:hidden;position:relative}
+}
+@media (prefers-reduced-motion:reduce){[data-layout=modern] .mv img{transform:none!important}[data-layout=modern] .mv::after{display:none}}
+.vframe.vauto{pointer-events:none}

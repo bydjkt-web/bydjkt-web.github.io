@@ -1037,7 +1037,7 @@ def media_url(u):
 
 
 def video_html(v, label):
-    """Video: YouTube (dimuat saat diklik, tanpa cookie) atau berkas .mp4/.webm. Kosong bila URL tidak valid."""
+    """Video: autoplay senyap dan berulang (YouTube dimuat saat terlihat di layar, tanpa cookie; atau berkas .mp4/.webm). Kosong bila URL tidak valid."""
     url = media_url(v.get("url"))
     if not url:
         return ""
@@ -1046,13 +1046,13 @@ def video_html(v, label):
         poster = img_tag(v["poster"], v.get("alt") or label, "(max-width:820px) 100vw, 1100px")
     m = YT_RE.search(url)
     if m:
-        return (f'<button class="vplay" type="button" data-yt="{m.group(1)}" aria-label="Putar video: {esc(label)}">{poster}'
+        return (f'<button class="vplay" type="button" data-yt="{m.group(1)}" data-auto aria-label="Putar video: {esc(label)}">{poster}'
                 f'<span class="pbtn">{PLAY_ICON}</span></button>')
     if re.search(r"\.(mp4|webm)(\?|$)", url):
         pt = ""
         if v.get("poster") and images.resolve(v["poster"]):
             pt = f' poster="{images.resolve(v["poster"])}"'
-        return f'<video class="vfile" controls playsinline preload="none"{pt} aria-label="{esc(label)}"><source src="{esc(url)}"></video>'
+        return f'<video class="vfile" autoplay muted loop playsinline preload="metadata"{pt} aria-label="{esc(label)}"><source src="{esc(url)}"></video>'
     return ""
 
 
