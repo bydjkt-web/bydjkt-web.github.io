@@ -290,4 +290,57 @@
     f.title = b.getAttribute("aria-label") || "Video"; f.allow = "autoplay; encrypted-media; picture-in-picture"; f.allowFullscreen = true; f.className = "vframe";
     b.replaceWith(f);
   });
+  // ---- gaya Modern: efek ringan (semua dimatikan bila perangkat meminta gerakan dikurangi) ----
+  if (document.documentElement.getAttribute("data-layout") === "modern") {
+    var calm = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+    var hd = document.querySelector("header.top"), bar = document.createElement("div");
+    bar.className = "sprog"; bar.setAttribute("aria-hidden", "true"); document.body.appendChild(bar);
+    var tick = false, mhm = document.querySelector(".mhm > img, .mhm > video");
+    function onScroll() {
+      tick = false;
+      var y = window.pageYOffset || 0, h = document.documentElement.scrollHeight - window.innerHeight;
+      if (hd) hd.classList.toggle("sc", y > 12);
+      bar.style.transform = "scaleX(" + (h > 0 ? Math.min(1, y / h) : 0) + ")";
+      if (mhm && !calm && window.innerWidth > 900 && y < 900) mhm.style.transform = "scale(1.1) translateY(" + Math.round(y * 0.05) + "px)";
+    }
+    window.addEventListener("scroll", function () { if (!tick) { tick = true; requestAnimationFrame(onScroll); } }, { passive: true });
+    onScroll();
+    // efek tirai: hero diam di tempat dan bagian berikutnya naik menutupinya
+    var hero = document.querySelector(".hero.mh");
+    function fit() {
+      var on = !!hero && !calm;
+      document.documentElement.classList.toggle("curtain", on);
+      // hero lebih tinggi dari layar: bagian bawahnya yang ditahan, jadi seluruh isi hero tetap terbaca sebelum tertutup
+      if (on) hero.style.top = Math.min(hd ? hd.offsetHeight : 0, window.innerHeight - hero.offsetHeight) + "px";
+    }
+    fit(); window.addEventListener("resize", fit);
+    // menu HP: tutup bila klik di luar panel atau tekan Esc
+    document.addEventListener("click", function (e) {
+      var d = document.querySelector("details.m[open]");
+      if (d && !d.contains(e.target)) d.removeAttribute("open");
+    });
+    document.addEventListener("keydown", function (e) {
+      var d = document.querySelector("details.m[open]");
+      if (e.key === "Escape" && d) { d.removeAttribute("open"); d.querySelector("summary").focus(); }
+    });
+    // angka besar menghitung naik saat terlihat; teks akhir sudah ada di HTML
+    var cn = document.querySelectorAll("[data-count]");
+    if (cn.length && "IntersectionObserver" in window && !calm) {
+      var io = new IntersectionObserver(function (es) {
+        es.forEach(function (en) {
+          if (!en.isIntersecting) return; io.unobserve(en.target);
+          var el = en.target, tn = el.firstChild; if (!tn || tn.nodeType !== 3) return;
+          var raw = tn.nodeValue, m = raw.match(/^(\D*)([\d.,]+)(\D*)$/); if (!m) return;
+          var end = parseFloat(m[2].replace(/\./g, "").replace(",", ".")); if (!isFinite(end)) return;
+          var t0 = null, dur = 1100;
+          (function step(t) {
+            if (t0 === null) t0 = t; var k = Math.min(1, (t - t0) / dur), v = Math.round(end * (1 - Math.pow(1 - k, 3)));
+            tn.nodeValue = m[1] + v.toLocaleString("id-ID") + m[3];
+            if (k < 1) requestAnimationFrame(step); else tn.nodeValue = raw;
+          })(performance.now());
+        });
+      }, { threshold: 0.4 });
+      cn.forEach(function (x) { io.observe(x); });
+    }
+  }
 })();
