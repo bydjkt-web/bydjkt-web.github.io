@@ -52,30 +52,31 @@ def main():
     pg = json.loads((tmp / "content/pages.json").read_text())
     rc, hm = build(tmp)
     res["modern_ok"] = rc == 0 and 'data-layout="modern"' in hm and 'data-style="editorial"' in hm and 'class="hero c mh"' in hm
-    res["modern_auto_sections"] = all(x in hm for x in ('class="stats n3"', 'id="unggulan"', 'class="s alt spsec"', 'class="s bdsec"')) and 'id="video"' not in hm
-    res["modern_order"] = hm.index('class="hero c mh"') < hm.index('class="s bdsec"') < hm.index('id="model"') < hm.index('id="simulasi"') < hm.index('class="stats') < hm.index('id="unggulan"') < hm.index("spsec")
+    res["modern_auto_sections"] = all(x in hm for x in ('class="s ftsec"', 'class="s ovsec"', 'class="s alt rdsec"', 'id="unggulan"', "DM-i Super", "Blade Battery")) and 'class="ivsec"' not in hm and 'id="budget"' not in hm
+    res["modern_order"] = hm.index('class="hero c mh"') < hm.index('id="model"') < hm.index('class="s ftsec"') < hm.index('id="simulasi"') < hm.index('class="s ovsec"') < hm.index('class="s alt rdsec"') < hm.index('id="unggulan"') < hm.index('tcsec"')
     res["modern_effects_markup"] = 'class="hb"' in hm and "data-count" in hm
     res["modern_pages"] = all((tmp / f"docs/{x}/index.html").exists() for x in ("simulasi-kredit", "kontak", "byd-atto-3/eksterior", "byd-atto-3/interior", "byd-atto-3/spesifikasi"))
     sm = (tmp / "docs/sitemap.xml").read_text()
     res["modern_subpage_index_rules"] = "/byd-atto-3/spesifikasi/" in sm and "/byd-atto-3/eksterior/" not in sm and 'content="noindex,follow' in (tmp / "docs/byd-atto-3/eksterior/index.html").read_text()
-    res["modern_menu"] = 'class="ddp"' in hm and 'href="/byd-atto-3/interior/"' in hm and 'href="/simulasi-kredit/"' in hm and 'href="/kontak/"' in hm and 'class="ft mf"' in hm
-    res["modern_budget_not_in_hero"] = hm.count('id="budget"') == 1
+    res["modern_menu"] = 'class="ddp sm"' in hm and 'href="/byd-atto-3/interior/"' in hm and 'href="/simulasi-kredit/"' in hm and 'href="/kontak/"' in hm and 'class="ft mf"' in hm
+    mp = (tmp / "docs/byd-atto-3/index.html").read_text()
+    res["modern_model_page"] = all(x in mp for x in ('id="explore"', 'class="s txsec"', 'class="s alt rdsec"', "Estetika di setiap", 'class="s dive"')) and mp.index('id="explore"') < mp.index('class="s txsec"') < mp.index('class="s alt rdsec"') < mp.index('class="s dive"')
+    res["modern_testdrive_steps"] = (tmp / "docs/test-drive/index.html").read_text().count('class="st"') == 3
     pg["home"]["video"] = {"title": "Uji Video", "url": "https://youtu.be/dQw4w9WgXcQ"}
-    pg["home"]["stats"] = [{"value": "5", "unit": "tahun", "label": "Garansi uji"}]
-    pg["home"]["panels"] = [{"tag": "Uji", "title": "Panel Uji", "text": "Isi panel.", "link": "/byd-seal/"}]
-    pg["home"]["spotlight"] = {"slug": "byd-seal", "items": [{"value": "9 detik", "label": "Uji"}]}
+    pg["home"]["tech"] = [{"eyebrow": "Uji", "title": "Teknologi Uji", "text": "Isi uji.", "points": [{"title": "Poin Uji", "text": "x"}], "link": "/byd-seal/"}]
+    pg["home"]["feature_model"] = "byd-seal"
     (tmp / "content/pages.json").write_text(json.dumps(pg))
     rc, hm = build(tmp)
-    res["modern_custom"] = rc == 0 and 'data-yt="dQw4w9WgXcQ"' in hm and "Garansi uji" in hm and "Panel Uji" in hm and "9 detik" in hm and "Lihat BYD Seal" in hm
+    res["modern_custom"] = rc == 0 and 'data-yt="dQw4w9WgXcQ"' in hm and "Poin Uji" in hm and "DM-i Super" not in hm and hm.index("BYD <span class=\"hl\">Seal</span>", hm.index('class="s ftsec"')) < hm.index('id="simulasi"')
     res["video_bad_url_hidden"] = True
     pg["home"]["video"] = {"url": "javascript:alert(1)"}
     (tmp / "content/pages.json").write_text(json.dumps(pg))
     rc, hm = build(tmp)
-    res["video_bad_url_hidden"] = rc == 0 and 'id="video"' not in hm and "javascript:" not in hm
+    res["video_bad_url_hidden"] = rc == 0 and 'class="ivsec"' not in hm and "javascript:" not in hm
     th["style"] = "standard"
     (tmp / "content/theme.json").write_text(json.dumps(th))
     pg2 = json.loads(json.dumps(pg))
-    for k in ("video", "stats", "panels", "spotlight"):
+    for k in ("video", "stats", "panels", "spotlight", "tech"):
         pg2["home"].pop(k, None)
     (tmp / "content/pages.json").write_text(json.dumps(pg2))
     rc, hm = build(tmp)
