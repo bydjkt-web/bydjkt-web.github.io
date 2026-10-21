@@ -287,7 +287,7 @@
     function calc() {
       var mod = data[+m.value], va = mod.v[+v.value] || mod.v[0], pr = va.p, pct = +dp.value, yrs = +t.value;
       var down = pr * pct / 100, loan = pr - down, total = loan * (1 + rate / 100 * yrs), mo = total / (yrs * 12);
-      dpo.textContent = pct + "%"; r.textContent = rp(mo) + " / bulan";
+      dpo.textContent = pct + "%"; roll(r, mo, function (n) { return rp(n) + " / bulan"; });
       d.textContent = "Harga " + rp(pr) + ", uang muka " + rp(down) + ", tenor " + yrs + " tahun";
       var msg = "Halo, saya ingin simulasi kredit " + mod.n + " " + va.n + ", uang muka " + pct + "%, tenor " + yrs + " tahun.";
       wa.href = wa.href.split("?")[0] + "?text=" + encodeURIComponent(msg);
@@ -356,6 +356,116 @@
       }, { threshold: 0.4 });
       cn.forEach(function (x) { io.observe(x); });
     }
+    var fine = window.matchMedia && matchMedia("(hover: hover) and (pointer: fine)").matches;
+    // kartu model miring 3D mengikuti kursor
+    if (fine && !calm) document.querySelectorAll(".mc").forEach(function (c) {
+      c.addEventListener("pointermove", function (e) {
+        var r = c.getBoundingClientRect(), x = (e.clientX - r.left) / r.width - 0.5, y = (e.clientY - r.top) / r.height - 0.5;
+        c.style.transform = "perspective(900px) rotateY(" + (x * 10) + "deg) rotateX(" + (-y * 10) + "deg) translateY(-8px)";
+      });
+      c.addEventListener("pointerleave", function () { c.style.transform = ""; });
+    });
+    // tombol utama sedikit tertarik ke kursor
+    if (fine && !calm) {
+      var mg = [].slice.call(document.querySelectorAll(".hero.mh .cta .btn, .ctasec .btn, .ctas .btn:not(.o), .tdgo .btn"));
+      if (mg.length) window.addEventListener("pointermove", function (e) {
+        mg.forEach(function (b) {
+          var r = b.getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height / 2, dx = e.clientX - cx, dy = e.clientY - cy;
+          if (Math.abs(dx) < r.width / 2 + 50 && Math.abs(dy) < r.height / 2 + 50) b.style.transform = "translate(" + (dx * 0.25) + "px," + (dy * 0.25) + "px)";
+          else if (b.style.transform) b.style.transform = "";
+        });
+      }, { passive: true });
+    }
+    // cahaya mengikuti kursor di panel dan kotak fitur
+    if (fine && !calm) document.querySelectorAll(".pnl, .feat > div, .hc, .infos li, .vcard, .dvc, .fc").forEach(function (c) {
+      c.classList.add("spot");
+      c.addEventListener("pointermove", function (e) {
+        var r = c.getBoundingClientRect(); c.style.setProperty("--mx", (e.clientX - r.left) + "px"); c.style.setProperty("--my", (e.clientY - r.top) + "px");
+      });
+    });
+    // kartu statistik bisa dibalik
+    document.querySelectorAll(".flp").forEach(function (b) {
+      b.addEventListener("click", function () { var on = b.classList.toggle("on"); b.setAttribute("aria-pressed", on ? "true" : "false"); });
+    });
+    // pilih warna cat
+    document.querySelectorAll("[data-colors]").forEach(function (w) {
+      var bs = w.querySelectorAll(".csw"), ps = w.querySelectorAll("[data-cp]"), nm = w.querySelector("[data-cn]"), names = [];
+      try { names = JSON.parse(w.querySelector("[data-names]").textContent); } catch (e) {}
+      bs.forEach(function (b) { b.addEventListener("click", function () {
+        var k = +b.getAttribute("data-c");
+        bs.forEach(function (x) { x.setAttribute("aria-pressed", x === b ? "true" : "false"); });
+        ps.forEach(function (p) { p.hidden = +p.getAttribute("data-cp") !== k; });
+        if (nm && names[k]) nm.textContent = names[k];
+      }); });
+    });
+    // FAQ membuka dan menutup dengan halus
+    if (!calm) document.querySelectorAll("details.q").forEach(function (d) {
+      var sm = d.querySelector("summary"), body = d.querySelector("summary + div"); if (!sm || !body) return;
+      sm.addEventListener("click", function (e) {
+        e.preventDefault();
+        if (d.getAttribute("data-busy")) return; d.setAttribute("data-busy", "1");
+        var open = d.hasAttribute("open");
+        body.style.overflow = "hidden";
+        if (!open) { d.setAttribute("open", ""); var h1 = body.scrollHeight; body.style.height = "0px"; body.offsetHeight; body.style.transition = "height .35s cubic-bezier(.2,.7,.2,1)"; body.style.height = h1 + "px"; }
+        else { body.style.height = body.scrollHeight + "px"; body.offsetHeight; body.style.transition = "height .3s cubic-bezier(.2,.7,.2,1)"; body.style.height = "0px"; }
+        setTimeout(function () {
+          if (open) d.removeAttribute("open");
+          body.style.height = body.style.transition = body.style.overflow = ""; d.removeAttribute("data-busy");
+        }, 380);
+      });
+    });
+    // judul bagian muncul huruf demi huruf saat masuk layar
+    if (!calm && "IntersectionObserver" in window) {
+      var heads = [].slice.call(document.querySelectorAll(".hm .s h2, .ctasec h2, .mtop ~ section h2")).filter(function (x) { return x.textContent.length < 80 && !x.getAttribute("data-rise"); });
+      var rio = new IntersectionObserver(function (es) {
+        es.forEach(function (en) { if (en.isIntersecting) { rio.unobserve(en.target); en.target.classList.add("go"); } });
+      }, { threshold: 0.35 });
+      heads.forEach(function (hd2) {
+        var i = 0;
+        (function split(n) {
+          [].slice.call(n.childNodes).forEach(function (c) {
+            if (c.nodeType === 3) {
+              var f = document.createDocumentFragment();
+              c.nodeValue.split(/(\s+)/).forEach(function (t) {
+                if (!t) return;
+                if (/^\s+$/.test(t)) { f.appendChild(document.createTextNode(" ")); return; }
+                var w = document.createElement("span"); w.className = "wd";
+                t.split("").forEach(function (ch) { var l = document.createElement("span"); l.className = "ch"; l.style.setProperty("--i", Math.min(i++, 28)); l.textContent = ch; w.appendChild(l); });
+                f.appendChild(w);
+              });
+              n.replaceChild(f, c);
+            } else if (c.nodeType === 1) split(c);
+          });
+        })(hd2);
+        hd2.setAttribute("data-rise", "1"); rio.observe(hd2);
+      });
+    }
+    // hero: tiga lapisan bergerak beda jarak mengikuti kursor atau jari
+    var hm = document.querySelector(".hero.mh .mhin");
+    if (hm && !calm) {
+      var far = document.createElement("i"), far2 = document.createElement("i"); far.className = "dp dp1"; far2.className = "dp dp2";
+      far.setAttribute("aria-hidden", "true"); far2.setAttribute("aria-hidden", "true"); hm.appendChild(far); hm.appendChild(far2);
+      var mm = hm.querySelector(".mhm"), tt = hm.querySelector(".mht");
+      hm.addEventListener("pointermove", function (e) {
+        var r = hm.getBoundingClientRect(), x = (e.clientX - r.left) / r.width - 0.5, y = (e.clientY - r.top) / r.height - 0.5;
+        far.style.transform = "translate(" + (x * 26) + "px," + (y * 16) + "px)"; far2.style.transform = "translate(" + (x * -34) + "px," + (y * -20) + "px)";
+        if (mm && window.innerWidth > 900) mm.style.transform = "translate(" + (x * -14) + "px," + (y * -8) + "px)";
+        if (tt && window.innerWidth > 900) tt.style.transform = "translate(" + (x * 6) + "px," + (y * 4) + "px)";
+      });
+      hm.addEventListener("pointerleave", function () { [far, far2, mm, tt].forEach(function (el) { if (el) el.style.transform = ""; }); });
+    }
+  }
+  // angka bergulir halus (dipakai kalkulator); hasil akhir selalu teks yang benar
+  function roll(el, to, fmt) {
+    var calm2 = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (calm2 || document.documentElement.getAttribute("data-layout") !== "modern") { el.textContent = fmt(to); return; }
+    var from = el._v == null ? to : el._v; cancelAnimationFrame(el._r); el._v = to;
+    var t0 = null;
+    (function step(t) {
+      if (t0 === null) t0 = t; var k = Math.min(1, (t - t0) / 450);
+      el.textContent = fmt(from + (to - from) * (1 - Math.pow(1 - k, 3)));
+      if (k < 1) el._r = requestAnimationFrame(step); else el.textContent = fmt(to);
+    })(performance.now());
   }
   // ---- menu Model (dropdown desktop): klik/ketuk membuka, Esc dan klik di luar menutup ----
   document.querySelectorAll(".dd").forEach(function (dd) {
@@ -386,8 +496,8 @@
     function calc() {
       var m = data[mi], v = m.v[+$("pv").value || 0], p = v.p, dpP = +$("pdp").value, dp = p * dpP / 100, loan = p - dp;
       var mon = loan * (1 + rate / 100 * yrs) / (yrs * 12), tdp = dp + adm + p * ins / 100 + mon;
-      $("pdo").textContent = dpP + "%"; $("pp").textContent = rp(p); $("pm").textContent = rp(mon) + " / bulan";
-      $("ptdp").textContent = rp(tdp); $("ph").textContent = rp(p); $("pk").textContent = rp(loan);
+      $("pdo").textContent = dpP + "%"; $("pp").textContent = rp(p); roll($("pm"), mon, function (n) { return rp(n) + " / bulan"; });
+      roll($("ptdp"), tdp, rp); $("ph").textContent = rp(p); $("pk").textContent = rp(loan);
       var ls = $("pl").value;
       var msg = ["Halo, saya ingin simulasi kredit resmi.", "Model: " + m.n + " " + v.n + " (" + rp(p) + ").", "Uang muka " + dpP + "%, tenor " + yrs + " tahun" + (ls ? ", leasing " + ls : "") + ".",
         "Estimasi di situs: " + rp(mon) + " per bulan. Mohon dihitungkan angka resminya."];
