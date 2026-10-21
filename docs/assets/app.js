@@ -253,6 +253,17 @@
       withTimeout(saveLead(doc).catch(function () { return false; }), 4500).then(function () {
         track("generate_lead", { tier: sc.tier, score: sc.score, model: d.model });
         var link = waLink(d, sc);
+        if (form.classList.contains("tdf")) {
+          // kartu konfirmasi (seperti acuan): form disembunyikan, tombol lanjut ke WhatsApp dan kembali
+          var card = document.createElement("div"); card.className = "tdok"; card.setAttribute("role", "status");
+          card.innerHTML = '<span class="ico" aria-hidden="true">✓</span><h2>Pemesanan dikirim</h2><p></p><div class="ctas"><a class="btn" rel="noopener" data-wa="td-success">Lanjut ke WhatsApp</a><button type="button" class="btn o">Kembali</button></div>';
+          card.querySelector("p").textContent = "Terima kasih " + d.name + ". Cek WhatsApp Anda: pesan booking test drive " + (d.model || "mobil BYD") + " sudah kami siapkan untuk tim " + (C.name || "kami") + ".";
+          card.querySelector("a").href = link;
+          card.querySelector("button").addEventListener("click", function () { card.remove(); form.hidden = false; busy = false; if (btn) { btn.disabled = false; btn.textContent = "Konfirmasi via WhatsApp"; } });
+          form.hidden = true; form.parentNode.insertBefore(card, form.nextSibling);
+          setTimeout(function () { location.href = link; }, 900);
+          return;
+        }
         say("Terima kasih " + d.name + "! Kami lanjutkan lewat WhatsApp. Jika tidak terbuka otomatis, ketuk tombol di bawah.", "ok");
         var a = document.createElement("a");
         a.className = "btn w"; a.href = link; a.textContent = "Lanjut ke WhatsApp";
@@ -390,4 +401,12 @@
     if (q) data.forEach(function (m, i) { if (m.n === q || m.s === q) { mi = i; tabs.forEach(function (x, k) { x.setAttribute("aria-selected", k === i ? "true" : "false"); }); } });
     fillV();
   })();
+  // tab (mis. Eksterior / Interior di halaman model)
+  document.querySelectorAll("[data-tabs]").forEach(function (w) {
+    var bs = w.querySelectorAll("[data-tab]"), ps = w.querySelectorAll("[data-pan]");
+    bs.forEach(function (b) { b.addEventListener("click", function () {
+      bs.forEach(function (x) { x.setAttribute("aria-selected", x === b ? "true" : "false"); });
+      ps.forEach(function (p) { p.hidden = p.getAttribute("data-pan") !== b.getAttribute("data-tab"); });
+    }); });
+  });
 })();
