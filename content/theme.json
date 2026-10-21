@@ -1,9 +1,9 @@
 {
-  "preset": "custom",
-  "dark": "#101820",
-  "primary": "#0d6b5b",
-  "accent": "#d4001a",
-  "paper": "#f4f5f2",
+  "preset": "modern",
+  "dark": "#243746",
+  "primary": "#3d5a6c",
+  "accent": "#2b6a8a",
+  "paper": "#f1f4f6",
   "presets": [
     {
       "id": "atlantic",

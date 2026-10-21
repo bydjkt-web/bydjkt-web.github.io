@@ -785,3 +785,72 @@ nav.d .ddp.sm a::after{display:none}
 [data-layout=modern] nav.md .dd:has(.ddl[aria-current]) .ddb{background:var(--soft);color:var(--txt)}
 [hidden]{display:none!important}
 [data-layout=modern] .calc>.cres{background:var(--ink);border-radius:22px;padding:22px;color:#fff}
+
+/* ===== Modern: 10 efek interaktif (dimatikan bila gerakan dikurangi) ===== */
+/* 1 kartu miring: transisi dipersingkat supaya mengikuti kursor */
+[data-layout=modern] .mc{transform-style:preserve-3d;will-change:transform}
+/* 2 tombol magnet */
+[data-layout=modern] .hero.mh .cta .btn,[data-layout=modern] .ctasec .btn,[data-layout=modern] .ctas .btn,[data-layout=modern] .tdgo .btn{transition:transform .25s cubic-bezier(.2,.7,.2,1),background .2s,color .2s,box-shadow .2s}
+/* 3 cahaya kursor */
+[data-layout=modern] .spot{position:relative}
+[data-layout=modern] .spot::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:2;opacity:0;transition:opacity .3s;
+  background:radial-gradient(220px circle at var(--mx,50%) var(--my,50%),color-mix(in srgb,#fff 24%,transparent),transparent 70%)}
+[data-layout=modern] .spot:hover::before{opacity:1}
+/* 4 pita model berjalan */
+.rib{overflow:hidden;border-block:1px solid var(--line);background:var(--card);padding-block:18px;position:relative}
+.rbt{display:flex;width:max-content;animation:rbm 38s linear infinite}
+.rib:hover .rbt,.rib:focus-within .rbt{animation-play-state:paused}
+.rbr{display:flex;gap:44px;padding-right:44px;font:800 clamp(1.5rem,4vw,2.6rem)/1 var(--disp);letter-spacing:-.02em;text-transform:uppercase;white-space:nowrap}
+.rbr a{color:var(--txt);text-decoration:none;transition:color .2s}
+.rbr a:nth-child(even){color:var(--acc)}
+.rbr a:hover{color:var(--lk)}
+@keyframes rbm{to{transform:translateX(-50%)}}
+/* 5 kartu statistik bisa dibalik */
+[data-layout=modern] .kst>div:has(.flp){padding:0;perspective:900px}
+.flp{all:unset;display:block;position:relative;width:100%;min-height:150px;cursor:pointer;box-sizing:border-box}
+.flp:focus-visible{outline:3px solid var(--acc);outline-offset:3px;border-radius:18px}
+.fli{display:block;position:absolute;inset:0;transform-style:preserve-3d;transition:transform .7s cubic-bezier(.2,.7,.2,1)}
+.flp.on .fli{transform:rotateY(180deg)}
+.fli>span{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:inherit;padding:18px 20px;display:flex;flex-direction:column;justify-content:center;box-sizing:border-box}
+.fli .fb{transform:rotateY(180deg);background:var(--ink);color:#fff;gap:6px;border-radius:18px}
+.fli .fb small{font:700 .68rem var(--disp);letter-spacing:.14em;text-transform:uppercase;color:var(--it2)}
+.fli .fb .r{display:flex;justify-content:space-between;gap:10px;font-size:.9rem;position:static;padding:0;backface-visibility:visible}
+.fli .fb .r b{font-weight:700;font-variant-numeric:tabular-nums}
+.fli .ff{background:inherit}
+/* 6 pilih warna */
+.cvw{margin-top:22px}
+.cstage{border-radius:28px;overflow:hidden;background:var(--soft);border:1px solid var(--line)}
+.cpn img{display:block;width:100%;height:auto;animation:cfade .5s both}
+@keyframes cfade{from{opacity:.2;transform:scale(1.02)}to{opacity:1;transform:none}}
+.cbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:14px;flex-wrap:wrap}
+.csws{display:flex;gap:10px;flex-wrap:wrap}
+.csw{width:38px;height:38px;border-radius:50%;border:2px solid var(--line);background:var(--c);cursor:pointer;transition:transform .2s}
+.csw[aria-pressed=true]{outline:3px solid var(--acc);outline-offset:3px;transform:scale(1.1)}
+.cnm{margin:0;font:700 .8rem var(--disp);letter-spacing:.12em;text-transform:uppercase;color:var(--ink2)}
+/* 8 FAQ: ikon plus berputar */
+[data-layout=modern] details.q summary::after{transition:transform .35s;display:inline-block}
+[data-layout=modern] details.q[open] summary::after{content:"+";transform:rotate(45deg)}
+/* 9 judul per huruf */
+[data-layout=modern] h2[data-rise] .wd{display:inline-block;overflow:hidden;vertical-align:top;padding-bottom:.1em;margin-bottom:-.1em}
+[data-layout=modern] h2[data-rise] .ch{display:inline-block;transform:translateY(105%);transition:transform .7s cubic-bezier(.2,.8,.2,1);transition-delay:calc(var(--i) * 28ms)}
+[data-layout=modern] h2[data-rise].go .ch{transform:none}
+/* 10 hero berlapis */
+.hero.mh .mhin{position:relative}
+.hero.mh .mhm,.hero.mh .mht{transition:transform .25s ease-out}
+.dp{position:absolute;border-radius:50%;pointer-events:none;z-index:0;transition:transform .3s ease-out;background:color-mix(in srgb,var(--acc) 18%,transparent)}
+.dp1{width:210px;height:210px;right:3%;top:-30px}
+.dp2{width:110px;height:110px;left:-46px;top:46%;background:color-mix(in srgb,var(--ink) 10%,transparent)}
+.hero.mh .mhm,.hero.mh .mht{position:relative;z-index:1}
+@media(max-width:900px){.dp{display:none}}
+@media (prefers-reduced-motion:reduce){
+  .rbt{animation:none}.rib{overflow-x:auto}.fli,.cpn img{transition:none;animation:none}
+  [data-layout=modern] h2[data-rise] .ch{transform:none;transition:none}
+}
+/* sisi belakang kartu balik: tegaskan gaya agar tidak mewarisi gaya angka besar .kst */
+.kst .fli .fb{gap:8px}
+.kst .fli .fb .r{display:flex;flex-direction:row;align-items:baseline;justify-content:space-between;gap:12px;margin:0;padding:0;font-size:.92rem;line-height:1.3;color:var(--it)}
+.kst .fli .fb .r span{display:block;margin:0;font-size:inherit;letter-spacing:0;text-transform:none;color:var(--it)}
+.kst .fli .fb .r b{display:block;font:700 .95rem/1.3 var(--disp);letter-spacing:0;color:#fff;font-variant-numeric:tabular-nums;white-space:nowrap}
+.kst .fli .fb small{display:block;margin:0 0 2px;color:var(--it2)}
+[data-layout=modern] .kst>div:has(.flp){display:grid}
+.flp{height:100%;min-height:150px}

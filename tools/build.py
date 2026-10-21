@@ -1282,6 +1282,13 @@ def build_home():
                 f'<div class="swiper bhs msl" data-per="4" data-mid="2.2" data-mob="1.15"><div class="swiper-wrapper">{cards}</div><div class="swiper-pagination"></div></div><p class="swipe">Geser untuk melihat model</p>'
                 f'<p class="note">Harga OTR Jakarta, {esc(PRICE_LABEL)}; dapat berubah. Lihat <a href="/harga-byd/">daftar harga mobil BYD terbaru</a>.</p></div></section>')
 
+    def s_ribbon():
+        row = "".join(f'<a href="/{m["slug"]}/">{esc(m["name"])}</a>' for m in MODELS)
+        if not row:
+            return ""
+        return (f'<div class="rib" aria-label="Model BYD"><div class="rbt"><div class="rbr">{row}</div>'
+                f'<div class="rbr" aria-hidden="true">{row.replace("<a ", "<a tabindex=-1 ")}</div></div></div>')
+
     def s_why():
         items = "".join(f'<div data-aos="fade-up" data-aos-delay="{k * 80}"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{WHY_ICONS[k % len(WHY_ICONS)]}"/></svg></span>'
                         f'<h3>{esc(i["title"])}</h3><p>{esc(i["text"])}</p></div>' for k, i in enumerate(h.get("why_items", [])))
@@ -1337,7 +1344,7 @@ def build_home():
             return ""
         intro = m.get("intro") or []
         txt = intro[1] if len(intro) > 1 else m["tagline"]
-        return (f'<section class="s alt rdsec"><div class="wrap">{stat_cards(key_stats(m))}<div class="rdin"><div>{ey("All-new " + m["name"])}<h2>{hl("Siap menjelajah")}</h2></div>'
+        return (f'<section class="s alt rdsec"><div class="wrap">{stat_cards(key_stats(m), m=m)}<div class="rdin"><div>{ey("All-new " + m["name"])}<h2>{hl("Siap menjelajah")}</h2></div>'
                 f'<div><p>{md.inline(txt)}</p><a class="btn" href="{td_url(m["name"])}">Booking test drive</a></div></div></div></section>')
 
     def s_blueprint():
@@ -1384,8 +1391,8 @@ def build_home():
     reg = {"hero": s_hero, "budget": s_budget, "models": s_models, "leasing": lambda: leasing_section("home"), "handover": hand_section, "testimonials": lambda: testi_section("home"),
            "promo": promo_section, "video": video_section, "credit": credit_section, "stats": stats_section, "panels": panels_section, "spotlight": spotlight_section, "why": s_why, "articles": s_articles, "usecases": s_usecases, "lead": s_lead, "faq": s_faq, "cta": s_cta}
     if STYLE_MD:
-        reg.update({"introvideo": s_introvideo, "feature": s_feature, "overview": s_overview, "ready": s_ready, "blueprint": s_blueprint, "tech": s_tech})
-        seq = ["introvideo", "hero", "models", "feature", "promo", "credit", "leasing", "overview", "ready", "blueprint", "tech", "handover", "testimonials", "articles", "faq", "cta"]
+        reg.update({"ribbon": s_ribbon, "introvideo": s_introvideo, "feature": s_feature, "overview": s_overview, "ready": s_ready, "blueprint": s_blueprint, "tech": s_tech})
+        seq = ["introvideo", "hero", "ribbon", "models", "feature", "promo", "credit", "leasing", "overview", "ready", "blueprint", "tech", "handover", "testimonials", "articles", "faq", "cta"]
         body = '<div class="hm">' + "".join(reg[i]() for i in seq if lay_on("home", i)) + "</div>"
     else:
         body = '<div class="hm">' + "".join(reg[i]() for i in sections_order("home", reg)) + "</div>"
@@ -1574,7 +1581,7 @@ def build_models():
                 pans = "".join(f'<div class="tpan" data-pan="{k}"{"" if k == 0 else " hidden"}>{im}</div>' for k, (_, im) in enumerate(views))
                 tabs = f'<div class="xtabs" data-tabs><div class="ctabs" role="tablist">{btns}</div>{pans}</div>'
             return (f'<section class="s xpl" id="explore"><div class="wrap">{ey("Jelajahi " + m["name"])}<h2>{hl("Inovasi di setiap perjalanan")}</h2>'
-                    f'{tabs}{stat_cards(key_stats(m))}</div></section>')
+                    f'{tabs}{color_viewer(m)}{stat_cards(key_stats(m), m=m)}</div></section>')
 
         def s_mvideo():
             v = m.get("video") or {}
@@ -1595,7 +1602,7 @@ def build_models():
             txt = "".join(f"<p>{md.inline(p)}</p>" for p in intro[1:]) or f"<p>{esc(m['tagline'])}</p>"
             best = ("<ul class=\"ticks\">" + "".join(f"<li>{esc(b)}</li>" for b in m.get("best_for", [])) + "</ul>") if m.get("best_for") else ""
             return (f'<section class="s alt rdsec"><div class="wrap"><div class="rdin"><div>{ey("Visual experience")}<h2>{hl("Siap menjelajah")}</h2>{best}</div>'
-                    f'<div>{txt}<a class="btn" href="{td_url(m["name"])}">Booking test drive</a></div></div>{stat_cards(key_stats(m))}</div></section>')
+                    f'<div>{txt}<a class="btn" href="{td_url(m["name"])}">Booking test drive</a></div></div>{stat_cards(key_stats(m), m=m)}</div></section>')
 
         def s_aesthetics():
             if not STYLE_MD:
@@ -1708,10 +1715,35 @@ def key_stats(m):
     return out[:3]
 
 
-def stat_cards(stats, cls="kst"):
+def color_viewer(m):
+    """Modern: pilih warna cat. Hanya tampil bila ada >=2 warna yang punya foto (tanpa foto, tidak ada yang bisa ditampilkan)."""
+    cs = [c for c in (m.get("colors") or []) if isinstance(c, dict) and c.get("name") and c.get("image") and images.resolve(c["image"])]
+    if not STYLE_MD or len(cs) < 2:
+        return ""
+    sw = "".join(f'<button type="button" class="csw" data-c="{k}" style="--c:{esc(c.get("hex") or "#888")}" aria-pressed="{"true" if k == 0 else "false"}" aria-label="{esc(c["name"])}"></button>' for k, c in enumerate(cs))
+    ps = "".join(f'<div class="cpn" data-cp="{k}"{"" if k == 0 else " hidden"}>{img_tag(c["image"], f"{m["name"]} warna {c["name"]}", "(max-width:900px) 100vw, 1000px")}</div>' for k, c in enumerate(cs))
+    return (f'<div class="cvw" data-colors><div class="cstage">{ps}</div><div class="cbar"><div class="csws" role="group" aria-label="Pilih warna">{sw}</div>'
+            f'<p class="cnm" aria-live="polite" data-cn>{esc(cs[0]["name"])}</p></div>'
+            f'<script type="application/json" data-names>{json.dumps([c["name"] for c in cs], ensure_ascii=False)}</script></div>')
+
+
+def stat_cards(stats, cls="kst", m=None):
     if not stats:
         return ""
-    return f'<div class="{cls}">' + "".join(f'<div data-aos="fade-up" data-aos-delay="{k * 100}"><b data-count>{esc(v)}<em>{esc(u)}</em></b><span>{esc(l)}</span></div>' for k, (v, u, l) in enumerate(stats)) + "</div>"
+    # Modern: kartu bisa dibalik; sisi belakang berisi varian dan harga dari data model (tanpa klaim baru)
+    back = ""
+    if STYLE_MD and m and m.get("variants"):
+        rows = "".join(f'<span class="r"><span>{esc(v["name"])}</span><b>{esc(juta(v["price"]))}</b></span>' for v in m["variants"][:4])
+        back = f'<span class="fb"><small>Varian dan harga OTR</small>{rows}</span>'
+    out = ""
+    for k, (v, u, l) in enumerate(stats):
+        front = f'<b data-count>{esc(v)}<em>{esc(u)}</em></b><span>{esc(l)}</span>'
+        if back:
+            out += (f'<div data-aos="fade-up" data-aos-delay="{k * 100}"><button type="button" class="flp" aria-pressed="false" aria-label="Balik kartu {esc(l)} untuk melihat varian">'
+                    f'<span class="fli"><span class="ff">{front}</span>{back}</span></button></div>')
+        else:
+            out += f'<div data-aos="fade-up" data-aos-delay="{k * 100}">{front}</div>'
+    return f'<div class="{cls}">{out}</div>'
 
 
 def dive_section(m, current=""):
@@ -1762,7 +1794,7 @@ def build_model_subs():
                     f'<a href="/{x["slug"]}/spesifikasi/"{" aria-current=page" if x is m else ""}>{esc(x["name"])}</a>' for x in MODELS)
                     + f'<a class="btn o sm" href="{base}">← Kembali ke ikhtisar</a></aside>')
                 body = (f'<section class="sub shero"><div class="wrap">{crumbs(crumb_items)}{ey("Data Teknis")}<h1>Spesifikasi {esc(m["name"])}</h1>'
-                        f'<p class="tl">{esc(m["tagline"])}</p>' + (f'<p class="vn">Varian: {esc(vn)}</p>' if vn else "") + f'{stat_cards(key_stats(m))}</div></section>'
+                        f'<p class="tl">{esc(m["tagline"])}</p>' + (f'<p class="vn">Varian: {esc(vn)}</p>' if vn else "") + f'{stat_cards(key_stats(m), m=m)}</div></section>'
                         + (f'<section class="s"><div class="wrap spl">{side}<div class="spm"><h2>Data teknis {esc(m["name"])}</h2><div class="tw"><table class="spt"><tbody>{rows}</tbody></table></div></div></div></section>' if rows else "")
                         + (f'<section class="s alt"><div class="wrap art"><h2>Varian dan harga OTR Jakarta</h2><div class="tw"><table><thead><tr><th>Varian</th><th>Harga OTR</th><th>Jarak tempuh</th><th>Baterai</th><th>Tenaga</th><th>Kursi</th></tr></thead><tbody>{vrows}</tbody></table></div>'
                            f'<p class="note">Harga {esc(PRICE_LABEL)}, dapat berubah. Konfirmasi ke sales kami.</p></div></section>' if vrows else "")
@@ -1803,7 +1835,7 @@ def build_model_subs():
                     gal = "".join(f'<a href="{images.resolve(x["image"])}" data-gal aria-label="Perbesar foto {esc(x["title"])}">{img_tag(x["image"], x.get("alt") or x["title"], "(max-width:700px) 50vw, 360px")}</a>'
                                   for x in items if x.get("image") and images.resolve(x["image"]))
                     rd = (f'<section class="s alt rdsec"><div class="wrap"><div class="rdin"><div>{ey("All-new " + m["name"])}<h2>{hl("Siap menjelajah")}</h2></div>'
-                          f'<div><p>{esc(intro or m["tagline"])}</p><a class="btn" href="{td_url(m["name"])}">Booking test drive</a></div></div>{stat_cards(key_stats(m))}</div></section>')
+                          f'<div><p>{esc(intro or m["tagline"])}</p><a class="btn" href="{td_url(m["name"])}">Booking test drive</a></div></div>{stat_cards(key_stats(m), m=m)}</div></section>')
                     gs = f'<section class="s"><div class="wrap">{ey("Galeri")}<h2>{hl("Kenyamanan kabin")}</h2><div class="igal">{gal}</div></div></section>' if gal else ""
                     body = hero + rd + det + gs + dive_section(m, kind)
             schema = [breadcrumb_ld(crumb_items), {"@context": "https://schema.org", "@type": "WebPage", "name": title, "url": url(path), "inLanguage": "id-ID",

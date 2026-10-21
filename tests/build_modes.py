@@ -62,6 +62,23 @@ def main():
     mp = (tmp / "docs/byd-atto-3/index.html").read_text()
     res["modern_model_page"] = all(x in mp for x in ('id="explore"', 'class="s txsec"', 'class="s alt rdsec"', "Estetika di setiap", 'class="s dive"')) and mp.index('id="explore"') < mp.index('class="s txsec"') < mp.index('class="s alt rdsec"') < mp.index('class="s dive"')
     res["modern_testdrive_steps"] = (tmp / "docs/test-drive/index.html").read_text().count('class="st"') == 3
+    res["modern_fx_markup"] = 'class="rib"' in hm and hm.index('class="rib"') < hm.index('id="model"') and 'class="flp"' in mp and 'data-colors' not in mp
+    mj = json.loads((tmp / "content/models.json").read_text())
+    ms = next(x for x in (mj["models"] if isinstance(mj, dict) else mj) if x["slug"] == "byd-atto-3")
+    (tmp / "content/img").mkdir(exist_ok=True)
+    shutil.copy(ROOT / "tests/fixtures/foto-besar.png", tmp / "content/img/uji-warna.png")
+    src0 = "uji-warna.png"
+    ms["colors"] = [{"name": "Abu Uji", "hex": "#3d5a6c", "image": src0}, {"name": "Putih Uji", "hex": "#eee", "image": src0}]
+    (tmp / "content/models.json").write_text(json.dumps(mj))
+    rc, hm2 = build(tmp)
+    mp2 = (tmp / "docs/byd-atto-3/index.html").read_text()
+    res["modern_color_viewer"] = rc == 0 and 'data-colors' in mp2 and mp2.count('class="csw"') == 2 and "Putih Uji" in mp2
+    ms["colors"] = [{"name": "Satu", "hex": "#fff"}]
+    (tmp / "content/models.json").write_text(json.dumps(mj))
+    rc, hm2 = build(tmp)
+    res["color_viewer_needs_photos"] = rc == 0 and 'data-colors' not in (tmp / "docs/byd-atto-3/index.html").read_text()
+    ms.pop("colors", None)
+    (tmp / "content/models.json").write_text(json.dumps(mj))
     pg["home"]["video"] = {"title": "Uji Video", "url": "https://youtu.be/dQw4w9WgXcQ"}
     pg["home"]["tech"] = [{"eyebrow": "Uji", "title": "Teknologi Uji", "text": "Isi uji.", "points": [{"title": "Poin Uji", "text": "x"}], "link": "/byd-seal/"}]
     pg["home"]["feature_model"] = "byd-seal"
