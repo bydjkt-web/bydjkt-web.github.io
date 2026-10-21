@@ -474,7 +474,7 @@ def header(path=""):
     return (f'<a class="skip" href="#main">Lewati ke konten</a>{promo}<header class="top"><div class="wrap bar">'
             f'<a class="logo" href="/" aria-label="{esc(NAME)} beranda">{BOLT}<span>{esc(NAME)}</span></a>'
             f'<nav class="d" aria-label="Menu utama">{nav}</nav>{wa}'
-            f'<details class="m"><summary aria-label="Buka menu">{MENU_ICON}</summary><div>{nav}<a href="/test-drive/">Booking Test Drive</a></div></details></div></header>')
+            f'<details class="m"><summary aria-label="Buka menu">{MENU_ICON}<span class="hb" aria-hidden="true"><i></i><i></i><i></i></span></summary><div>{nav}<a href="/test-drive/">Booking Test Drive</a></div></details></div></header>')
 
 
 def social_links():
@@ -996,7 +996,7 @@ def video_section():
     if not box:
         return ""
     return (f'<section class="s alt vsec" id="video"><div class="wrap">{ey(v.get("eyebrow") or "Video")}<h2>{hl(title)}</h2>'
-            + (f'<p>{esc(v["text"])}</p>' if v.get("text") else "") + f'<div class="vbox">{box}</div></div></section>')
+            + (f'<p>{esc(v["text"])}</p>' if v.get("text") else "") + f'<div class="vbox" data-aos="fade-up">{box}</div></div></section>')
 
 
 def stats_items():
@@ -1020,7 +1020,7 @@ def stats_section():
     its = stats_items()
     if not its:
         return ""
-    cells = "".join(f'<div><b>{esc(v)}<em>{esc(u)}</em></b><span>{esc(l)}</span></div>' for v, u, l in its[:4])
+    cells = "".join(f'<div data-aos="fade-up" data-aos-delay="{k * 100}"><b data-count>{esc(v)}<em>{esc(u)}</em></b><span>{esc(l)}</span></div>' for k, (v, u, l) in enumerate(its[:4]))
     return f'<section class="s stsec"><div class="wrap"><div class="stats n{min(len(its), 4)}">{cells}</div><p class="note">Harga OTR Jakarta ({esc(PRICE_LABEL)}). Jarak tempuh menurut price list dealer.</p></div></section>'
 
 
@@ -1048,12 +1048,13 @@ def panels_section():
         return ""
     h = PG["home"]
     cards = ""
-    for p in its[:6]:
+    for k, p in enumerate(its[:6]):
         pic = img_tag(p["image"], p.get("alt") or p["title"], "(max-width:700px) 100vw, 560px") if p.get("image") and images.resolve(p["image"]) else ""
         tag = f'<span class="tag">{esc(p["tag"])}</span>' if p.get("tag") else ""
         inner = f'{pic}{tag}<h3>{esc(p["title"])}</h3><p>{esc(p.get("text", ""))}</p>'
         lk = media_url(p.get("link"))
-        cards += (f'<a class="pnl{" pic" if pic else ""}" href="{esc(lk)}">{inner}</a>' if lk else f'<div class="pnl{" pic" if pic else ""}">{inner}</div>')
+        dl = f' data-aos="fade-up" data-aos-delay="{k % 2 * 120}"'
+        cards += (f'<a class="pnl{" pic" if pic else ""}" href="{esc(lk)}"{dl}>{inner}</a>' if lk else f'<div class="pnl{" pic" if pic else ""}"{dl}>{inner}</div>')
     return (f'<section class="s pnsec" id="unggulan"><div class="wrap">{ey(h.get("panels_eyebrow") or "Pilihan")}<h2>{hl(h.get("panels_title") or "Mana yang cocok untuk Anda")}</h2>'
             f'<div class="pgrid">{cards}</div></div></section>')
 
@@ -1082,7 +1083,7 @@ def spotlight_section():
     src = sp.get("image") or (m["images"][0]["src"] if m.get("images") else "")
     pic = f'<div class="spp">{img_tag(src, m["name"], "(max-width:820px) 100vw, 540px")}</div>' if src and images.resolve(src) else ""
     return (f'<section class="s alt spsec"><div class="wrap spin{" nopic" if not pic else ""}"><div>{ey(sp.get("eyebrow") or "Sorotan")}<h2>{hl(sp.get("title") or m["name"])}</h2>'
-            f'<ul>{li}</ul><a class="btn" href="/{m["slug"]}/">Lihat {esc(m["name"])}</a></div>{pic}</div></section>')
+            f'<ul>{li}</ul><a class="btn" href="/{m["slug"]}/">Lihat {esc(m["name"])}</a></div>{pic}</div></section>').replace('<div class="spp">', '<div class="spp" data-aos="fade-up" data-aos-delay="100">')
 
 
 def build_home():
@@ -1138,7 +1139,7 @@ def build_home():
                 media = f'<div class="mhm"><video autoplay muted loop playsinline preload="metadata"{pt} aria-hidden="true"><source src="{esc(vid)}"></video></div>'
             else:
                 src = h.get("hero_image") or next((m["images"][0]["src"] for m in MODELS if m.get("images")), "")
-                media = f'<div class="mhm">{img_tag(src, h.get("hero_alt") or h["h1"], "(max-width:900px) 100vw, 560px", eager=True)}</div>' if src and images.resolve(src) else ""
+                media = f'<div class="mhm" data-aos="fade-up" data-aos-delay="100">{img_tag(src, h.get("hero_alt") or h["h1"], "(max-width:900px) 100vw, 560px", eager=True)}</div>' if src and images.resolve(src) else ""
             return (f'<section class="hero c mh"><div class="wrap mhin{"" if media else " nomedia"}"><div class="mht">{profile()}<p class="eyb">{esc(eyebrow.upper())}</p><h1>{hl(h["h1"])}</h1><p class="lead">{esc(lead_txt)}</p><div class="cta">'
                     f'<a class="btn" href="{wa_url()}" data-wa="hero" rel="noopener">{WA_ICON} {esc(h.get("cta_primary", "Chat WhatsApp"))}</a>'
                     f'<a class="btn o" href="#lead">{esc(h.get("cta_secondary", "Booking Test Drive"))}</a></div><ul class="infos">{info}</ul></div>{media}</div></section>')

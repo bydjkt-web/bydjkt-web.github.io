@@ -492,3 +492,74 @@ a.pnl:hover{transform:translateY(-3px)}.pnl{transition:transform .2s}
 [data-layout=modern] footer.ft{margin-top:0;border-radius:0}
 [data-layout=modern] .calc>.cres,[data-layout=modern] .calc>.cres *{color:#fff}[data-layout=modern] .calc>.cres small,[data-layout=modern] .calc>.cres span{color:#c4d2dc}
 [data-layout=modern] .hero.mh .mht .prof .pr2,[data-layout=modern] .hero.mh .mht .prof .pn{text-align:left}
+
+/* ---- modern: efek ---- */
+[data-layout=modern] header.top{transition:background .4s,box-shadow .4s,min-height .3s}
+[data-layout=modern] header.top.sc{background:rgba(255,255,255,.86);box-shadow:0 10px 36px rgba(0,0,0,.1)}
+.sprog{position:fixed;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--acc),var(--ev));transform-origin:0 50%;transform:scaleX(0);z-index:60;pointer-events:none}
+[data-layout=modern] .m{position:relative}
+[data-layout=modern] .m summary svg{display:none}
+[data-layout=modern] .m summary{border-radius:50%;background:rgba(255,255,255,.5);backdrop-filter:blur(14px);border-color:rgba(255,255,255,.7);box-shadow:0 8px 24px rgba(0,0,0,.08);transition:background .3s}
+[data-layout=modern] .m summary:hover{background:rgba(255,255,255,.85)}
+.hb{position:relative;display:block;width:20px;height:14px}
+.hb i{position:absolute;left:0;width:20px;height:2px;border-radius:2px;background:var(--txt);transition:transform .35s ease,opacity .25s,top .35s}
+.hb i:nth-child(1){top:0}.hb i:nth-child(2){top:6px}.hb i:nth-child(3){top:12px}
+details.m[open] .hb i:nth-child(1){top:6px;transform:rotate(45deg)}
+details.m[open] .hb i:nth-child(2){opacity:0;transform:scaleX(0)}
+details.m[open] .hb i:nth-child(3){top:6px;transform:rotate(-45deg)}
+.hb{display:none}[data-layout=modern] .hb{display:block}
+[data-layout=modern] .m>div{width:min(340px,calc(100vw - 32px));top:calc(100% + 12px);right:-4px;padding:16px;border-radius:28px;background:rgba(255,255,255,.92);backdrop-filter:blur(40px) saturate(1.5);border:1px solid color-mix(in srgb,var(--acc) 18%,#fff);box-shadow:0 30px 60px color-mix(in srgb,var(--acc) 18%,transparent);transform-origin:top right;animation:menuin .3s cubic-bezier(.3,0,0,1);overflow:hidden}
+[data-layout=modern] .m>div::before{content:"";position:absolute;top:-40px;right:-40px;width:160px;height:160px;border-radius:50%;background:color-mix(in srgb,var(--acc) 22%,transparent);filter:blur(50px);pointer-events:none}
+[data-layout=modern] .m>div a{position:relative;display:block;padding:13px 16px;border-radius:16px;font-weight:600;opacity:0;animation:lnk .45s ease forwards;transition:background .25s,padding-left .25s}
+[data-layout=modern] .m>div a:hover{background:color-mix(in srgb,var(--acc) 10%,#fff);padding-left:24px}
+[data-layout=modern] .m>div a:nth-child(1){animation-delay:.04s}[data-layout=modern] .m>div a:nth-child(2){animation-delay:.08s}[data-layout=modern] .m>div a:nth-child(3){animation-delay:.12s}[data-layout=modern] .m>div a:nth-child(4){animation-delay:.16s}[data-layout=modern] .m>div a:nth-child(5){animation-delay:.2s}[data-layout=modern] .m>div a:nth-child(n+6){animation-delay:.24s}
+@keyframes menuin{from{opacity:0;transform:scale(.95) translateY(-6px)}to{opacity:1;transform:none}}
+@keyframes lnk{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes pulse{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--acc) 55%,transparent)}70%,100%{box-shadow:0 0 0 10px transparent}}
+@keyframes nudge{0%,100%{transform:translateX(0)}50%{transform:translateX(6px)}}
+@keyframes floaty{from{transform:translate3d(0,0,0)}to{transform:translate3d(24px,-30px,0)}}
+[data-layout=modern] .hero.mh{position:relative;overflow:hidden}
+[data-layout=modern] .hero.mh::before,[data-layout=modern] .hero.mh::after{content:"";position:absolute;border-radius:50%;filter:blur(70px);pointer-events:none;animation:floaty 9s ease-in-out infinite alternate}
+[data-layout=modern] .hero.mh::before{width:340px;height:340px;right:-80px;top:-60px;background:color-mix(in srgb,var(--acc) 20%,transparent)}
+[data-layout=modern] .hero.mh::after{width:280px;height:280px;left:-90px;bottom:-60px;background:color-mix(in srgb,var(--ev) 16%,transparent);animation-delay:-4s}
+[data-layout=modern] .hero.mh .wrap{position:relative;z-index:1}
+[data-layout=modern] .eyb::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--acc);margin-right:10px;vertical-align:middle;animation:pulse 2s infinite}
+[data-layout=modern] .mhm img,[data-layout=modern] .mhm video{transform:scale(1.1);will-change:transform}
+[data-layout=modern] .btn{transition:transform .25s,box-shadow .25s,background .25s}
+[data-layout=modern] .btn:hover{transform:translateY(-2px)}
+[data-layout=modern] .mc,[data-layout=modern] .card,[data-layout=modern] .pnl,[data-layout=modern] .infos li{transition:transform .35s cubic-bezier(.2,.7,.2,1),box-shadow .35s}
+[data-layout=modern] .mc:hover{transform:translateY(-8px);box-shadow:0 28px 54px color-mix(in srgb,var(--acc) 30%,transparent)}
+[data-layout=modern] .card:hover{transform:translateY(-6px);box-shadow:0 24px 50px color-mix(in srgb,var(--acc) 18%,transparent)}
+[data-layout=modern] .pnl:hover{transform:translateY(-6px);box-shadow:0 26px 50px color-mix(in srgb,var(--ink) 30%,transparent)}
+[data-layout=modern] .infos li:hover{transform:translateY(-3px)}
+[data-layout=modern] .mc .top img,[data-layout=modern] .card .vis img,[data-layout=modern] .pnl img,[data-layout=modern] .spp img{transition:transform .7s cubic-bezier(.2,.7,.2,1)}
+[data-layout=modern] .mc:hover .top img,[data-layout=modern] .card:hover .vis img,[data-layout=modern] .pnl:hover img,[data-layout=modern] .spp:hover img{transform:scale(1.06)}
+[data-layout=modern] .mc .more::after,[data-layout=modern] .card .more::after{content:"";display:inline-block;width:0;transition:width .25s}
+[data-layout=modern] .mc:hover .more,[data-layout=modern] .card:hover .more{letter-spacing:.02em}
+[data-layout=modern] .swipe::after{content:" \2192";display:inline-block;animation:nudge 1.4s ease-in-out infinite}
+[data-layout=modern] .pbtn{animation:pulse 2.2s infinite}
+@media(prefers-reduced-motion:reduce){[data-layout=modern] *,[data-layout=modern] *::before,[data-layout=modern] *::after{animation:none!important;transition:none!important}[data-layout=modern] .m>div a{opacity:1}}
+[data-layout=modern] .hm{overflow-x:clip}
+[data-layout=modern] .m>div{background:rgba(255,255,255,.96)}
+
+/* ---- modern: penyeragaman efek (satu easing, satu durasi, satu ukuran angkat, satu cahaya) ---- */
+[data-layout=modern]{--e:cubic-bezier(.2,.7,.2,1);--d:.45s;--lift:-6px;--glow:0 24px 50px color-mix(in srgb,var(--acc) 22%,transparent)}
+[data-layout=modern] .mc,[data-layout=modern] .card,[data-layout=modern] .pnl,[data-layout=modern] .infos li,[data-layout=modern] .hc,[data-layout=modern] .pm,[data-layout=modern] .feat>div,[data-layout=modern] .spp,[data-layout=modern] .mhm{transition:transform var(--d) var(--e),box-shadow var(--d) var(--e)}
+[data-layout=modern] .mc:hover,[data-layout=modern] .card:hover,[data-layout=modern] .pnl:hover,[data-layout=modern] .hc:hover,[data-layout=modern] .pm:hover,[data-layout=modern] .feat>div:hover{transform:translateY(var(--lift));box-shadow:var(--glow)}
+[data-layout=modern] .infos li:hover{transform:translateY(-3px);box-shadow:none}
+[data-layout=modern] .mc .top img,[data-layout=modern] .card .vis img,[data-layout=modern] .pnl img,[data-layout=modern] .spp img,[data-layout=modern] .hc img{transition:transform .8s var(--e)}
+[data-layout=modern] .mc:hover .top img,[data-layout=modern] .card:hover .vis img,[data-layout=modern] .pnl:hover img,[data-layout=modern] .spp:hover img,[data-layout=modern] .hc:hover img{transform:scale(1.05)}
+[data-layout=modern] .btn{transition:transform var(--d) var(--e),box-shadow var(--d) var(--e),background .25s}
+[data-layout=modern] nav.d a:not(.btn){position:relative;transition:color .25s}
+[data-layout=modern] nav.d a:not(.btn)::after{content:"";position:absolute;left:14px;right:14px;bottom:4px;height:2px;border-radius:2px;background:var(--acc);transform:scaleX(0);transition:transform var(--d) var(--e)}
+[data-layout=modern] nav.d a:not(.btn):hover::after,[data-layout=modern] nav.d a[aria-current]::after{transform:scaleX(1)}
+[data-layout=modern] footer.ft li a{display:inline-block;transition:transform var(--d) var(--e),color .25s}
+[data-layout=modern] footer.ft li a:hover{transform:translateX(6px);color:var(--evb)}
+[data-layout=modern] .hero.mh::before,[data-layout=modern] .hero.mh::after{animation-duration:12s}
+/* tirai */
+.curtain .hm>.hero.mh{position:sticky;top:0;z-index:0}
+.curtain .hm>section:not(.hero){position:relative;z-index:1}
+.curtain .hm>section:not(.hero):not(.alt):not(.stsec):not(.ctasec){background:#fff}
+.curtain .hm>.hero.mh+section{border-radius:40px 40px 0 0;border-top:3px solid var(--acc);box-shadow:0 -24px 60px color-mix(in srgb,var(--ink) 10%,transparent);padding-top:52px}
+@media(min-width:901px){[data-layout=modern] .hero.mh .infos{flex-wrap:nowrap}[data-layout=modern] .hero.mh .infos li{flex:1 1 0;min-width:0;width:auto}}
+[data-layout=modern] .hero.mh{padding:36px 0 40px}
