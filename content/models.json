@@ -263,7 +263,33 @@
         "q": "Apa bedanya M6 DM-i dengan M6?",
         "a": "BYD M6 DM-i adalah plug-in hybrid (mesin bensin plus motor listrik), sedangkan BYD M6 adalah mobil listrik murni. Lihat halaman BYD M6 untuk varian listrik murni."
       }
-    ]
+    ],
+    "video": {
+      "url": "https://youtube.com/shorts/NGhMZ4j0Qjc?si=FmtPplZAwUKFmqyx",
+      "poster": "/img/214400.webp"
+    },
+    "safety": {
+      "title": "Bintang 5 Euro NCAP",
+      "text": "",
+      "badges": [],
+      "image": ""
+    },
+    "exterior": {
+      "intro_title": "",
+      "image2": "",
+      "title": "",
+      "intro": "",
+      "image": "",
+      "items_title": "",
+      "items": []
+    },
+    "interior": {
+      "title": "",
+      "intro": "",
+      "image": "",
+      "items_title": "",
+      "items": []
+    }
   },
   {
     "slug": "byd-m6",
