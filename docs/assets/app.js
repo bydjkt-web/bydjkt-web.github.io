@@ -296,14 +296,32 @@
     [v, dp, t].forEach(function (el) { el.addEventListener("input", calc); el.addEventListener("change", calc); });
     variants(); calc();
   })();
-  // video YouTube dimuat saat diklik (tanpa cookie, tanpa memuat skrip pihak ketiga sebelum diputar)
-  document.addEventListener("click", function (e) {
-    var b = e.target.closest && e.target.closest("[data-yt]"); if (!b) return;
-    var f = document.createElement("iframe");
-    f.src = "https://www.youtube-nocookie.com/embed/" + b.getAttribute("data-yt") + "?autoplay=1&rel=0";
-    f.title = b.getAttribute("aria-label") || "Video"; f.allow = "autoplay; encrypted-media; picture-in-picture"; f.allowFullscreen = true; f.className = "vframe";
+  // video YouTube: diputar otomatis (senyap, berulang) begitu terlihat di layar; tanpa cookie dan tanpa skrip pihak ketiga sebelum itu.
+  // Bila perangkat meminta gerakan dikurangi, video tetap menunggu klik.
+  function ytLoad(b, auto) {
+    if (!b.parentNode) return;
+    var id = b.getAttribute("data-yt"), f = document.createElement("iframe");
+    f.src = "https://www.youtube-nocookie.com/embed/" + id + "?autoplay=1&rel=0&playsinline=1" + (auto ? "&mute=1&loop=1&playlist=" + id + "&controls=0&modestbranding=1" : "");
+    f.title = b.getAttribute("aria-label") || "Video"; f.allow = "autoplay; encrypted-media; picture-in-picture"; f.allowFullscreen = true; f.className = "vframe" + (auto ? " vauto" : "");
     b.replaceWith(f);
+  }
+  var noMotion = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+  document.addEventListener("click", function (e) {
+    var b = e.target.closest && e.target.closest("[data-yt]"); if (b) ytLoad(b, false);
   });
+  if ("IntersectionObserver" in window) {
+    var vio = new IntersectionObserver(function (es) {
+      es.forEach(function (en) {
+        var t = en.target;
+        if (t.tagName === "VIDEO") { if (en.isIntersecting) { var pr = t.play(); if (pr && pr.catch) pr.catch(function () {}); } else t.pause(); return; }
+        if (en.isIntersecting) { vio.unobserve(t); ytLoad(t, true); }
+      });
+    }, { threshold: 0.35 });
+    document.querySelectorAll("[data-yt][data-auto]").forEach(function (b) { if (!noMotion) vio.observe(b); });
+    document.querySelectorAll("video[autoplay]").forEach(function (v) {
+      if (noMotion) { v.removeAttribute("autoplay"); v.pause(); v.setAttribute("controls", ""); } else vio.observe(v);
+    });
+  }
   // ---- gaya Modern: efek ringan (semua dimatikan bila perangkat meminta gerakan dikurangi) ----
   if (document.documentElement.getAttribute("data-layout") === "modern") {
     var calm = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -382,6 +400,16 @@
       c.addEventListener("pointermove", function (e) {
         var r = c.getBoundingClientRect(); c.style.setProperty("--mx", (e.clientX - r.left) + "px"); c.style.setProperty("--my", (e.clientY - r.top) + "px");
       });
+    });
+    // foto mobil bergeser mengikuti kursor (efek "hidup") di kartu model, hero, panel, dan galeri
+    if (fine && !calm) document.querySelectorAll(".mc, .mhm, .card .vis, .fc .fci, .hc, .spp, .cpn, .cstage").forEach(function (box) {
+      var im = box.querySelector("img"); if (!im) return;
+      box.classList.add("mv");
+      box.addEventListener("pointermove", function (e) {
+        var r = box.getBoundingClientRect(), x = (e.clientX - r.left) / r.width - 0.5, y = (e.clientY - r.top) / r.height - 0.5;
+        box.style.setProperty("--px", (x * -22).toFixed(1) + "px"); box.style.setProperty("--py", (y * -12).toFixed(1) + "px");
+      });
+      box.addEventListener("pointerleave", function () { box.style.removeProperty("--px"); box.style.removeProperty("--py"); });
     });
     // kartu statistik bisa dibalik
     document.querySelectorAll(".flp").forEach(function (b) {
