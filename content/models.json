@@ -292,8 +292,8 @@
       }
     ],
     "video": {
-      "url": "https://youtube.com/shorts/NGhMZ4j0Qjc?si=FmtPplZAwUKFmqyx",
-      "poster": "/img/214400.webp"
+      "url": "https://youtu.be/zV0LOFXWRz4?si=TTInf6ZIn3PF7j7s",
+      "poster": "/img/219385.webp"
     },
     "safety": {
       "title": "Bintang 5 Euro NCAP",
@@ -316,7 +316,8 @@
       "image": "",
       "items_title": "",
       "items": []
-    }
+    },
+    "colors": []
   },
   {
     "slug": "byd-m6",
