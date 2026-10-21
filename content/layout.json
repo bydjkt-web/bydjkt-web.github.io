@@ -1,31 +1,149 @@
 {
   "home": [
-    { "id": "hero", "on": true },
-    { "id": "models", "on": true },
-    { "id": "why", "on": true },
-    { "id": "articles", "on": true },
-    { "id": "usecases", "on": true },
-    { "id": "lead", "on": true },
-    { "id": "faq", "on": true }
+    {
+      "id": "hero",
+      "on": true
+    },
+    {
+      "id": "models",
+      "on": true
+    },
+    {
+      "id": "leasing",
+      "on": true
+    },
+    {
+      "id": "promo",
+      "on": true
+    },
+    {
+      "id": "video",
+      "on": true
+    },
+    {
+      "id": "budget",
+      "on": true
+    },
+    {
+      "id": "credit",
+      "on": true
+    },
+    {
+      "id": "stats",
+      "on": true
+    },
+    {
+      "id": "panels",
+      "on": true
+    },
+    {
+      "id": "spotlight",
+      "on": true
+    },
+    {
+      "id": "why",
+      "on": true
+    },
+    {
+      "id": "handover",
+      "on": true
+    },
+    {
+      "id": "testimonials",
+      "on": true
+    },
+    {
+      "id": "articles",
+      "on": true
+    },
+    {
+      "id": "usecases",
+      "on": true
+    },
+    {
+      "id": "lead",
+      "on": true
+    },
+    {
+      "id": "faq",
+      "on": true
+    },
+    {
+      "id": "cta",
+      "on": true
+    }
   ],
   "model": [
-    { "id": "gallery", "on": true },
-    { "id": "summary", "on": true },
-    { "id": "highlights", "on": true },
-    { "id": "variants", "on": true },
-    { "id": "specs", "on": true },
-    { "id": "compare", "on": true },
-    { "id": "articles", "on": true },
-    { "id": "faq", "on": true },
-    { "id": "others", "on": true },
-    { "id": "lead", "on": true }
+    {
+      "id": "gallery",
+      "on": true
+    },
+    {
+      "id": "summary",
+      "on": true
+    },
+    {
+      "id": "highlights",
+      "on": true
+    },
+    {
+      "id": "variants",
+      "on": true
+    },
+    {
+      "id": "specs",
+      "on": true
+    },
+    {
+      "id": "compare",
+      "on": true
+    },
+    {
+      "id": "articles",
+      "on": true
+    },
+    {
+      "id": "testimonials",
+      "on": true
+    },
+    {
+      "id": "faq",
+      "on": true
+    },
+    {
+      "id": "others",
+      "on": true
+    },
+    {
+      "id": "leasing",
+      "on": true
+    },
+    {
+      "id": "lead",
+      "on": true
+    }
   ],
   "prices": [
-    { "id": "table", "on": true },
-    { "id": "guide", "on": true },
-    { "id": "articles", "on": true },
-    { "id": "faq", "on": true },
-    { "id": "lead", "on": true }
+    {
+      "id": "table",
+      "on": true
+    },
+    {
+      "id": "guide",
+      "on": true
+    },
+    {
+      "id": "articles",
+      "on": true
+    },
+    {
+      "id": "faq",
+      "on": true
+    },
+    {
+      "id": "lead",
+      "on": true
+    }
   ],
   "article": {
     "toc": true,
