@@ -42,7 +42,7 @@ DOMAIN = SITE["domain"].rstrip("/")
 PRICE_DATE = SITE.get("price_date") or NOW.date().isoformat()
 PRICE_LABEL = SITE.get("price_date_label", "")
 BULAN = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"]
-RESERVED = {"tentang-kami", "llms.txt", "testimoni", "serah-terima", "blog", "admin", "assets", "img", "harga-byd", "test-drive", "feed.xml", "sitemap.xml", "robots.txt", "404.html"}
+RESERVED = {"simulasi-kredit", "kontak", "tentang-kami", "llms.txt", "testimoni", "serah-terima", "blog", "admin", "assets", "img", "harga-byd", "test-drive", "feed.xml", "sitemap.xml", "robots.txt", "404.html"}
 
 ARTICLES = content.load_items("articles", "article")
 LANDING = content.load_items("pages", "page")
@@ -438,6 +438,7 @@ LEGACY_NAV = [("Model", "/#model"), ("Harga", "/harga-byd/"), ("Mobil Listrik Mu
 PIN_ICON = "<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' aria-hidden='true'><path d='M12 21s7-5.5 7-11a7 7 0 0 0-14 0c0 5.5 7 11 7 11z'/><circle cx='12' cy='10' r='2.5'/></svg>"
 IG_ICON = "<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' aria-hidden='true'><rect x='3' y='3' width='18' height='18' rx='5'/><circle cx='12' cy='12' r='4'/><circle cx='17.5' cy='6.5' r='1' fill='currentColor' stroke='none'/></svg>"
 FB_ICON = "<svg viewBox='0 0 24 24' fill='currentColor' aria-hidden='true'><path d='M14 8h3V4h-3a4 4 0 0 0-4 4v2H7v4h3v6h4v-6h3l1-4h-4V8z'/></svg>"
+TT_ICON = "<svg viewBox='0 0 24 24' fill='currentColor' aria-hidden='true'><path d='M16.6 5.8A4.3 4.3 0 0 1 15.5 3h-3.2v12.4a2.6 2.6 0 1 1-2.6-2.6c.3 0 .5 0 .8.1V9.6a5.8 5.8 0 1 0 5 5.8V9.1a7.4 7.4 0 0 0 4.4 1.4V7.3a4.3 4.3 0 0 1-3.3-1.5z'/></svg>"
 MAIL_ICON = "<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' aria-hidden='true'><rect x='3' y='5' width='18' height='14' rx='2'/><path d='m3 7 9 6 9-6'/></svg>"
 MENU_ICON = "<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' aria-hidden='true'><path d='M4 7h16M4 12h16M4 17h16'/></svg>"
 
@@ -469,12 +470,71 @@ def header(path=""):
             return path in model_paths
         return "#" not in hr and hr == path
 
+    if STYLE_MD:
+        return modern_header(path, promo)
     nav = "".join(f'<a href="{esc(n["href"])}"{" aria-current=page" if on(n) else ""}>{esc(n["label"])}</a>' for n in nav_items())
     wa = f'<a class="btn hwa" href="{wa_url()}" data-wa="header" rel="noopener" aria-label="Chat WhatsApp">{WA_ICON}<span>WhatsApp</span></a>'
     return (f'<a class="skip" href="#main">Lewati ke konten</a>{promo}<header class="top"><div class="wrap bar">'
             f'<a class="logo" href="/" aria-label="{esc(NAME)} beranda">{BOLT}<span>{esc(NAME)}</span></a>'
             f'<nav class="d" aria-label="Menu utama">{nav}</nav>{wa}'
             f'<details class="m"><summary aria-label="Buka menu">{MENU_ICON}<span class="hb" aria-hidden="true"><i></i><i></i><i></i></span></summary><div>{nav}<a href="/test-drive/">Booking Test Drive</a></div></details></div></header>')
+
+
+SUBS = (("eksterior", "Eksterior"), ("interior", "Interior"), ("spesifikasi", "Spesifikasi"))
+CHEV = "<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round' aria-hidden='true'><path d='m6 9 6 6 6-6'/></svg>"
+
+
+def modern_header(path, promo):
+    """Menu gaya Modern (mengikuti acuan): Beranda, Model (tiap model + Eksterior/Interior/Spesifikasi), Simulasi Kredit, Test Drive, Kontak."""
+    cur = lambda p: " aria-current=page" if p == path else ""
+    in_model = any(path.startswith(f"/{m['slug']}/") for m in MODELS)
+    cols = ""
+    for m in MODELS:
+        base = f"/{m['slug']}/"
+        subs = "".join(f'<a href="{base}{k}/"{cur(base + k + "/")}>{lb}</a>' for k, lb in SUBS)
+        cols += (f'<div class="ddm"><a class="ddt" href="{base}"{cur(base)}><b>{esc(m["name"])}</b><small>{esc(price_line(m))}</small></a>'
+                 f'<div class="dds">{subs}</div></div>')
+    rest = (("/simulasi-kredit/", "Simulasi Kredit"), ("/test-drive/", "Test Drive"), ("/kontak/", "Kontak"))
+    d = (f'<nav class="d md" aria-label="Menu utama"><a href="/"{cur("/")}>Beranda</a>'
+         f'<div class="dd"><button type="button" class="ddb" aria-expanded="false" aria-controls="ddp"{" aria-current=page" if in_model else ""}>Model {CHEV}</button>'
+         f'<div class="ddp" id="ddp"><p class="ddh">Model BYD</p><div class="ddg">{cols}</div></div></div>'
+         + "".join(f'<a href="{h}"{cur(h)}>{lb}</a>' for h, lb in rest) + "</nav>")
+    mob = ""
+    for m in MODELS:
+        base = f"/{m['slug']}/"
+        mob += (f'<details class="mx"{" open" if path.startswith(base) else ""}><summary>{esc(m["name"])}{CHEV}</summary><p class="mxl">'
+                f'<a href="{base}"{cur(base)}>Ikhtisar</a>' + "".join(f'<a href="{base}{k}/"{cur(base + k + "/")}>{lb}</a>' for k, lb in SUBS) + "</p></details>")
+    m_rest = "".join(f'<a class="mb" href="{h}"{cur(h)}>{lb}</a>' for h, lb in rest)
+    mm = (f'<details class="m"><summary aria-label="Buka menu">{MENU_ICON}<span class="hb" aria-hidden="true"><i></i><i></i><i></i></span></summary>'
+          f'<div><a href="/"{cur("/")}>Beranda</a><p class="mh">Model Kami</p>{mob}{m_rest}</div></details>')
+    wa = f'<a class="btn hwa" href="{wa_url()}" data-wa="header" rel="noopener" aria-label="Chat WhatsApp">{WA_ICON}<span>WhatsApp</span></a>'
+    return (f'<a class="skip" href="#main">Lewati ke konten</a>{promo}<header class="top"><div class="wrap bar">'
+            f'<a class="logo" href="/" aria-label="{esc(NAME)} beranda">{BOLT}<span>{esc(NAME)}</span></a>{d}{wa}{mm}</div></header>')
+
+
+def modern_footer(fab):
+    mod = "".join(f'<li><a href="/{m["slug"]}/">{esc(m["name"])}</a></li>' for m in MODELS)
+    exp = [("/simulasi-kredit/", "Simulasi kredit"), ("/test-drive/", "Test drive"), ("/kontak/", "Kontak"), ("/harga-byd/", "Harga mobil BYD"), ("/blog/", "Artikel")]
+    if testi_items():
+        exp.append(("/testimoni/", "Testimoni"))
+    if hand_items():
+        exp.append(("/serah-terima/", "Serah terima"))
+    if about_ok():
+        exp.append(("/tentang-kami/", "Tentang kami"))
+    exp += [(f"/{p['slug']}/", p["h1"]) for p in VIS_LAND if p["in_footer"]]
+    ex = "".join(f'<li><a href="{h}">{esc(lb)}</a></li>' for h, lb in exp)
+    ic = {"Instagram": IG_ICON, "Facebook": FB_ICON, "TikTok": TT_ICON}
+    soc = "".join(f'<a href="{esc(u)}" rel="noopener me" aria-label="{esc(n)}">{ic.get(n) or esc(n[:2])}</a>' for n, u in socials())
+    mail = f'<br><a href="mailto:{esc(SITE["email"])}">{esc(SITE["email"])}</a>' if SITE.get("email") else ""
+    join = wa_url("Halo, saya ingin mendapat update promo dan unit BYD terbaru.")
+    return (f'<footer class="ft mf"><div class="wrap"><div class="fg">'
+            f'<div class="fb"><a class="logo" href="/">{BOLT}<span>{esc(NAME)}</span></a><p class="ftag">Drive the future.</p><p>{esc(SITE["tagline"])}.</p>'
+            f'<p>{esc(SITE["address"])}, {esc(SITE["city"])}<br><a href="{wa_url()}" data-wa="footer" rel="noopener">{esc(SITE["phone_display"])}</a>{mail}</p></div>'
+            f'<div><h2>Model</h2><ul>{mod}</ul></div><div><h2>Jelajahi</h2><ul>{ex}</ul></div>'
+            f'<div><h2>Info Promo</h2><p>Dapatkan update promo dan unit BYD terbaru langsung di WhatsApp.</p>'
+            f'<a class="btn sm" href="{join}" data-wa="newsletter" rel="noopener">{WA_ICON} Gabung</a><div class="fsoc">{soc}</div></div></div>'
+            f'<p class="legal">{esc(SITE.get("footer_note", ""))} © {NOW.year} {esc(SITE.get("legal_name") or NAME)}. {esc(SITE["hours"])}.</p></div></footer>'
+            f'{fab}<script defer src="/assets/app.js"></script></body></html>')
 
 
 def social_links():
@@ -497,6 +557,8 @@ def footer():
     who = f'<p><strong>{esc(sl["name"])}</strong><br>{esc(sl.get("role", ""))}</p>' if (sl.get("name") or "").strip() else ""
     fab = (f'<a class="wafab" href="{wa_url()}" data-wa="floating" rel="noopener" aria-label="Chat WhatsApp">{WA_ICON}<span>Chat WhatsApp</span></a>'
            if SITE.get("show_floating_wa", True) else "")
+    if STYLE_MD:
+        return modern_footer(fab)
     return (f'<footer class="ft"><div class="wrap"><div class="fg"><div><h2>{esc(NAME)}</h2><p>{esc(SITE["tagline"])}.</p>{who}'
             f'<p><a href="{wa_url()}" data-wa="footer" rel="noopener">WhatsApp {esc(SITE["phone_display"])}</a></p></div>'
             f'<div><h2>Model BYD</h2><ul>{mod}</ul></div>'
@@ -635,7 +697,7 @@ def section_on(group, sid):
 
 DEFAULT_AFTER = {("home", "promo"): ["models"], ("home", "credit"): ["video", "promo", "models"], ("home", "cta"): ["faq"], ("home", "budget"): ["hero"], ("home", "video"): ["promo", "models"], ("home", "stats"): ["credit", "video", "promo", "models"],
                  ("home", "panels"): ["stats", "credit", "video", "promo", "models"], ("home", "spotlight"): ["panels", "stats", "credit", "video", "promo", "models"], ("home", "leasing"): ["models"], ("home", "handover"): ["why", "models"], ("home", "testimonials"): ["handover", "why", "models"],
-                 ("model", "leasing"): ["others"], ("model", "testimonials"): ["articles", "compare", "specs"]}
+                 ("model", "leasing"): ["others"], ("model", "explore"): ["gallery"], ("model", "details"): ["faq", "compare", "variants"], ("model", "testimonials"): ["articles", "compare", "specs"]}
 
 
 def sections_order(group, registry):
@@ -720,6 +782,7 @@ def credit_section():
             f'<label>Tenor<select id="ct"><option value="1">1 tahun</option><option value="2">2 tahun</option><option value="3">3 tahun</option><option value="4">4 tahun</option><option value="5" selected>5 tahun</option></select></label></form>'
             f'<div class="cres" aria-live="polite"><small>Perkiraan cicilan</small><strong id="cr">Rp ... / bulan</strong><span id="cdet"></span></div>'
             f'<a class="btn" id="cwa" href="{wa_url()}" data-wa="credit" rel="noopener">{WA_ICON} Minta simulasi resmi</a>'
+            + ('<a class="btn o" href="/simulasi-kredit/">Mulai simulasi kredit lengkap</a>' if STYLE_MD else "") +
             f'<p class="note">Estimasi dengan bunga flat {rate:g}% per tahun (asumsi, bukan penawaran). Harga OTR Jakarta ({esc(PRICE_LABEL)}); biaya asuransi, provisi, dan administrasi belum termasuk.</p></div></div></section>')
 
 
@@ -1319,7 +1382,7 @@ def build_models():
             return f'<section class="s"><div class="wrap art"><h2>Ringkasan {esc(m["name"])}</h2>{body}{best}</div></section>'
 
         def s_highlights():
-            if not m.get("highlights"):
+            if STYLE_MD or not m.get("highlights"):
                 return ""
             items = "".join(f'<div><h3>{esc(x["title"])}</h3><p>{esc(x["text"])}</p></div>' for x in m["highlights"])
             return f'<section class="s alt"><div class="wrap"><h2>Keunggulan {esc(m["name"])}</h2><div class="feat">{items}</div></div></section>'
@@ -1338,7 +1401,7 @@ def build_models():
                     f'<p class="note">Harga sesuai price list dealer, dapat berubah dan berbeda antar daerah. Konfirmasi ke sales kami.</p>{nt}</div></section>')
 
         def s_specs():
-            if not m.get("specs"):
+            if STYLE_MD or not m.get("specs"):
                 return ""
             rows = "".join(f'<tr><th scope="row">{esc(s["label"])}</th><td>{esc(s["value"])}</td></tr>' for s in m["specs"])
             return f'<section class="s alt"><div class="wrap art"><h2>Spesifikasi {esc(m["name"])}</h2><div class="tw"><table><tbody>{rows}</tbody></table></div></div></section>'
@@ -1373,7 +1436,18 @@ def build_models():
         def s_lead():
             return lead_section(m["name"], alt=False)
 
-        reg = {"gallery": s_gallery, "summary": s_summary, "highlights": s_highlights, "variants": s_variants, "specs": s_specs,
+        def s_explore():
+            if not STYLE_MD:
+                return ""
+            hs = m.get("highlights", [])
+            cards = "".join(f'<article class="fc" data-aos="fade-up" data-aos-delay="{k % 3 * 100}"><div class="fcb"><small>{esc(x.get("label") or "Fitur")}</small><h3>{esc(x["title"])}</h3><p>{esc(x["text"])}</p></div></article>' for k, x in enumerate(hs))
+            return (f'<section class="s xpl" id="explore"><div class="wrap">{ey("Jelajahi " + m["name"])}<h2>{hl("Inovasi di setiap perjalanan")}</h2>'
+                    f'{stat_cards(key_stats(m))}' + (f'<div class="fgrid">{cards}</div>' if cards else "") + "</div></section>")
+
+        def s_details():
+            return dive_section(m) if STYLE_MD else ""
+
+        reg = {"gallery": s_gallery, "explore": s_explore, "details": s_details, "summary": s_summary, "highlights": s_highlights, "variants": s_variants, "specs": s_specs,
                "compare": s_compare, "articles": s_articles, "faq": s_faq, "others": s_others, "lead": s_lead,
                "leasing": lambda: leasing_section("model"), "testimonials": lambda: testi_section("model", m["slug"])}
         gal_known = [x["id"] for x in LAYOUT.get("model", [])]
@@ -1388,6 +1462,14 @@ def build_models():
                f'<p class="tl">{esc(m["tagline"])}</p>{ans_box(model_answer(m), PRICE_DATE)}{pricebox}'
                f'<div class="ctas"><a class="btn" href="{wa_url("Halo, saya ingin info " + m["name"])}" data-wa="model-{m["slug"]}" rel="noopener">{WA_ICON} Tanya harga {esc(m["name"])}</a>'
                f'<a class="btn o" href="{td_url(m["name"])}">Booking test drive</a></div>{brochure}</div></div></div></section>')
+        if STYLE_MD:
+            vc = "".join(f'<div class="vcard"><small>{esc(v["name"])}</small><b>{esc(juta(v["price"]))}</b><span>OTR Jakarta</span></div>' for v in m.get("variants", []))
+            top = (f'<section class="sub mtop mhx"><div class="wrap">{crumbs(crumb_items)}<div class="mgrid{"" if gal else " nogal"}"><div class="minfo">'
+                   f'{ey("Promo " + NAME)}<h1>{esc(m["name"])}: Harga, Spesifikasi &amp; Test Drive</h1><p class="tl">{esc(m["tagline"])}</p>'
+                   f'{ans_box(model_answer(m), PRICE_DATE)}<div class="vcards">{vc}</div><p class="note">Harga {esc(PRICE_LABEL)}, dapat berubah. Konfirmasi ke sales.</p>'
+                   f'<div class="ctas"><a class="btn" href="#explore">Jelajahi fitur</a><a class="btn o" href="{td_url(m["name"])}">Booking test drive</a>'
+                   f'<a class="btn o" href="{wa_url("Halo, saya ingin info " + m["name"])}" data-wa="model-{m["slug"]}" rel="noopener">{WA_ICON} Tanya harga</a></div>{brochure}'
+                   f'<p class="subnav">' + "".join(f'<a href="{path}{k}/">{lb}</a>' for k, lb in SUBS) + f'</p></div>{gal}</div></div></section>')
         body = top + "".join(reg[i]() for i in sections_order("model", reg))
         schema = [breadcrumb_ld(crumb_items)]
         if m.get("faq"):
@@ -1405,6 +1487,209 @@ def build_models():
                        "isPartOf": {"@id": url("/#dealer")}, "about": {"@type": "Car", "name": m["name"]}, "speakable": SPEAK})
         ogi = images.og_url(imgs[0]["src"]) if imgs else None
         add(path, page(title, desc, path, body, schema, og_image=ogi), PRICE_DATE)
+
+
+# ------------------------------------------------------------------ GAYA MODERN: sub-halaman model, simulasi kredit, kontak
+def spec_val(m, *keys):
+    for s in m.get("specs", []):
+        if any(k in s["label"].lower() for k in keys):
+            return s["value"]
+    return ""
+
+
+def dims(m):
+    """(panjang, lebar, tinggi, sumbu roda) dari spesifikasi 'Dimensi' bila bisa dibaca, mis. '4.455 × 1.875 × 1.615 mm, jarak sumbu roda 2.720 mm'."""
+    v = spec_val(m, "dimensi")
+    n = re.findall(r"\d[\d.]*", v)
+    if len(n) < 3:
+        return None
+    return (n[0], n[1], n[2], n[3] if len(n) > 3 else "")
+
+
+def key_stats(m):
+    out = []
+    r = range_info(m)
+    if r:
+        out.append((f"{r[0]}", "km", "Jarak tempuh mode listrik" if r[3] else "Jarak tempuh maksimum"))
+    v0 = (m.get("variants") or [{}])[0]
+    bat = re.match(r"\s*([\d.,]+)\s*kWh", str(v0.get("battery", "")))
+    if bat:
+        out.append((bat.group(1), "kWh", "Kapasitas baterai"))
+    pw = re.search(r"(\d+)\s*hp", str(v0.get("power", "")) + " " + spec_val(m, "daya", "tenaga"))
+    if pw:
+        out.append((pw.group(1), "hp", "Tenaga maksimum"))
+    if len(out) < 3 and m.get("variants"):
+        out.append((str(min(v["price"] for v in m["variants"]) // 1_000_000), "juta", "Harga mulai OTR Jakarta"))
+    return out[:3]
+
+
+def stat_cards(stats, cls="kst"):
+    if not stats:
+        return ""
+    return f'<div class="{cls}">' + "".join(f'<div data-aos="fade-up" data-aos-delay="{k * 100}"><b data-count>{esc(v)}<em>{esc(u)}</em></b><span>{esc(l)}</span></div>' for k, (v, u, l) in enumerate(stats)) + "</div>"
+
+
+def dive_section(m, current=""):
+    base = f"/{m['slug']}/"
+    txt = {"eksterior": "Desain dan detail luar", "interior": "Kabin, kenyamanan, dan teknologi", "spesifikasi": "Data teknis lengkap"}
+    cards = "".join(f'<a class="dvc{" on" if k == current else ""}" href="{base}{k}/"{" aria-current=page" if k == current else ""}><small>{lb}</small><b>{esc(txt[k])}</b><span>{"Halaman ini" if k == current else "Jelajahi →"}</span></a>' for k, lb in SUBS)
+    d = dims(m)
+    dm = ""
+    if d:
+        items = [("Panjang", d[0]), ("Lebar", d[1]), ("Tinggi", d[2])] + ([("Sumbu roda", d[3])] if d[3] else [])
+        dm = ('<div class="dmp"><h3>Dimensi (mm)</h3><dl>' + "".join(f"<div><dt>{a}</dt><dd>{esc(b)}</dd></div>" for a, b in items) + "</dl></div>")
+    bro = (m.get("brochure") or "").strip()
+    btn = f'<a class="btn o" href="{esc(bro)}" rel="noopener" target="_blank">Brosur</a>' if re.match(r"(https?://|/)", bro) else ""
+    sp = "" if current == "spesifikasi" else f'<a class="btn" href="{base}spesifikasi/">Spesifikasi lengkap</a>'
+    return (f'<section class="s dive"><div class="wrap">{ey("The Blueprint")}<h2>{hl("Jelajahi lebih detail")}</h2><p>Pilih bagian {esc(m["name"])} yang ingin Anda lihat.</p>'
+            f'<div class="dvg">{cards}</div>{dm}<div class="ctas">{sp}{btn}<a class="btn o" href="{td_url(m["name"])}">Booking test drive</a></div></div></section>')
+
+
+def ready_banner(m):
+    return (f'<section class="s rdy"><div class="wrap"><div class="rdb">{ey("Siap mencoba?")}<h2>{hl("Rasakan " + m["name"] + " langsung")}</h2>'
+            f'<p>Jadwalkan test drive dan minta simulasi kredit dari sales kami.</p><div class="ctas"><a class="btn" href="{td_url(m["name"])}">Booking test drive</a>'
+            f'<a class="btn o" href="{wa_url("Halo, saya ingin info " + m["name"])}" data-wa="sub-{m["slug"]}" rel="noopener">{WA_ICON} Chat WhatsApp</a></div></div></div></section>')
+
+
+def build_model_subs():
+    for m in MODELS:
+        base = f"/{m['slug']}/"
+        imgs = [i for i in m.get("images", []) if images.resolve(i["src"])]
+        for kind, label in SUBS:
+            path = f"{base}{kind}/"
+            crumb_items = [("Beranda", "/"), (m["name"], base), (label, path)]
+            sec = m.get("exterior" if kind == "eksterior" else "interior") or {} if kind != "spesifikasi" else {}
+            index = True
+            if kind == "spesifikasi":
+                title = f"Spesifikasi {m['name']} Lengkap & Harga OTR | {NAME}"
+                if len(title) > 60:
+                    title = f"Spesifikasi {m['name']} Lengkap & Harga OTR"
+                desc = f"Spesifikasi lengkap {m['name']}: baterai, jarak tempuh, tenaga, dimensi, dan harga tiap varian OTR Jakarta {PRICE_LABEL}. Konsultasi gratis di {NAME}."
+                rows = "".join(f'<tr><th scope="row">{esc(s["label"])}</th><td>{esc(s["value"])}</td></tr>' for s in m.get("specs", []))
+                vrows = "".join(f'<tr><td>{esc(v["name"])}</td><td>{juta(v["price"])}</td><td>{dash(range_text(v))}</td><td>{dash(v.get("battery", ""))}</td><td>{dash(v.get("power", ""))}</td><td>{dash(v.get("seats", ""))}</td></tr>' for v in m.get("variants", []))
+                hlts = "".join(f'<li><b>{esc(x["title"])}</b><span>{esc(x["text"])}</span></li>' for x in m.get("highlights", []))
+                vn = " / ".join(v["name"] for v in m.get("variants", []))
+                body = (f'<section class="sub shero"><div class="wrap">{crumbs(crumb_items)}{ey("Data Teknis")}<h1>Spesifikasi {esc(m["name"])}</h1>'
+                        f'<p class="tl">{esc(m["tagline"])}</p>' + (f'<p class="vn">Varian: {esc(vn)}</p>' if vn else "") + f'{stat_cards(key_stats(m))}</div></section>'
+                        + (f'<section class="s"><div class="wrap art"><h2>Data teknis {esc(m["name"])}</h2><div class="tw"><table><tbody>{rows}</tbody></table></div></div></section>' if rows else "")
+                        + (f'<section class="s alt"><div class="wrap art"><h2>Varian dan harga OTR Jakarta</h2><div class="tw"><table><thead><tr><th>Varian</th><th>Harga OTR</th><th>Jarak tempuh</th><th>Baterai</th><th>Tenaga</th><th>Kursi</th></tr></thead><tbody>{vrows}</tbody></table></div>'
+                           f'<p class="note">Harga {esc(PRICE_LABEL)}, dapat berubah. Konfirmasi ke sales kami.</p></div></section>' if vrows else "")
+                        + (f'<section class="s"><div class="wrap art"><h2>Fitur unggulan</h2><ul class="hlist">{hlts}</ul></div></section>' if hlts else "")
+                        + ready_banner(m) + dive_section(m, kind))
+            else:
+                items = [x for x in (sec.get("items") or []) if (x.get("title") or "").strip()]
+                intro = (sec.get("intro") or "").strip()
+                index = len(items) >= 2 or len(intro) >= 150
+                head = sec.get("title") or (f"Desain eksterior {m['name']}" if kind == "eksterior" else f"Kabin dan interior {m['name']}")
+                title = f"{label} {m['name']}: Desain, Fitur & Foto | {NAME}"
+                if len(title) > 60:
+                    title = f"{label} {m['name']}: Desain, Fitur & Foto"
+                desc = f"Lihat {label.lower()} {m['name']}: desain, fitur, dan detail yang perlu Anda tahu sebelum membeli. Harga OTR Jakarta {PRICE_LABEL} dan test drive di {NAME}."
+                src = sec.get("image") or (imgs[0]["src"] if imgs else "")
+                pic = f'<div class="shm">{img_tag(src, sec.get("alt") or f"{label} {m["name"]}", "(max-width:900px) 100vw, 1100px", eager=True)}</div>' if src and images.resolve(src) else ""
+                cards = ""
+                for k, x in enumerate(items):
+                    ip = img_tag(x["image"], x.get("alt") or x["title"], "(max-width:700px) 100vw, 380px") if x.get("image") and images.resolve(x["image"]) else ""
+                    cards += (f'<article class="fc" data-aos="fade-up" data-aos-delay="{k % 3 * 100}">{"<div class=fci>" + ip + "</div>" if ip else ""}<div class="fcb">'
+                              f'{"<small>" + esc(x["label"]) + "</small>" if x.get("label") else ""}<h3>{esc(x["title"])}</h3>{"<p>" + esc(x["text"]) + "</p>" if x.get("text") else ""}</div></article>')
+                filler = ""
+                if not items:
+                    hl_ = [x for x in m.get("highlights", [])][:3]
+                    filler = (f'<section class="s"><div class="wrap">{ey("Sekilas")}<h2>{hl("Keunggulan " + m["name"])}</h2><div class="fgrid">'
+                              + "".join(f'<article class="fc"><div class="fcb"><h3>{esc(x["title"])}</h3><p>{esc(x["text"])}</p></div></article>' for x in hl_)
+                              + f'</div><p class="note">Foto dan detail {label.lower()} {esc(m["name"])} sedang kami lengkapi. Minta foto dan video unit langsung lewat WhatsApp.</p></div></section>') if hl_ else ""
+                body = (f'<section class="sub shero"><div class="wrap">{crumbs(crumb_items)}{ey(label + " " + m["name"])}<h1>{esc(head)}</h1>'
+                        f'<p class="tl">{esc(intro or m["tagline"])}</p></div>{pic}</section>'
+                        + (f'<section class="s"><div class="wrap">{ey("Detail")}<h2>{hl(sec.get("items_title") or "Perhatian pada detail")}</h2><div class="fgrid">{cards}</div></div></section>' if cards else filler)
+                        + ready_banner(m) + dive_section(m, kind))
+            schema = [breadcrumb_ld(crumb_items), {"@context": "https://schema.org", "@type": "WebPage", "name": title, "url": url(path), "inLanguage": "id-ID",
+                                                   "about": {"@type": "Car", "name": m["name"]}, "isPartOf": {"@id": url("/#dealer")}}]
+            add(path, page(title, desc, path, body, schema, robots="index,follow" if index else "noindex,follow"), PRICE_DATE, index)
+
+
+def build_credit_page():
+    pm = [m for m in MODELS if m.get("variants")]
+    if not pm:
+        return
+    path = "/simulasi-kredit/"
+    crumb_items = [("Beranda", "/"), ("Simulasi Kredit", path)]
+    cfg = SITE.get("credit") or {}
+
+    def num(k, d):
+        try:
+            return float(str(cfg.get(k) if cfg.get(k) not in (None, "") else d).replace(",", "."))
+        except ValueError:
+            return d
+    rate, adm, ins = num("rate", 5), num("admin_fee", 0), num("insurance_pct", 0)
+    data = [{"n": m["name"], "s": m["slug"], "img": (images.resolve(m["images"][0]["src"]) if m.get("images") and images.resolve(m["images"][0]["src"]) else ""),
+             "v": [{"n": v["name"], "p": v["price"]} for v in m["variants"]]} for m in pm]
+    tabs = "".join(f'<button type="button" role="tab" aria-selected="{"true" if k == 0 else "false"}" data-i="{k}">{esc(m["name"])}</button>' for k, m in enumerate(pm))
+    lea = [x.get("name") for x in LEASING.get("items", []) if (x.get("name") or "").strip()]
+    lopt = '<option value="">Belum menentukan</option>' + "".join(f'<option>{esc(n)}</option>' for n in lea)
+    ten = "".join(f'<button type="button" aria-pressed="{"true" if y == 5 else "false"}" data-y="{y}">{y} th</button>' for y in range(1, 6))
+    extra = []
+    if ins:
+        extra.append(f"estimasi asuransi {ins:g}% dari harga")
+    if adm:
+        extra.append(f"biaya administrasi {juta(adm) if adm >= 1_000_000 else 'Rp' + format(int(adm), ',').replace(',', '.')}")
+    tdp_note = ("Total uang muka = uang muka + " + ", ".join(extra) + " + angsuran pertama.") if extra else "Total uang muka = uang muka + angsuran pertama. Asuransi dan administrasi belum termasuk."
+    body = (f'<section class="sub shero"><div class="wrap">{crumbs(crumb_items)}{ey("Simulasi Kredit")}<h1>Simulasi Kredit Mobil Listrik BYD</h1>'
+            f'<p class="tl">Hitung uang muka dan cicilan bulanan mobil BYD di {esc(NAME)}. Hasilnya estimasi, angka resmi mengikuti persetujuan leasing.</p></div></section>'
+            f'<section class="s"><div class="wrap"><div class="cpage" data-credit=\'{esc(json.dumps(data, ensure_ascii=False, separators=(",", ":")))}\' data-rate="{rate}" data-adm="{adm:g}" data-ins="{ins:g}">'
+            f'<div class="ctabs" role="tablist" aria-label="Pilih model">{tabs}</div><div class="cpv" id="cpv" aria-hidden="true"></div>'
+            f'<div class="cpg"><form class="cpf" onsubmit="return false"><h2>Parameter pembiayaan</h2>'
+            f'<label>Varian kendaraan<select id="pv"></select></label><label>Harga OTR Jakarta<output id="pp">-</output></label>'
+            f'<label>Mitra leasing<select id="pl">{lopt}</select></label>'
+            f'<label>Uang muka (DP): <output id="pdo">20%</output><input id="pdp" type="range" min="15" max="50" step="5" value="20"></label>'
+            f'<fieldset><legend>Tenor</legend><div class="seg" id="pt">{ten}</div></fieldset></form>'
+            f'<div class="cpr" aria-live="polite"><h2>Estimasi pembiayaan</h2><small>Angsuran per bulan</small><strong id="pm">-</strong>'
+            f'<dl><div><dt>Total uang muka (TDP)</dt><dd id="ptdp">-</dd></div><div><dt>Harga kendaraan</dt><dd id="ph">-</dd></div><div><dt>Pokok hutang</dt><dd id="pk">-</dd></div><div><dt>Suku bunga flat</dt><dd>{rate:g}% per tahun</dd></div></dl>'
+            f'<p class="note">{esc(tdp_note)} Estimasi, bukan penawaran. Harga OTR Jakarta ({esc(PRICE_LABEL)}).</p>'
+            f'<div class="ctas"><a class="btn" id="pwa" href="{wa_url()}" data-wa="credit-page" rel="noopener">{WA_ICON} Kirim ke WhatsApp</a><a class="btn o" id="ptd" href="/test-drive/">Ajukan test drive</a></div></div></div></div></div></section>'
+            + leasing_section("home"))
+    title = f"Simulasi Kredit BYD: Hitung DP & Cicilan | {NAME}"
+    if len(title) > 60:
+        title = "Simulasi Kredit BYD: Hitung DP & Cicilan Bulanan"
+    desc = f"Hitung simulasi kredit mobil listrik BYD: uang muka, tenor 1-5 tahun, dan cicilan bulanan tiap varian. Harga OTR Jakarta {PRICE_LABEL} di {NAME}."
+    add(path, page(title, desc, path, body, [breadcrumb_ld(crumb_items)]), PRICE_DATE)
+
+
+def build_contact():
+    path = "/kontak/"
+    crumb_items = [("Beranda", "/"), ("Kontak", path)]
+    sl = SITE.get("sales") or {}
+    nm = (sl.get("name") or "").strip()
+    ph = sl.get("photo")
+    av = f'<div class="kav">{img_tag(ph, nm or NAME, "200px", eager=True)}</div>' if ph and images.resolve(ph) else ""
+    addr_ok = SITE.get("address") and "ALAMAT" not in SITE["address"].upper()
+    full = f'{SITE["address"]}, {SITE["city"]}, {SITE["region"]}'
+    maps = SITE.get("maps_url") if re.match(r"https?://", SITE.get("maps_url") or "") else ("https://www.google.com/maps/search/?api=1&query=" + urllib.parse.quote(full) if addr_ok else "")
+    cards = [(WA_ICON, "WhatsApp", esc(SITE["phone_display"]), wa_url(), "Mulai chat", ' data-wa="contact" rel="noopener"')]
+    cards.append((PIN_ICON, "Lokasi showroom", esc(full if addr_ok else SITE["city"]), maps, "Petunjuk arah", ' rel="noopener" target="_blank"'))
+    if SITE.get("instagram"):
+        ig = SITE["instagram"].lstrip("@")
+        cards.append((IG_ICON, "Instagram", "@" + esc(ig), "https://instagram.com/" + ig, "Follow kami", ' rel="noopener me" target="_blank"'))
+    cards.append((MAIL_ICON if SITE.get("email") else BOLT, "Jam operasional", esc(SITE["hours"]), "", "", ""))
+    ch = "".join(f'<div class="kc" data-aos="fade-up" data-aos-delay="{k * 80}"><span class="ico">{i}</span><small>{t}</small><b>{v}</b>'
+                 + (f'<a class="btn sm" href="{esc(u)}"{x}>{b}</a>' if u else "") + "</div>" for k, (i, t, v, u, b, x) in enumerate(cards))
+    quote = (SITE.get("contact_quote") or "Konsultasi gratis, simulasi kredit, dan jadwal test drive bisa diatur lewat WhatsApp. Kami bantu pilihkan model yang paling sesuai kebutuhan Anda.").strip()
+    lat, lng = SITE.get("lat"), SITE.get("lng")
+    q = f"{lat},{lng}" if lat and lng else (full if addr_ok else "")
+    mapsec = ""
+    if q:
+        mapsec = (f'<section class="s alt"><div class="wrap">{ey("Lokasi showroom")}<h2>{hl("Kunjungi kami")}</h2><p>{esc(full if addr_ok else SITE["city"])}</p>'
+                  f'<div class="kmap"><iframe title="Peta lokasi {esc(NAME)}" src="https://www.google.com/maps?q={urllib.parse.quote(str(q))}&z=15&output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe></div>'
+                  + (f'<p><a class="btn o" href="{esc(maps)}" rel="noopener" target="_blank">Petunjuk arah</a></p>' if maps else "") + "</div></section>")
+    who = nm or NAME
+    body = (f'<section class="sub shero khero"><div class="wrap">{crumbs(crumb_items)}{av}{ey(sl.get("role") or "Kontak")}<h1>Hubungi {esc(who)}</h1>'
+            f'<p class="tl">Konsultasi model, simulasi kredit, dan booking test drive mobil listrik BYD di {esc(SITE["city"])}.</p></div></section>'
+            f'<section class="s"><div class="wrap"><div class="kgrid">{ch}</div><blockquote class="kq">{esc(quote)}</blockquote></div></section>{mapsec}')
+    title = f"Kontak {NAME}: WhatsApp, Lokasi & Jam Buka"
+    if len(title) > 60:
+        title = "Kontak Dealer BYD: WhatsApp, Lokasi & Jam Buka"
+    desc = f"Hubungi {who} untuk konsultasi mobil listrik BYD, simulasi kredit, dan test drive. WhatsApp {SITE['phone_display']}, lokasi showroom, dan jam operasional."
+    schema = [breadcrumb_ld(crumb_items), {"@context": "https://schema.org", "@type": "ContactPage", "name": title, "url": url(path), "inLanguage": "id-ID", "about": {"@id": url("/#dealer")}}]
+    add(path, page(title, desc, path, body, schema), PRICE_DATE)
 
 
 # ------------------------------------------------------------------ HARGA, TEST DRIVE
@@ -1450,6 +1735,30 @@ def build_testdrive():
     path = "/test-drive/"
     crumb_items = [("Beranda", "/"), ("Test Drive", path)]
     steps = "".join(f"<li>{esc(s)}</li>" for s in t.get("steps", []))
+    if STYLE_MD:
+        picks = "".join(f'<label class="mp"><input type="radio" name="model" value="{esc(m["name"])}"{" checked" if k == 0 else ""}><span><b>{esc(m["name"])}</b><small>{esc(price_line(m))}</small></span></label>' for k, m in enumerate(MODELS))
+        picks += '<label class="mp"><input type="radio" name="model" value=""><span><b>Belum tahu</b><small>Minta saran sales</small></span></label>'
+        form = ('<form class="lead tdf" novalidate><input type="hidden" name="testDrive" value="1">'
+                f'<fieldset class="st"><legend><span>1</span> Pilih model</legend><div class="mps">{picks}</div></fieldset>'
+                '<fieldset class="st"><legend><span>2</span> Identitas</legend><div class="row2"><label>Nama<input name="name" autocomplete="name" required maxlength="80" placeholder="Nama Anda"></label>'
+                '<label>Nomor WhatsApp<input name="phone" type="tel" inputmode="tel" autocomplete="tel" required placeholder="0812xxxxxxxx"></label></div></fieldset>'
+                '<fieldset class="st"><legend><span>3</span> Preferensi waktu</legend><div class="row2"><label>Tanggal<input name="tdDate" type="date"></label>'
+                '<label>Jam<select name="tdTime"><option value="">Fleksibel</option><option>Pagi (09.00-12.00)</option><option>Siang (12.00-15.00)</option><option>Sore (15.00-18.00)</option></select></label></div></fieldset>'
+                '<fieldset class="st"><legend><span>4</span> Konfirmasi via WhatsApp</legend><div class="row2"><label>Rencana pembelian<select name="timeline">'
+                '<option value="minggu">Dalam 1 minggu</option><option value="bulan">Dalam 1 bulan</option><option value="tiga_bulan" selected>1-3 bulan ke depan</option><option value="info">Baru cari informasi</option></select></label>'
+                '<label>Pembayaran<select name="payment"><option value="kredit">Kredit</option><option value="cash">Cash</option><option value="belum" selected>Belum menentukan</option></select></label></div>'
+                '<label class="chk"><input type="checkbox" name="tradeIn"> Saya ingin tukar tambah mobil lama</label>'
+                '<input class="hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">'
+                '<button class="btn" type="submit">Konfirmasi via WhatsApp</button><div class="msg" role="status" aria-live="polite" hidden></div>'
+                '<p class="note">Data Anda hanya dipakai untuk menghubungi Anda terkait jadwal test drive.</p></fieldset></form>')
+        lineup = "".join(f'<div class="lu"><a href="/{m["slug"]}/"><b>{esc(m["name"])}</b><small>{esc(price_line(m))}</small></a><p>'
+                         + "".join(f'<a href="/{m["slug"]}/{k}/">{lb}</a>' for k, lb in SUBS) + "</p></div>" for m in MODELS)
+        body = (f'<section class="sub shero"><div class="wrap">{crumbs(crumb_items)}{ey("Booking " + NAME)}<h1>{esc(t["h1"])}</h1><p class="tl">{esc(t["intro"])}</p></div></section>'
+                f'<section class="s" id="lead"><div class="wrap"><div class="tdbox">{form}</div></div></section>'
+                f'<section class="s alt"><div class="wrap">{ey("Model kami")}<h2>{hl("Pilih yang ingin dicoba")}</h2><div class="lus">{lineup}</div></div></section>'
+                f'<section class="s"><div class="wrap art"><h2>{esc(t["steps_title"])}</h2><ol>{steps}</ol><h2>{esc(t["faq_title"])}</h2>{faq_html(faq_pairs(t["faq"]))}</div></section>')
+        add(path, page(fmt(t["title"]), fmt(t["description"]), path, body, [breadcrumb_ld(crumb_items), faq_ld(faq_pairs(t["faq"]))]), PRICE_DATE)
+        return
     body = (f'<section class="sub"><div class="wrap">{crumbs(crumb_items)}<h1>{esc(t["h1"])}</h1><p>{esc(t["intro"])}</p></div></section>'
             f'{lead_section(h2=esc(t["lead_title"]), alt=False)}<section class="s alt"><div class="wrap art"><h2>{esc(t["steps_title"])}</h2><ol>{steps}</ol>'
             f'<h2>{esc(t["faq_title"])}</h2>{faq_html(faq_pairs(t["faq"]))}</div></section>')
@@ -1692,6 +2001,8 @@ def main():
     validate()
     write_all()
     build_home(); build_models(); build_prices(); build_testdrive(); build_social_pages(); build_about()
+    if STYLE_MD:
+        build_model_subs(); build_credit_page(); build_contact()
     for a in VIS_ART:
         build_article(a)
     for p in VIS_LAND:

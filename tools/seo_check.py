@@ -143,8 +143,11 @@ def main():
     fails = warns = 0
     pages = set()
     report = []
+    noindexed = set()
     for f in files:
         rel, res, p, noidx = check_page(f, seen)
+        if noidx:
+            noindexed.add(f)
         pages.add(rel)
         bad = [(l, m) for l, m in res if l != "PASS"]
         fails += sum(1 for l, _ in bad if l == "FAIL"); warns += sum(1 for l, _ in bad if l == "WARN")
@@ -179,7 +182,7 @@ def main():
         print(f"  {'OK  ' if good else 'SARAN'} {label}")
     sm = (DOCS / "sitemap.xml").read_text(encoding="utf-8")
     n_sm = sm.count("<loc>")
-    indexable = len([f for f in files if f.name != "404.html"])
+    indexable = len([f for f in files if f.name != "404.html" and f not in noindexed])  # halaman noindex (mis. sub-halaman yang belum diisi) tidak masuk sitemap
     print(f"Sitemap: {n_sm} URL (halaman indexable: {indexable})" + ("" if n_sm == indexable else "  <- TIDAK SAMA"))
     if n_sm != indexable: fails += 1
     if "--json" in sys.argv:

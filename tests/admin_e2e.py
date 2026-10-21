@@ -89,6 +89,7 @@ def main():
         # 2 artikel baru
         pg.goto(f"http://127.0.0.1:{PORT}/admin/#/artikel/baru"); pg.wait_for_selector("#a_keyword")
         pg.fill("#a_keyword", "byd seal vs mazda 6e"); pg.fill("#a_title", "BYD Seal vs Mazda 6e: Sedan Listrik Mana yang Pas?")
+        pg.fill("#a_answer", "BYD Seal unggul pada tenaga dan jarak tempuh, sedangkan Mazda 6e menonjol pada kenyamanan berkendara. Pilih sesuai prioritas dan anggaran Anda sebelum test drive keduanya."); res["answer_field"] = True
         pg.fill("#a_description", "BYD Seal vs Mazda 6e: bandingkan harga, baterai, tenaga, dan jarak tempuh sedan listrik sebelum membeli di dealer.")
         pg.fill("#a_body", "BYD Seal vs Mazda 6e adalah duel sedan listrik premium.\n\n## Tabel\n\n{{compare byd-seal mazda-6e}}\n\n## Harga\n\nLihat [harga](/harga-byd/) dan [Seal](/byd-seal/).\n\n## Spesifikasi\n\nIsi.\n\n## FAQ\n\n### Mana lebih murah?\n\nSeal.\n\n### Apa bedanya?\n\nBanyak.\n")
         pg.wait_for_timeout(400)
@@ -102,12 +103,55 @@ def main():
         # 3 pengaturan + layout
         pg.goto(f"http://127.0.0.1:{PORT}/admin/#/pengaturan"); pg.wait_for_selector("#f_domain")
         pg.fill("#f_domain", "https://harmony-byd.co.id"); pg.fill("#f_wa_number", "6281299998888")
+        pg.fill("#f_about_text", "BYD Harmony melayani konsultasi, simulasi kredit, dan test drive mobil listrik BYD untuk area Jabodetabek dan sekitarnya.\n\nTim sales kami mendampingi dari pemilihan model sampai serah terima unit."); pg.fill("#f_maps_url", "https://maps.app.goo.gl/contoh"); pg.fill("#f_lat", "-6.2088"); pg.fill("#f_lng", "106.8456")
+        pg.select_option("#f_ai_crawlers", "search_only")
         pg.goto(f"http://127.0.0.1:{PORT}/admin/#/layout"); pg.wait_for_selector(".lay li")
         first = pg.inner_text(".lay li >> nth=0 >> .nm"); pg.click(".lay li >> nth=1 >> button >> nth=0")
         res["layout_moved"] = pg.inner_text(".lay li >> nth=0 >> .nm") != first
         # 4 media
         pg.goto(f"http://127.0.0.1:{PORT}/admin/#/media"); pg.wait_for_selector("#imgfile")
         pg.set_input_files("#imgfile", str(ROOT / "tests/fixtures/foto-besar.png")); pg.wait_for_selector(".media .m img")
+        # 4b tema + leasing
+        pg.goto(f"http://127.0.0.1:{PORT}/admin/#/tema"); pg.wait_for_selector(".preset")
+        pg.click(".preset[data-id=merah]"); res["tema_preset"] = "sel" in (pg.get_attribute(".preset[data-id=merah]", "class") or "")
+        pg.click(".preset[data-id=atlantic]")
+        pg.fill(".pick >> nth=2 >> input[type=text]", "#1f6f8b"); pg.dispatch_event(".pick >> nth=2 >> input[type=text]", "change")
+        res["tema_custom"] = "Teks tombol" in pg.inner_text(".tcheck")
+        pg.click(".preset[data-id=gelap]"); res["tema_gelap"] = pg.is_checked("#dkmode") and "sel" in (pg.get_attribute(".preset[data-id=gelap]", "class") or "")
+        pg.click(".preset[data-id=atlantic]"); res["tema_terang_lagi"] = not pg.is_checked("#dkmode")
+        pg.fill(".pick >> nth=2 >> input[type=text]", "#1f6f8b"); pg.dispatch_event(".pick >> nth=2 >> input[type=text]", "change")
+        # profil sales + promo
+        pg.goto(f"http://127.0.0.1:{PORT}/admin/#/sales"); pg.wait_for_selector(".card")
+        pg.get_by_label("Nama sales").fill("Dewi Uji"); pg.get_by_label("Jabatan").fill("Sales Consultant BYD"); pg.get_by_label("Email", exact=True).fill("dewi@example.com")
+        pg.goto(f"http://127.0.0.1:{PORT}/admin/#/promo"); pg.wait_for_selector(".card")
+        pg.click("text=+ Tambah"); pg.wait_for_selector(".sub-item")
+        res["promo_on_default"] = pg.get_by_label("Tayangkan promo ini").is_checked()
+        pg.get_by_label("Judul promo").fill("Promo Uji Akhir Tahun"); pg.get_by_label("Isi promo").fill("Bonus aksesori untuk pembelian unit BYD bulan ini.")
+        pg.get_by_label("Berlaku sampai").fill("2099-12-31")
+        pg.goto(f"http://127.0.0.1:{PORT}/admin/#/leasing"); pg.wait_for_selector(".card")
+        pg.click("text=+ Tambah logo leasing"); pg.wait_for_selector(".lrow")
+        pg.fill(".lrow input[type=text]", "Leasing Uji"); pg.fill(".lrow input[type=url]", "https://example.com")
+        pg.set_input_files(".lrow input[type=file]", str(ROOT / "tests/fixtures/foto-besar.png")); pg.wait_for_selector(".lbox img")
+        # 4c popup pilih gambar + testimoni + serah terima
+        pg.goto(f"http://127.0.0.1:{PORT}/admin/#/serah-terima"); pg.wait_for_selector(".card")
+        pg.click("text=+ Tambah"); pg.wait_for_selector(".sub-item")
+        pg.fill(".sub-item >> input[type=text] >> nth=0", "Ibu Sari"); pg.click(".sub-item >> text=Pilih gambar >> nth=0")
+        pg.wait_for_selector(".pk-ov .pk-it"); res["picker_open"] = pg.locator(".pk-ov .pk-it").count() >= 1
+        pg.wait_for_function("document.querySelector('.pk-ph img') && document.querySelector('.pk-ph img').src.startsWith('blob:')", timeout=8000) if False else pg.wait_for_selector(".pk-ph img[src^='blob:']", timeout=8000)
+        res["picker_thumb"] = True; pg.screenshot(path="/tmp/t2/picker.png")
+        pg.fill(".pk-h input[type=search]", "zzz-tidak-ada"); res["picker_search"] = pg.locator(".pk-it").count() == 0
+        pg.fill(".pk-h input[type=search]", ""); pg.click(".pk-ov .pk-it >> nth=0"); pg.wait_for_selector(".imgf-th img")
+        res["picker_closed"] = pg.locator(".pk-ov").count() == 0
+        pg.fill(".sub-item textarea >> nth=0", "Penyerahan kunci unit"); 
+        pg.check(".sub-item >> text=Customer sudah memberi izin"); pg.select_option(".sub-item select", "byd-atto-3")
+        pg.goto(f"http://127.0.0.1:{PORT}/admin/#/testimoni"); pg.wait_for_selector(".card")
+        pg.click("text=+ Tambah"); pg.wait_for_selector(".sub-item")
+        pg.fill(".sub-item >> input[type=text] >> nth=0", "Bpk. Andi")
+        pg.fill(".sub-item textarea >> nth=0", "Proses pembelian cepat dan sales menjelaskan simulasi cicilan dengan jelas."); pg.check(".sub-item >> text=Customer sudah memberi izin")
+        pg.select_option(".sub-item select >> nth=0", "byd-atto-3")
+        # bar simpan tidak menutupi konten paling bawah
+        pg.wait_for_selector("#bar:not([hidden])"); pg.wait_for_timeout(300)
+        res["bar_clearance"] = pg.evaluate("parseFloat(getComputedStyle(document.getElementById('main')).paddingBottom) >= document.getElementById('bar').offsetHeight")
         # 5 zip
         buf = io.BytesIO()
         with zipfile.ZipFile(buf, "w") as z:
@@ -136,7 +180,7 @@ def main():
         pg.click("text=Ambil data Search Console sekarang"); pg.wait_for_timeout(300); res["dispatch"] = len(repo.dispatched) == 1
         # 10 mobile overflow
         pg.set_viewport_size({"width": 390, "height": 800})
-        for r in ("dashboard", "artikel/baru", "model/byd-atto-3", "laporan", "layout", "media"):
+        for r in ("dashboard", "artikel/baru", "model/byd-atto-3", "laporan", "layout", "media", "testimoni", "serah-terima", "tema", "leasing", "sales", "promo"):
             pg.goto(f"http://127.0.0.1:{PORT}/admin/#/{r}"); pg.wait_for_timeout(400)
             sw = pg.evaluate("document.documentElement.scrollWidth")
             if sw > 392: res.setdefault("overflow", []).append((r, sw))
@@ -164,6 +208,26 @@ def main():
     res["rebuild_ok"] = r1.returncode == 0; res["seo_check_tail"] = r2.stdout.strip().splitlines()[-1]; res["seo_issues"] = r2.stdout.strip().splitlines()[-6:]
     res["article_live_html"] = (tmp / "docs/blog/byd-seal-vs-mazda-6e/index.html").exists()
     res["img_built"] = [x.name for x in (tmp / "docs/img").glob("*")][:4]
+    try:
+        th = json.loads(f["content/theme.json"]); res["theme_file"] = th["accent"] == "#1f6f8b" and th["preset"] == "custom"
+        ls = json.loads(f["content/leasing.json"]); it = ls["items"][0]
+        res["leasing_file"] = it["name"] == "Leasing Uji" and it["logo"].startswith("/img/leasing-") and ("content" + it["logo"]) in f
+        hm = (tmp / "docs/index.html").read_text(); md = (tmp / "docs/byd-atto-3/index.html").read_text()
+        res["leasing_built"] = 'bhs lsl' in hm and 'bhs lsl' in md and "--acc:#1f6f8b" in hm and "Leasing Uji" in hm
+        res["testi_built"] = (tmp / "docs/testimoni/index.html").exists() and (tmp / "docs/serah-terima/index.html").exists() and "Bpk. Andi" in hm
+        res["testi_in_model"] = "Kata Customer tentang BYD Atto 3" in re.sub(r"<[^>]+>", "", md)
+        res["handover_sitemap_img"] = "image:image" in (tmp / "docs/sitemap.xml").read_text()
+        res["about_built"] = (tmp / "docs/tentang-kami/index.html").exists() and "hasMap" in hm and '"geo"' in hm
+        rb = (tmp / "docs/robots.txt").read_text(); res["robots_ai"] = "User-agent: PerplexityBot\nAllow: /" in rb and "User-agent: GPTBot\nDisallow: /" in rb
+        ll = (tmp / "docs/llms.txt").read_text(); res["llms"] = "## Model" in ll and "tentang-kami" in ll
+        res["answer_built"] = 'class="ans"' in (tmp / "docs/blog/byd-seal-vs-mazda-6e/index.html").read_text() if (tmp / "docs/blog/byd-seal-vs-mazda-6e/index.html").exists() else False
+        res["sales_built"] = 'class="prof"' in hm and "Dewi Uji" in hm and "dewi@example.com" in hm
+        res["promo_built"] = 'id="promo"' in hm and "Promo Uji Akhir Tahun" in hm and 'href="/#promo"' in hm and "Berlaku sampai 31 Desember 2099" in hm
+        res["promo_after_models"] = hm.index('id="model"') < hm.index('id="promo"') < hm.index("Kenapa")
+        res["cta_built"] = 'class="ctab"' in hm
+        res["layout_leasing_after_models"] = hm.index('id="model"') < hm.index('class="lp"') < hm.index("Kenapa")
+    except Exception as e:
+        res["theme_leasing_error"] = repr(e)
     res["errors"] = errors[:5]
     print(json.dumps(res, indent=1, ensure_ascii=False, default=str))
     bad = [k for k, v in res.items() if v in (False, None) and k not in ("errors",)] + (["overflow"] if res.get("overflow") else []) + (["errors"] if errors else [])
