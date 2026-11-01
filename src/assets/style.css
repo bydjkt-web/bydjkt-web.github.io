@@ -946,3 +946,37 @@ nav.d .ddp.sm a::after{display:none}
 [data-layout=modern] .hero.mh.full .mht{position:relative;z-index:2}
 [data-layout=modern] .hero.mh.full .mhm{left:0;right:0;top:0;bottom:0}
 html:not(.curtain) .hero.mh.full{position:relative}
+
+/* ===== Hero: teks selalu terbaca di atas foto apa pun ===== */
+[data-layout=modern] .hero.mh.full::before{background:linear-gradient(90deg,rgba(7,15,22,.93) 0,rgba(7,15,22,.84) 46%,rgba(7,15,22,.5) 80%,rgba(7,15,22,.35) 100%),linear-gradient(0deg,rgba(7,15,22,.5),transparent 40%)}
+[data-layout=modern] .hero.mh.full h1,[data-layout=modern] .hero.mh.full .lead,[data-layout=modern] .hero.mh.full .eyb{text-shadow:0 2px 18px rgba(0,0,0,.55)}
+[data-layout=modern] .hero.mh.full .lead{color:#fff;opacity:1;font-weight:500}
+[data-layout=modern] .hero.mh.full .eyb{color:#e3f0f7}
+[data-layout=modern] .hero.mh.full h1 .hl{color:#a9d8ee}
+[data-layout=modern] .hero.mh.full .btn.o{background:rgba(7,15,22,.55);border-color:#fff}
+[data-layout=modern] .hero.mh.full .infos li{background:rgba(7,15,22,.62);border-color:rgba(255,255,255,.35)}
+[data-layout=modern] .hero.mh.full .infos span{color:#d6e8f2}
+@media(max-width:900px){[data-layout=modern] .hero.mh.full::before{background:linear-gradient(0deg,rgba(7,15,22,.94) 0,rgba(7,15,22,.86) 55%,rgba(7,15,22,.7) 100%)}}
+
+/* ===== Gambar mobil 3 per baris (juga di HP) agar halaman tidak terlalu panjang ===== */
+.lcg2{grid-template-columns:repeat(3,minmax(0,1fr))}
+.gg,.gm{grid-template-columns:repeat(3,minmax(0,1fr))}
+.gm .gw{grid-column:span 2;grid-row:span 2}
+@media(max-width:700px){
+  .lcg2,.gg,.gm{gap:8px;margin-top:14px}
+  .lc{border-radius:14px}
+  .lcp{aspect-ratio:4/3}
+  .lct{top:6px;left:6px;font-size:.52rem;padding:3px 7px;letter-spacing:.06em}
+  .lcn{font-size:.85rem}
+  .lcb{padding:8px 8px 10px;gap:2px}
+  .lcb h3{font-size:.8rem;line-height:1.15}
+  .lcm,.lcg,.lcr span{display:none}
+  .lcr{margin-top:2px;font-size:.7rem;display:block}.lcr b{font-size:.72rem;display:block;line-height:1.2}
+  .gi{border-radius:12px}
+  .gcap{padding:14px 6px 6px}.gcap b{font-size:.62rem}.gcap small{font-size:.55rem}
+  .gfc{padding:7px 12px;font-size:.74rem}
+}
+
+/* ===== Hubungi Kami naik menimpa bagian di atasnya saat digulir ===== */
+[data-layout=modern] .hm .ctasec{position:relative;z-index:2;margin-top:-56px;border-radius:40px 40px 0 0;will-change:transform}
+[data-layout=modern] .hm .ctasec.rise{box-shadow:0 -24px 60px rgba(7,15,22,.28)}

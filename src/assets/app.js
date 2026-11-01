@@ -447,6 +447,21 @@
       var add = n > 1 ? n + " hari lagi" : n === 1 ? "besok" : n === 0 ? "hari ini" : "sudah launching";
       el.textContent = (base ? base + " · " : "") + add;
     });
+    // "Hubungi kami" naik dari bawah dan menimpa bagian di atasnya saat digulir
+    var cs = document.querySelector(".hm .ctasec");
+    if (cs && !calm) {
+      cs.classList.add("rise");
+      var cst = false;
+      var upd = function () {
+        cst = false;
+        var r = cs.getBoundingClientRect(), vh = window.innerHeight, p = Math.min(1, Math.max(0, (vh - r.top) / (vh * 0.6)));
+        if (vh + (window.pageYOffset || 0) >= document.documentElement.scrollHeight - 4) p = 1;
+        var e = 1 - Math.pow(1 - p, 3);
+        cs.style.transform = p >= 1 ? "" : "translateY(" + Math.round((1 - e) * 140) + "px)";
+      };
+      window.addEventListener("scroll", function () { if (!cst) { cst = true; requestAnimationFrame(upd); } }, { passive: true });
+      window.addEventListener("resize", upd); upd();
+    }
     // kartu statistik bisa dibalik
     document.querySelectorAll(".flp").forEach(function (b) {
       b.addEventListener("click", function () { var on = b.classList.toggle("on"); b.setAttribute("aria-pressed", on ? "true" : "false"); });

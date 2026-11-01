@@ -1280,7 +1280,8 @@ def build_home():
 
     def s_models_md():
         def grp(m):
-            return (m.get("body") or m.get("type") or "Model").strip().split()[0].capitalize()
+            w = (m.get("body") or m.get("type") or "Model").strip().split()[0]
+            return w.upper() if len(w) <= 3 else w.capitalize()
         groups = []
         for m in MODELS:
             g = grp(m)
