@@ -42,7 +42,7 @@ DOMAIN = SITE["domain"].rstrip("/")
 PRICE_DATE = SITE.get("price_date") or NOW.date().isoformat()
 PRICE_LABEL = SITE.get("price_date_label", "")
 BULAN = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"]
-RESERVED = {"simulasi-kredit", "kontak", "galeri", "tentang-kami", "llms.txt", "testimoni", "serah-terima", "blog", "admin", "assets", "img", "harga-byd", "test-drive", "feed.xml", "sitemap.xml", "robots.txt", "404.html"}
+RESERVED = {"simulasi-kredit", "kontak", "galeri", "perbandingan", "tentang-kami", "llms.txt", "testimoni", "serah-terima", "blog", "admin", "assets", "img", "harga-byd", "test-drive", "feed.xml", "sitemap.xml", "robots.txt", "404.html"}
 
 ARTICLES = content.load_items("articles", "article")
 LANDING = content.load_items("pages", "page")
@@ -533,7 +533,7 @@ def modern_header(path, promo):
         items += (f'<div class="dd"><a class="ddl" href="{base}"{on}>{esc(short_name(m))}</a>'
                   f'<button type="button" class="ddb" aria-expanded="false" aria-controls="dd{k}" aria-label="Sub-menu {esc(m["name"])}">{CHEV}</button>'
                   f'<div class="ddp sm" id="dd{k}"><p class="ddh">{esc(m["name"])}</p>{subs}</div></div>')
-    rest = (("/galeri/", "Galeri"), ("/kontak/", "Kontak"), ("/test-drive/", "Test Drive"), ("/simulasi-kredit/", "Simulasi Kredit"))
+    rest = (("/galeri/", "Galeri"), ("/perbandingan/", "Perbandingan"), ("/kontak/", "Kontak"), ("/test-drive/", "Test Drive"), ("/simulasi-kredit/", "Simulasi Kredit"))
     d = (f'<nav class="d md" aria-label="Menu utama"><a href="/"{cur("/")}>Beranda</a>{items}'
          + "".join(f'<a href="{h}"{cur(h)}>{lb}</a>' for h, lb in rest) + "</nav>")
     mob = ""
@@ -541,7 +541,7 @@ def modern_header(path, promo):
         base = f"/{m['slug']}/"
         mob += (f'<p class="mrow"><a class="mn" href="{base}"{cur(base)}>{esc(m["name"])}</a><span>'
                 + "".join(f'<a href="{base}{kk}/"{cur(base + kk + "/")}>{"Spek" if kk == "spesifikasi" else lb}</a>' for kk, lb in SUBS) + "</span></p>")
-    m_rest = "".join(f'<a class="mb" href="{h}"{cur(h)}>{lb}</a>' for h, lb in (("/galeri/", "Galeri"), ("/test-drive/", "Test Drive"), ("/kontak/", "Kontak"), ("/simulasi-kredit/", "Simulasi Kredit")))
+    m_rest = "".join(f'<a class="mb" href="{h}"{cur(h)}>{lb}</a>' for h, lb in (("/galeri/", "Galeri"), ("/perbandingan/", "Perbandingan"), ("/test-drive/", "Test Drive"), ("/kontak/", "Kontak"), ("/simulasi-kredit/", "Simulasi Kredit")))
     mm = (f'<details class="m"><summary aria-label="Buka menu">{MENU_ICON}<span class="hb" aria-hidden="true"><i></i><i></i><i></i></span></summary>'
           f'<div><a href="/"{cur("/")}>Beranda</a><p class="mh">Model Kami</p>{mob}{m_rest}</div></details>')
     wa = f'<a class="btn hwa" href="{wa_url()}" data-wa="header" rel="noopener" aria-label="Chat WhatsApp">{WA_ICON}<span>WhatsApp</span></a>'
@@ -551,7 +551,7 @@ def modern_header(path, promo):
 
 def modern_footer(fab):
     mod = "".join(f'<li><a href="/{m["slug"]}/">{esc(m["name"])}</a></li>' for m in MODELS)
-    exp = [("/galeri/", "Galeri mobil"), ("/simulasi-kredit/", "Simulasi kredit"), ("/test-drive/", "Test drive"), ("/kontak/", "Kontak"), ("/harga-byd/", "Harga mobil BYD"), ("/blog/", "Artikel")]
+    exp = [("/galeri/", "Galeri mobil"), ("/perbandingan/", "Perbandingan mobil"), ("/simulasi-kredit/", "Simulasi kredit"), ("/test-drive/", "Test drive"), ("/kontak/", "Kontak"), ("/harga-byd/", "Harga mobil BYD"), ("/blog/", "Artikel")]
     if testi_items():
         exp.append(("/testimoni/", "Testimoni"))
     if hand_items():
@@ -1372,6 +1372,12 @@ def build_home():
         return (f'<section class="s lnsec" id="segera-hadir"><div class="wrap">{ey(L.get("eyebrow") or "Launching")}<h2>{hl(L.get("title") or "Segera hadir")}</h2>'
                 f'<div class="lng">{cards}</div></div></section>')
 
+    def s_compare_cta():
+        t = (h.get("compare_title") or "Perbandingan").strip()
+        b = (h.get("compare_button") or "Perbandingan").strip()
+        return (f'<section class="s cmpcta"><div class="wrap"><h2>{esc(t)}</h2>'
+                f'<a class="btn" href="/perbandingan/">{esc(b)}</a></div></section>')
+
     def s_why():
         items = "".join(f'<div data-aos="fade-up" data-aos-delay="{k * 80}"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{WHY_ICONS[k % len(WHY_ICONS)]}"/></svg></span>'
                         f'<h3>{esc(i["title"])}</h3><p>{esc(i["text"])}</p></div>' for k, i in enumerate(h.get("why_items", [])))
@@ -1478,8 +1484,8 @@ def build_home():
     reg = {"hero": s_hero, "budget": s_budget, "models": s_models, "leasing": lambda: leasing_section("home"), "handover": hand_section, "testimonials": lambda: testi_section("home"),
            "promo": promo_section, "video": video_section, "credit": credit_section, "stats": stats_section, "panels": panels_section, "spotlight": spotlight_section, "why": s_why, "articles": s_articles, "usecases": s_usecases, "lead": s_lead, "faq": s_faq, "cta": s_cta}
     if STYLE_MD:
-        reg.update({"launch": s_launch, "ribbon": s_ribbon, "introvideo": s_introvideo, "feature": s_feature, "overview": s_overview, "ready": s_ready, "blueprint": s_blueprint, "tech": s_tech})
-        seq = ["introvideo", "hero", "ribbon", "launch", "models", "feature", "promo", "credit", "leasing", "overview", "blueprint", "tech", "handover", "testimonials", "articles", "faq", "cta"]
+        reg.update({"compare": s_compare_cta, "launch": s_launch, "ribbon": s_ribbon, "introvideo": s_introvideo, "feature": s_feature, "overview": s_overview, "ready": s_ready, "blueprint": s_blueprint, "tech": s_tech})
+        seq = ["introvideo", "hero", "ribbon", "launch", "models", "compare", "feature", "promo", "credit", "leasing", "overview", "blueprint", "tech", "handover", "testimonials", "articles", "faq", "cta"]
         body = '<div class="hm">' + "".join(reg[i]() for i in seq if lay_on("home", i)) + "</div>"
     else:
         body = '<div class="hm">' + "".join(reg[i]() for i in sections_order("home", reg)) + "</div>"
@@ -2023,6 +2029,126 @@ def gallery_items(only=None):
     return out
 
 
+KINDS = ["City car", "SUV compact", "SUV", "Medium SUV", "MPV", "Luxury car", "Sedan"]
+
+
+def kind_of(o, price=0):
+    """Jenis mobil untuk perbandingan: isian Admin ('kind') diutamakan; bila kosong ditebak dari tipe/bodi dan harga."""
+    k = str(o.get("kind") or "").strip()
+    if k in KINDS:
+        return k
+    t = " ".join(str(o.get(x) or "") for x in ("type", "body", "name")).lower()
+    if price >= 1_400_000_000 or "mewah" in t or "luxury" in t:
+        return "Luxury car"
+    if "mpv" in t:
+        return "MPV"
+    if "suv" in t or "crossover" in t:
+        if "compact" in t or "kompak" in t:
+            return "SUV compact"
+        return "Medium SUV" if "medium" in t else "SUV"
+    if any(w in t for w in ("sedan", "fastback", "shooting")):
+        return "Sedan"
+    if any(w in t for w in ("hatchback", "city", "mini")):
+        return "City car"
+    return "SUV"
+
+
+def compare_cfg():
+    c = SITE.get("compare") or {}
+    try:
+        pct = float(str(c.get("max_diff_pct") or 25).replace(",", "."))
+    except ValueError:
+        pct = 25.0
+    return {"pct": pct if pct > 0 else 25.0}
+
+
+def compare_data():
+    byd = []
+    for m in MODELS:
+        vs = [v for v in m.get("variants", []) if v.get("price")]
+        if not vs:
+            continue
+        lo = min(v["price"] for v in vs)
+        byd.append({"s": m["slug"], "n": m["name"], "k": kind_of(m, lo), "u": f'/{m["slug"]}/',
+                    "v": [{"n": v["name"], "p": v["price"], "b": v.get("battery", ""), "r": range_text(v), "w": v.get("power", "")} for v in vs]})
+    brands = {}
+    for c in COMP:
+        b = (c.get("brand") or "").strip()
+        if not b or b.upper() == "BYD" or not c.get("price"):
+            continue
+        brands.setdefault(b, []).append({"id": c["slug"], "n": c["name"], "p": c["price"], "k": kind_of(c, c["price"]), "b": c.get("battery", ""),
+                                         "r": c.get("range", ""), "w": c.get("power", ""), "t": c.get("body", ""), "as": c.get("as_of", "")})
+    return {"byd": byd, "brands": [{"b": b, "m": ms} for b, ms in brands.items()], "pct": compare_cfg()["pct"]}
+
+
+def cmp_verdict(by, v, co, pct):
+    """Peringatan bila jenis mobil atau harga tidak sesuai. Tetap boleh dibandingkan."""
+    warn = []
+    if by["k"] != co["k"]:
+        warn.append(f'Jenis mobil berbeda: {by["n"]} termasuk {by["k"]}, sedangkan {co["n"]} termasuk {co["k"]}.')
+    d = co["p"] - v["p"]
+    pc = abs(d) / v["p"] * 100 if v["p"] else 0
+    if pc > pct:
+        warn.append(f'Harga berbeda jauh: selisih {juta(abs(d))} ({pc:.0f}%), batas kewajaran {pct:g}%.')
+    return warn, d, pc
+
+
+def cmp_result_html(by, v, co, pct):
+    warn, d, pc = cmp_verdict(by, v, co, pct)
+    if warn:
+        box = ('<div class="cmw bad" role="alert"><b>Perbandingan ini kurang sesuai kriteria</b><ul>' + "".join(f"<li>{esc(w)}</li>" for w in warn)
+               + '</ul><p>Hasilnya tetap kami tampilkan, tetapi kurang adil karena kedua mobil berbeda kelas.</p></div>')
+    else:
+        box = f'<div class="cmw ok" role="status"><b>Sesuai kriteria</b><p>Jenis mobil sama ({esc(by["k"])}) dan selisih harga {pc:.0f}% (di bawah {pct:g}%).</p></div>'
+
+    def card(name, url, kind, price, b, r, w, me):
+        nm = f'<a href="{url}">{esc(name)}</a>' if url else esc(name)
+        rows = "".join(f'<div><dt>{lb}</dt><dd>{esc(val)}</dd></div>' for lb, val in (("Jenis", kind), ("Baterai", b), ("Jarak tempuh", r), ("Daya", w)) if val)
+        return (f'<article class="cxc{" me" if me else ""}">' + ('<span class="cxb">Pilihan BYD</span>' if me else "") + f'<h3>{nm}</h3><p class="cxp">{esc(juta(price))}</p>'
+                + (f'<span class="cxd {"up" if d > 0 else "dn"}">{esc(juta(abs(d)))} {"lebih mahal" if d > 0 else "lebih murah"} dari {esc(by["n"])} {esc(v["n"])}</span>' if (not me and d) else "")
+                + f"<dl>{rows}</dl></article>")
+    return (box + '<div class="cx cx2">' + card(f'{by["n"]} {v["n"]}', by["u"], by["k"], v["p"], v["b"], v["r"], v["w"], True)
+            + card(co["n"], "", co["k"], co["p"], co["b"], co["r"], co["w"], False) + "</div>")
+
+
+def build_compare():
+    path = "/perbandingan/"
+    crumb_items = [("Beranda", "/"), ("Perbandingan", path)]
+    data = compare_data()
+    if not data["byd"] or not data["brands"]:
+        return
+    pct = data["pct"]
+    # contoh bawaan: model BYD pertama dengan lawan yang paling mirip (jenis sama, harga terdekat)
+    by = data["byd"][0]
+    v = by["v"][0]
+    pool = [x for b in data["brands"] for x in b["m"]]
+    co = sorted(pool, key=lambda x: (x["k"] != by["k"], abs(x["p"] - v["p"])))[0]
+    opt_b = "".join(f'<option value="{k}">{esc(x["n"])}</option>' for k, x in enumerate(data["byd"]))
+    opt_br = "".join(f'<option value="{k}">{esc(x["b"])}</option>' for k, x in enumerate(data["brands"]))
+    bi = next(k for k, b in enumerate(data["brands"]) if co in b["m"])
+    opt_br = opt_br.replace(f'value="{bi}"', f'value="{bi}" selected', 1)
+    ttl = "Perbandingan Mobil BYD dengan Brand Lain"
+    intro = (f"Pilih mobil BYD, lalu pilih brand dan model pembanding. Perbandingan paling adil bila jenis mobilnya sama dan selisih harga tidak lebih dari {pct:g}%. "
+             "Kalau tidak sesuai, kami tetap tampilkan hasilnya disertai peringatan.")
+    jd = esc(json.dumps(data, ensure_ascii=False, separators=(",", ":")))
+    body = (f'<section class="sub shero"><div class="wrap">{crumbs(crumb_items)}{ey("Perbandingan")}<h1>{esc(ttl)}</h1><p class="tl">{esc(intro)}</p></div></section>'
+            f'<section class="s"><div class="wrap"><div class="cmpx" id="cmpx" data-cmp=\'{jd}\'>'
+            f'<div class="cmpp"><fieldset class="cmps"><legend>Mobil BYD</legend><label for="cb">Model</label><select id="cb">{opt_b}</select>'
+            f'<label for="cv2">Varian</label><select id="cv2"></select></fieldset><div class="cmvs" aria-hidden="true">VS</div>'
+            f'<fieldset class="cmps"><legend>Brand lain</legend><label for="cbr">Brand</label><select id="cbr">{opt_br}</select>'
+            f'<label for="cmo">Model</label><select id="cmo"></select></fieldset></div>'
+            f'<h2 class="cmh">Hasil perbandingan</h2><div id="cmpout" aria-live="polite">{cmp_result_html(by, v, co, pct)}</div>'
+            f'<p class="note">Harga mobil BYD: OTR Jakarta ({esc(PRICE_LABEL)}). Harga brand lain bersumber dari data pesaing dan dapat berubah; konfirmasi ke dealer masing-masing.</p>'
+            f'<div class="ctas"><a class="btn" href="/test-drive/">Booking test drive BYD</a><a class="btn o" href="{wa_url("Halo, saya ingin konsultasi perbandingan mobil BYD dengan brand lain.")}" data-wa="compare" rel="noopener">{WA_ICON} Tanya sales</a></div>'
+            f'</div></div></section>')
+    title = "Bandingkan Mobil BYD dengan Brand Lain | " + NAME
+    if len(title) > 60:
+        title = "Bandingkan Mobil BYD dengan Brand Lain"
+    desc = "Bandingkan mobil BYD dengan brand lain: pilih model, cek jenis mobil dan selisih harga, lihat baterai, jarak tempuh, dan daya. Konsultasi gratis."
+    schema = [breadcrumb_ld(crumb_items), {"@context": "https://schema.org", "@type": "WebPage", "name": title, "url": url(path), "inLanguage": "id-ID"}]
+    add(path, page(title, desc, path, body, schema), PRICE_DATE)
+
+
 def build_gallery():
     path = "/galeri/"
     crumb_items = [("Beranda", "/"), ("Galeri", path)]
@@ -2396,7 +2522,7 @@ def main():
     write_all()
     build_home(); build_models(); build_prices(); build_testdrive(); build_social_pages(); build_about()
     if STYLE_MD:
-        build_model_subs(); build_credit_page(); build_contact(); build_gallery()
+        build_model_subs(); build_credit_page(); build_contact(); build_gallery(); build_compare()
     for a in VIS_ART:
         build_article(a)
     for p in VIS_LAND:

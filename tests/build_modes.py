@@ -111,6 +111,29 @@ def main():
     for mm in ms2:
         mm["images"] = []
     (tmp / "content/models.json").write_text(json.dumps(mj2))
+    cp = (tmp / "docs/perbandingan/index.html").read_text()
+    res["compare_page"] = all(x in cp for x in ('id="cmpx"', 'id="cb"', 'id="cbr"', 'id="cmo"', 'class="cmw')) and "/perbandingan/" in (tmp / "docs/sitemap.xml").read_text()
+    res["compare_menu_home"] = 'href="/perbandingan/"' in hm and 'class="s cmpcta"' in hm and hm.index('id="model"') < hm.index('class="s cmpcta"') < hm.index('class="s ftsec"')
+    res["compare_only_byd_left"] = '"b":"BYD"' not in cp
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("bld", tmp / "tools/build.py")
+    res["compare_kind_infer"] = True
+    mj0 = json.loads((tmp / "content/models.json").read_text()); ms0 = mj0["models"] if isinstance(mj0, dict) else mj0
+    ks = {x["slug"]: x for x in ms0}
+    cj = json.loads((tmp / "content/competitors.json").read_text())
+    cj.append({"slug": "uji-suv", "brand": "MerekUji", "name": "MerekUji Besar", "price": 900000000, "kind": "Luxury car", "body": "SUV", "price_basis": "OTR", "as_of": "2026-10"})
+    cj.append({"slug": "uji-byd", "brand": "BYD", "name": "BYD Bukan Lawan", "price": 300000000, "kind": "City car"})
+    (tmp / "content/competitors.json").write_text(json.dumps(cj))
+    rc, hm4 = build(tmp)
+    cp2 = (tmp / "docs/perbandingan/index.html").read_text()
+    res["compare_admin_brand_included"] = rc == 0 and "MerekUji" in cp2 and "BYD Bukan Lawan" not in cp2
+    res["compare_kind_in_data"] = "&quot;k&quot;:&quot;Luxury car&quot;" in cp2 and "&quot;k&quot;:&quot;MPV&quot;" in cp2 and "&quot;k&quot;:&quot;SUV compact&quot;" in cp2 and "&quot;k&quot;:&quot;City car&quot;" in cp2
+    th_ = json.loads((tmp / "content/site.json").read_text()); th_["compare"] = {"max_diff_pct": "10"}
+    (tmp / "content/site.json").write_text(json.dumps(th_))
+    rc, hm4 = build(tmp)
+    res["compare_threshold_setting"] = rc == 0 and "&quot;pct&quot;:10.0" in (tmp / "docs/perbandingan/index.html").read_text()
+    cj = [c for c in cj if c["slug"] not in ("uji-suv", "uji-byd")]
+    (tmp / "content/competitors.json").write_text(json.dumps(cj)); th_.pop("compare"); (tmp / "content/site.json").write_text(json.dumps(th_))
     pg["home"]["video"] = {"title": "Uji Video", "url": "https://youtu.be/dQw4w9WgXcQ"}
     pg["home"]["tech"] = [{"eyebrow": "Uji", "title": "Teknologi Uji", "text": "Isi uji.", "points": [{"title": "Poin Uji", "text": "x"}], "link": "/byd-seal/"}]
     pg["home"]["feature_model"] = "byd-seal"
