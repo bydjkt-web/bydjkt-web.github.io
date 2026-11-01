@@ -52,9 +52,9 @@ def main():
     pg = json.loads((tmp / "content/pages.json").read_text())
     rc, hm = build(tmp)
     res["modern_ok"] = rc == 0 and 'data-layout="modern"' in hm and 'data-style="editorial"' in hm and 'class="hero c mh"' in hm
-    res["modern_auto_sections"] = all(x in hm for x in ('class="s ftsec"', 'class="s ovsec"', 'class="s alt rdsec"', 'id="unggulan"', "DM-i Super", "Blade Battery")) and 'class="ivsec"' not in hm and 'id="budget"' not in hm
-    res["modern_order"] = hm.index('class="hero c mh"') < hm.index('id="model"') < hm.index('class="s ftsec"') < hm.index('id="simulasi"') < hm.index('class="s ovsec"') < hm.index('class="s alt rdsec"') < hm.index('id="unggulan"') < hm.index('tcsec"')
-    res["modern_effects_markup"] = 'class="hb"' in hm and "data-count" in hm
+    res["modern_auto_sections"] = all(x in hm for x in ('class="s ftsec"', 'class="s ovsec"', 'id="unggulan"', "DM-i Super", "Blade Battery")) and 'class="ivsec"' not in hm and 'id="budget"' not in hm
+    res["modern_order"] = hm.index('class="hero c mh"') < hm.index('id="model"') < hm.index('class="s ftsec"') < hm.index('id="simulasi"') < hm.index('class="s ovsec"') < hm.index('id="unggulan"') < hm.index('tcsec"')
+    res["modern_effects_markup"] = 'class="hb"' in hm and 'class="rib"' in hm
     res["modern_pages"] = all((tmp / f"docs/{x}/index.html").exists() for x in ("simulasi-kredit", "kontak", "byd-atto-3/eksterior", "byd-atto-3/interior", "byd-atto-3/spesifikasi"))
     sm = (tmp / "docs/sitemap.xml").read_text()
     res["modern_subpage_index_rules"] = "/byd-atto-3/spesifikasi/" in sm and "/byd-atto-3/eksterior/" not in sm and 'content="noindex,follow' in (tmp / "docs/byd-atto-3/eksterior/index.html").read_text()
@@ -79,6 +79,17 @@ def main():
     res["color_viewer_needs_photos"] = rc == 0 and 'data-colors' not in (tmp / "docs/byd-atto-3/index.html").read_text()
     ms.pop("colors", None)
     (tmp / "content/models.json").write_text(json.dumps(mj))
+    res["launch_hidden_when_empty"] = 'id="segera-hadir"' not in hm and 'class="s alt rdsec"' not in hm
+    res["home_faq_limited"] = hm.count('<details class="q">') <= 4
+    pg["home"]["launching"] = {"title": "Segera Uji", "items": [
+        {"name": "Mobil Uji Satu", "tag": "Pre-order", "date": "Desember 2026", "date_iso": "2026-12-15", "text": "Kalimat pertama. " + "Kalimat panjang " * 30},
+        {"name": "Mobil Uji Dua", "on": False}, {"name": "", "text": "tanpa nama"}]}
+    (tmp / "content/pages.json").write_text(json.dumps(pg))
+    rc, hm3 = build(tmp)
+    res["launch_section"] = rc == 0 and 'id="segera-hadir"' in hm3 and "Mobil Uji Satu" in hm3 and "Mobil Uji Dua" not in hm3 and hm3.count('class="lnc"') == 1 and 'data-date="2026-12-15"' in hm3 and "Daftar minat" in hm3 and hm3.index('class="rib"') < hm3.index('id="segera-hadir"') < hm3.index('id="model"')
+    res["launch_text_clipped"] = "Kalimat panjang Kalimat panjang Kalimat panjang Kalimat panjang Kalimat panjang Kalimat panjang Kalimat panjang Kalimat panjang Kalimat panjang Kalimat panjang Kalimat panjang Kalimat panjang" not in hm3
+    del pg["home"]["launching"]
+    (tmp / "content/pages.json").write_text(json.dumps(pg))
     pg["home"]["video"] = {"title": "Uji Video", "url": "https://youtu.be/dQw4w9WgXcQ"}
     pg["home"]["tech"] = [{"eyebrow": "Uji", "title": "Teknologi Uji", "text": "Isi uji.", "points": [{"title": "Poin Uji", "text": "x"}], "link": "/byd-seal/"}]
     pg["home"]["feature_model"] = "byd-seal"

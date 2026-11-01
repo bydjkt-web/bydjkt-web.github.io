@@ -411,6 +411,13 @@
       });
       box.addEventListener("pointerleave", function () { box.style.removeProperty("--px"); box.style.removeProperty("--py"); });
     });
+    // hitung mundur launching: teks tanggal tetap ada; hitungan hari ditambahkan bila tanggalnya diisi
+    document.querySelectorAll(".lnd[data-date]").forEach(function (el) {
+      var t = new Date(el.getAttribute("data-date") + "T00:00:00"); if (isNaN(t)) return;
+      var n = Math.ceil((t - new Date()) / 86400000), base = el.textContent.trim();
+      var add = n > 1 ? n + " hari lagi" : n === 1 ? "besok" : n === 0 ? "hari ini" : "sudah launching";
+      el.textContent = (base ? base + " · " : "") + add;
+    });
     // kartu statistik bisa dibalik
     document.querySelectorAll(".flp").forEach(function (b) {
       b.addEventListener("click", function () { var on = b.classList.toggle("on"); b.setAttribute("aria-pressed", on ? "true" : "false"); });

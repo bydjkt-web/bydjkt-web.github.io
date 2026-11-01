@@ -74,6 +74,18 @@ def bulan_th(s):
         return s
 
 
+def clip(t, n=120):
+    """Potong teks di batas kalimat/kata supaya ringkas (dipakai gaya Modern)."""
+    t = re.sub(r"\s+", " ", str(t or "")).strip()
+    if len(t) <= n:
+        return t
+    cut = t[:n]
+    k = max(cut.rfind(". "), cut.rfind("! "), cut.rfind("? "))
+    if k >= n * 0.5:
+        return cut[:k + 1]
+    return cut[:cut.rfind(" ")].rstrip(",;:- ") + "…"
+
+
 def juta(n):
     if n >= 1_000_000_000:
         return "Rp" + f"{n / 1_000_000_000:.2f}".rstrip("0").rstrip(".").replace(".", ",") + " miliar"
@@ -637,12 +649,12 @@ def art_url(a):
     return f"/blog/{a['slug']}/"
 
 
-def article_card(a):
+def article_card(a, compact=False):
     cover = ""
     if a["cover"] and images.resolve(a["cover"]):
         cover = f'<div class="vis">{img_tag(a["cover"], a["cover_alt"], "(max-width:600px) 100vw, 360px")}</div>'
     return (f'<a class="card" href="{art_url(a)}">{cover}<div class="bd"><span class="tp">{esc(a["category"])} · {tgl(a["date"])}</span>'
-            f'<h3>{esc(a["h1"])}</h3><p>{esc(a["description"])}</p><span class="more">Baca artikel →</span></div></a>')
+            f'<h3>{esc(a["h1"])}</h3>{"" if compact else "<p>" + esc(a["description"]) + "</p>"}<span class="more">Baca artikel →</span></div></a>')
 
 
 def arts_for(kind, key="", limit=None, fill=False):
@@ -780,14 +792,15 @@ def credit_section():
     return (f'<section class="s" id="simulasi"><div class="wrap"><div class="calc" data-credit=\'{esc(json.dumps(data, ensure_ascii=False, separators=(",", ":")))}\' data-rate="{rate}">'
             f'<span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{WHY_ICONS[1]}"/></svg></span>'
             f'{ey("Simulasi Kredit")}<h2>{hl(cfg.get("title") or "Hitung Estimasi Angsuran")}</h2>'
-            f'<p>{esc(cfg.get("text") or "Perkirakan cicilan bulanan mobil listrik BYD sesuai uang muka dan tenor. Angka final mengikuti leasing dan dikonfirmasi sales kami.")}</p>'
+            + ("" if STYLE_MD else f'<p>{esc(cfg.get("text") or "Perkirakan cicilan bulanan mobil listrik BYD sesuai uang muka dan tenor. Angka final mengikuti leasing dan dikonfirmasi sales kami.")}</p>') +
             f'<form class="cf" onsubmit="return false"><label>Model<select id="cm">{opts}</select></label><label>Varian<select id="cv"></select></label>'
             f'<label>Uang muka: <output id="cdpo">30%</output><input id="cdp" type="range" min="10" max="70" step="5" value="30"></label>'
             f'<label>Tenor<select id="ct"><option value="1">1 tahun</option><option value="2">2 tahun</option><option value="3">3 tahun</option><option value="4">4 tahun</option><option value="5" selected>5 tahun</option></select></label></form>'
             f'<div class="cres" aria-live="polite"><small>Perkiraan cicilan</small><strong id="cr">Rp ... / bulan</strong><span id="cdet"></span></div>'
             f'<a class="btn" id="cwa" href="{wa_url()}" data-wa="credit" rel="noopener">{WA_ICON} Minta simulasi resmi</a>'
-            + ('<a class="btn o" href="/simulasi-kredit/">Mulai simulasi kredit lengkap</a>' if STYLE_MD else "") +
-            f'<p class="note">Estimasi dengan bunga flat {rate:g}% per tahun (asumsi, bukan penawaran). Harga OTR Jakarta ({esc(PRICE_LABEL)}); biaya asuransi, provisi, dan administrasi belum termasuk.</p></div></div></section>')
+            + ('<a class="btn o" href="/simulasi-kredit/">Mulai simulasi kredit lengkap</a>' if STYLE_MD else "")
+            + (f'<p class="note">Estimasi bunga flat {rate:g}% per tahun; angka resmi dari leasing.</p>' if STYLE_MD else
+               f'<p class="note">Estimasi dengan bunga flat {rate:g}% per tahun (asumsi, bukan penawaran). Harga OTR Jakarta ({esc(PRICE_LABEL)}); biaya asuransi, provisi, dan administrasi belum termasuk.</p>') + '</div></div></section>')
 
 
 def promo_items():
@@ -1277,7 +1290,7 @@ def build_home():
             hy = " + mesin bensin" if r and r[3] else ""
             cards += (f'<div class="swiper-slide"><a class="mc" href="/{m["slug"]}/"><div class="top">{pic}{big}</div><div class="bd"><span class="tp">{esc(m["type"])}{hy}</span>'
                       f'<h3>{esc(m["name"])}</h3><span class="pr">{price_line(m)}</span><span class="more">Lihat detail dan harga</span></div></a></div>')
-        return (f'<section class="s" id="model"><div class="wrap"><div class="row-h"><div>{ey("Koleksi Model")}<h2>{hl(h["models_title"])}</h2><p>{esc(h.get("models_intro", ""))}</p></div>'
+        return (f'<section class="s" id="model"><div class="wrap"><div class="row-h"><div>{ey("Koleksi Model")}<h2>{hl(h["models_title"])}</h2>{"" if STYLE_MD else "<p>" + esc(h.get("models_intro", "")) + "</p>"}</div>'
                 f'<div class="sl-nav" aria-label="Geser model"><button type="button" data-sw="-1" aria-label="Model sebelumnya">&#8592;</button><button type="button" data-sw="1" aria-label="Model berikutnya">&#8594;</button></div></div>'
                 f'<div class="swiper bhs msl" data-per="4" data-mid="2.2" data-mob="1.15"><div class="swiper-wrapper">{cards}</div><div class="swiper-pagination"></div></div><p class="swipe">Geser untuk melihat model</p>'
                 f'<p class="note">Harga OTR Jakarta, {esc(PRICE_LABEL)}; dapat berubah. Lihat <a href="/harga-byd/">daftar harga mobil BYD terbaru</a>.</p></div></section>')
@@ -1288,6 +1301,27 @@ def build_home():
             return ""
         return (f'<div class="rib" aria-label="Model BYD"><div class="rbt"><div class="rbr">{row}</div>'
                 f'<div class="rbr" aria-hidden="true">{row.replace("<a ", "<a tabindex=-1 ")}</div></div></div>')
+
+    def s_launch():
+        L = h.get("launching") or {}
+        items = [x for x in (L.get("items") or []) if isinstance(x, dict) and (x.get("name") or "").strip() and x.get("on", True) is not False][:4]
+        if not items:
+            return ""
+        cards = ""
+        for k, x in enumerate(items):
+            nm = x["name"].strip()
+            pic = img_tag(x["image"], nm, "(max-width:700px) 90vw, 360px") if x.get("image") and images.resolve(x["image"]) else ""
+            di = str(x.get("date_iso") or "").strip()
+            di_a = f' data-date="{di}"' if re.fullmatch(r"\d{4}-\d{2}-\d{2}", di) else ""
+            when = esc((x.get("date") or "").strip())
+            lk = media_url(x.get("link"))
+            more = f'<a class="btn o sm" href="{esc(lk)}">Lihat detail</a>' if lk else ""
+            tx = f'<p>{esc(clip(x.get("text", ""), 110))}</p>' if (x.get("text") or "").strip() else ""
+            cards += (f'<article class="lnc" data-aos="fade-up" data-aos-delay="{k % 3 * 100}"><div class="lnp">{pic}<span class="lnb">{esc((x.get("tag") or "Segera hadir").strip())}</span></div>'
+                      f'<div class="lnt"><h3>{esc(nm)}</h3>{("<span class=lnd" + di_a + ">" + when + "</span>") if (when or di_a) else ""}{tx}'
+                      f'<div class="lnf"><a class="btn sm" href="{wa_url("Halo, saya tertarik dengan " + nm + " yang akan launching. Mohon info terbaru.")}" data-wa="launch" rel="noopener">{WA_ICON} Daftar minat</a>{more}</div></div></article>')
+        return (f'<section class="s lnsec" id="segera-hadir"><div class="wrap">{ey(L.get("eyebrow") or "Launching")}<h2>{hl(L.get("title") or "Segera hadir")}</h2>'
+                f'<div class="lng">{cards}</div></div></section>')
 
     def s_why():
         items = "".join(f'<div data-aos="fade-up" data-aos-delay="{k * 80}"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{WHY_ICONS[k % len(WHY_ICONS)]}"/></svg></span>'
@@ -1301,7 +1335,7 @@ def build_home():
         if not arts:
             return ""
         return (f'<section class="s"><div class="wrap">{ey("Wawasan")}<h2>{hl(h.get("articles_title", "Artikel Terbaru"))}</h2>'
-                f'<div class="grid">{"".join(article_card(a) for a in arts)}</div>'
+                f'<div class="grid">{"".join(article_card(a, STYLE_MD) for a in arts)}</div>'
                 f'<p style="margin-top:16px"><a class="btn o sm" style="color:var(--acc2)" href="/blog/">Semua artikel</a></p></div></section>')
 
     def s_usecases():
@@ -1311,8 +1345,12 @@ def build_home():
     def s_lead():
         return lead_section(h2=esc(h["lead_title"]), text=h.get("lead_text"), bullets=h.get("lead_bullets"), alt=False)
 
+    def home_faqs():
+        fq = faq_pairs(h.get("faq"))
+        return fq[:4] if STYLE_MD else fq
+
     def s_faq():
-        return f'<section class="s"><div class="wrap art"><h2>{esc(h["faq_title"])}</h2>{faq_html(faq_pairs(h.get("faq")))}</div></section>'
+        return f'<section class="s"><div class="wrap art"><h2>{esc(h["faq_title"])}</h2>{faq_html(home_faqs())}</div></section>'
 
     def s_cta():
         return (f'<section class="s ctasec"><div class="wrap"><div class="ctab">{ey("Hubungi Kami")}<h2>{hl(h.get("cta_title") or "Siap konsultasi?")}</h2>'
@@ -1336,7 +1374,7 @@ def build_home():
             return ""
         intro = m.get("intro") or [m["tagline"]]
         med = media_block(m.get("video"), m["name"], model_media(m))
-        return (f'<section class="s ovsec"><div class="wrap">{ey("Future in motion")}<h2>{hl(m["name"])}</h2><p class="lede">{md.inline(intro[0])}</p>{med}</div></section>')
+        return (f'<section class="s ovsec"><div class="wrap">{ey("Future in motion")}<h2>{hl(m["name"])}</h2><p class="lede">{md.inline(clip(intro[0], 150))}</p>{med}</div></section>')
 
     def s_ready():
         m = pick_model(h.get("overview_model"), 1)
@@ -1362,9 +1400,9 @@ def build_home():
             href = f"{base}{sub_}/" if sub_ else td_url(m["name"])
             pic = img_tag(img, f"{tag} {m['name']}", "(max-width:700px) 100vw, 560px") if img and images.resolve(img) else ""
             out += (f'<a class="pnl{" pic" if pic else ""}" href="{href}" data-aos="fade-up" data-aos-delay="{k % 2 * 120}">{pic}<span class="tag">{tag}</span>'
-                    f'<h3>{esc(t)}</h3><p>{esc(tx)}</p></a>')
+                    f'<h3>{esc(clip(t, 40))}</h3><p>{esc(clip(tx, 70))}</p></a>')
         return (f'<section class="s pnsec" id="unggulan"><div class="wrap">{ey("Sorotan " + m["name"])}<h2>{hl("Cetak biru " + short_name(m))}</h2>'
-                f'<p>{esc(m["tagline"])}</p><div class="pgrid">{out}</div></div></section>')
+                f'<div class="pgrid">{out}</div></div></section>')
 
     def s_tech():
         items = h.get("tech") or (default_tech() if STYLE_MD else [])
@@ -1372,11 +1410,11 @@ def build_home():
         for k, t in enumerate(items):
             if not (t.get("title") or "").strip():
                 continue
-            pts = "".join(f'<div><h3>{esc(p.get("title", ""))}</h3><p>{esc(p.get("text", ""))}</p></div>' for p in (t.get("points") or []) if p.get("title"))
+            pts = "".join(f'<div><h3>{esc(p.get("title", ""))}</h3><p>{esc(clip(p.get("text", ""), 70))}</p></div>' for p in (t.get("points") or [])[:3] if p.get("title"))
             med = media_block(t.get("video") or {}, t["title"], t.get("image") or "", "tmed")
             lk = media_url(t.get("link"))
             out += (f'<section class="s{" alt" if k % 2 == 0 else ""} tcsec"><div class="wrap tcin{" nomed" if not med else ""}"><div>{ey(t.get("eyebrow") or "Teknologi")}<h2>{hl(t["title"])}</h2>'
-                    f'<p>{esc(t.get("text", ""))}</p><div class="tpts">{pts}</div>' + (f'<a class="btn o" href="{esc(lk)}">Pelajari</a>' if lk else "") + f'</div>{med}</div></section>')
+                    f'<p>{esc(clip(t.get("text", ""), 120))}</p><div class="tpts">{pts}</div>' + (f'<a class="btn o" href="{esc(lk)}">Pelajari</a>' if lk else "") + f'</div>{med}</div></section>')
         return out
 
     def s_introvideo():
@@ -1391,14 +1429,14 @@ def build_home():
     reg = {"hero": s_hero, "budget": s_budget, "models": s_models, "leasing": lambda: leasing_section("home"), "handover": hand_section, "testimonials": lambda: testi_section("home"),
            "promo": promo_section, "video": video_section, "credit": credit_section, "stats": stats_section, "panels": panels_section, "spotlight": spotlight_section, "why": s_why, "articles": s_articles, "usecases": s_usecases, "lead": s_lead, "faq": s_faq, "cta": s_cta}
     if STYLE_MD:
-        reg.update({"ribbon": s_ribbon, "introvideo": s_introvideo, "feature": s_feature, "overview": s_overview, "ready": s_ready, "blueprint": s_blueprint, "tech": s_tech})
-        seq = ["introvideo", "hero", "ribbon", "models", "feature", "promo", "credit", "leasing", "overview", "ready", "blueprint", "tech", "handover", "testimonials", "articles", "faq", "cta"]
+        reg.update({"launch": s_launch, "ribbon": s_ribbon, "introvideo": s_introvideo, "feature": s_feature, "overview": s_overview, "ready": s_ready, "blueprint": s_blueprint, "tech": s_tech})
+        seq = ["introvideo", "hero", "ribbon", "launch", "models", "feature", "promo", "credit", "leasing", "overview", "blueprint", "tech", "handover", "testimonials", "articles", "faq", "cta"]
         body = '<div class="hm">' + "".join(reg[i]() for i in seq if lay_on("home", i)) + "</div>"
     else:
         body = '<div class="hm">' + "".join(reg[i]() for i in sections_order("home", reg)) + "</div>"
     schema = [dealer_ld(), {"@context": "https://schema.org", "@type": "WebSite", "name": NAME, "url": url("/"), "inLanguage": "id-ID"}]
     if h.get("faq"):
-        schema.append(faq_ld(faq_pairs(h["faq"])))
+        schema.append(faq_ld(home_faqs()))
     add("/", page(fmt(h["title"]), fmt(h["description"]), "/", body, schema))
 
 

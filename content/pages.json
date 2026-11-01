@@ -71,23 +71,11 @@
         "a": "BYD M6 dan M6 DM-i berformat MPV untuk keluarga besar, sedangkan BYD Atto 3 dan Sealion 7 berformat SUV listrik. Test drive membantu Anda menilai kenyamanannya."
       }
     ],
-    "info_cards": [],
-    "video": {
-      "title": "BYD M6 DM",
-      "text": "For Elevate you Journey",
-      "url": "https://youtu.be/zV0LOFXWRz4?si=TTInf6ZIn3PF7j7s",
-      "poster": "/img/219385.webp"
-    },
-    "stats": [],
-    "panels": [],
-    "spotlight": {
-      "slug": "",
-      "title": "",
-      "image": "",
+    "launching": {
+      "eyebrow": "Launching",
+      "title": "Segera hadir",
       "items": []
-    },
-    "tech": [],
-    "hero_video": "https://youtu.be/zV0LOFXWRz4?si=TTInf6ZIn3PF7j7s"
+    }
   },
   "prices": {
     "title": "Harga Mobil BYD Terbaru {price_date} (OTR Jakarta)",
