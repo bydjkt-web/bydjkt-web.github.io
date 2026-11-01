@@ -289,6 +289,27 @@ def compare_table(ents, caption=""):
     det = (f'<details class="src"><summary>Sumber data dan catatan</summary><ul>{src}{byd_notes}'
            "<li>Angka jarak tempuh memakai standar berbeda (NEDC, WLTP, atau klaim pabrikan) sehingga tidak bisa dibandingkan langsung. "
            "Harga dan spesifikasi dapat berubah; konfirmasi ke dealer masing-masing.</li></ul></details>") if (src or byd_notes) else ""
+    if STYLE_MD:
+        byd0 = next((e for e in ents if e["byd"]), None)
+
+        def row(lb, val):
+            v = (val or "").strip()
+            if not v:
+                return ""
+            mt = re.match(r"^(.*?)\s*(\(.*\))$", v)
+            main, note = (mt.group(1), mt.group(2)) if mt and mt.group(1) else (v, "")
+            return f'<div><dt>{lb}</dt><dd>{esc(main)}{"<small>" + esc(note) + "</small>" if note else ""}</dd></div>'
+        cards = ""
+        for e in ents:
+            delta = ""
+            if byd0 and not e["byd"] and e["price"] != byd0["price"]:
+                d = e["price"] - byd0["price"]
+                delta = f'<span class="cxd {"up" if d > 0 else "dn"}">{esc(juta(abs(d)))} {"lebih mahal" if d > 0 else "lebih murah"} dari {esc(byd0["name"])}</span>'
+            nm = f'<a href="{e["url"]}">{esc(e["name"])}</a>' if e["url"] else esc(e["name"])
+            cards += (f'<article class="cxc{" me" if e["byd"] else ""}">' + ('<span class="cxb">Pilihan BYD</span>' if e["byd"] else "")
+                      + f'<h3>{nm}</h3><p class="cxp">{esc(juta(e["price"]))}</p>{delta}<dl>'
+                      + row("Baterai", e["battery"]) + row("Jarak tempuh", e["range"]) + row("Daya", e["power"]) + row("Tipe", e["body"]) + "</dl></article>")
+        return f'<div class="cx">{cards}</div>{det}'
     return (f'<div class="tw"><table class="cmp"><thead><tr><th>Mobil</th><th>Harga</th><th>Baterai</th><th>Jarak tempuh</th>'
             f'<th>Daya</th><th>Tipe</th></tr></thead><tbody>{rows}</tbody></table></div>{det}')
 
