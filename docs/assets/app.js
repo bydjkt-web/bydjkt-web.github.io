@@ -457,7 +457,7 @@
         var r = cs.getBoundingClientRect(), vh = window.innerHeight, p = Math.min(1, Math.max(0, (vh - r.top) / (vh * 0.6)));
         if (vh + (window.pageYOffset || 0) >= document.documentElement.scrollHeight - 4) p = 1;
         var e = 1 - Math.pow(1 - p, 3);
-        cs.style.transform = p >= 1 ? "" : "translateY(" + Math.round((1 - e) * 140) + "px)";
+        var tb = cs.querySelector(".ctab"); if (tb) tb.style.transform = p >= 1 ? "" : "translateY(" + Math.round((1 - e) * 160) + "px)";
       };
       window.addEventListener("scroll", function () { if (!cst) { cst = true; requestAnimationFrame(upd); } }, { passive: true });
       window.addEventListener("resize", upd); upd();
