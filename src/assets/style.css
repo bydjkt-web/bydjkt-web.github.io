@@ -980,3 +980,8 @@ html:not(.curtain) .hero.mh.full{position:relative}
 /* ===== Hubungi Kami naik menimpa bagian di atasnya saat digulir ===== */
 [data-layout=modern] .hm .ctasec{position:relative;z-index:2;margin-top:-56px;border-radius:40px 40px 0 0;will-change:transform}
 [data-layout=modern] .hm .ctasec.rise{box-shadow:0 -24px 60px rgba(7,15,22,.28)}
+
+/* perbaikan: efek naik hanya di dalam pita gelap, tidak membuka hero yang menempel di belakang */
+[data-layout=modern] .hm .ctasec{margin-top:0;border-radius:0;overflow:hidden;will-change:auto;transform:none}
+[data-layout=modern] .hm .ctasec.rise{box-shadow:none}
+[data-layout=modern] .hm .ctasec.rise .ctab{will-change:transform}
