@@ -883,3 +883,66 @@ nav.d .ddp.sm a::after{display:none}
 [data-layout=modern] .hm .s{padding-block:clamp(40px,6vw,72px)}
 [data-layout=modern] .hm .s h2{margin-bottom:12px}
 [data-layout=modern] .pnsec .pgrid{margin-top:20px}
+
+/* ===== Hero selebar layar penuh (gambar/video tanpa jarak ke tepi kiri-kanan) ===== */
+[data-layout=modern] .hero.mh.full{min-height:clamp(540px,82vh,780px);display:flex;align-items:center;overflow:hidden;color:#fff;padding:0;background:var(--ink)}
+[data-layout=modern] .hero.mh.full .mhin{position:relative;z-index:2;display:block;width:100%;padding-block:clamp(48px,8vw,96px)}
+[data-layout=modern] .hero.mh.full .mhm{position:absolute;inset:0;z-index:0;width:auto;max-width:none;border:0;border-radius:0;box-shadow:none;background:var(--ink);order:0;margin:0}
+[data-layout=modern] .hero.mh.full .mhm img,[data-layout=modern] .hero.mh.full .mhm video{width:100%;height:100%;aspect-ratio:auto;object-fit:cover}
+[data-layout=modern] .hero.mh.full::before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(90deg,rgba(9,18,25,.82) 0,rgba(9,18,25,.55) 42%,rgba(9,18,25,.12) 78%),linear-gradient(0deg,rgba(9,18,25,.55),transparent 38%)}
+[data-layout=modern] .hero.mh.full .mht{max-width:640px}
+[data-layout=modern] .hero.mh.full h1,[data-layout=modern] .hero.mh.full .lead{color:#fff}
+[data-layout=modern] .hero.mh.full .lead{opacity:.92}
+[data-layout=modern] .hero.mh.full h1 .hl{color:#8fc7e3}
+[data-layout=modern] .hero.mh.full .eyb{color:#cfe3ee}
+[data-layout=modern] .hero.mh.full .btn.o{color:#fff;border-color:rgba(255,255,255,.7);background:transparent}
+[data-layout=modern] .hero.mh.full .btn.o:hover{background:#fff;color:var(--ink)}
+[data-layout=modern] .hero.mh.full .infos li{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.25);color:#fff;backdrop-filter:blur(6px)}
+[data-layout=modern] .hero.mh.full .infos span{color:#cfe3ee}
+[data-layout=modern] .hero.mh.full .dp{display:none}
+@media(max-width:900px){[data-layout=modern] .hero.mh.full{min-height:auto}[data-layout=modern] .hero.mh.full::before{background:linear-gradient(0deg,rgba(9,18,25,.85),rgba(9,18,25,.45))}[data-layout=modern] .hero.mh.full .mhm{order:0}}
+
+/* ===== Lineup model di beranda ===== */
+.lcf,.gfr{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0 6px}
+.gfc{border:1px solid var(--line);background:var(--card);color:var(--txt);padding:9px 16px;border-radius:999px;font:700 .82rem var(--disp);letter-spacing:.04em;cursor:pointer;transition:background .2s,color .2s,border-color .2s}
+.gfc:hover{border-color:var(--txt)}
+.gfc[aria-pressed=true]{background:var(--ink);color:#fff;border-color:var(--ink)}
+.lcg2{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:20px;margin-top:20px}
+.lc{display:flex;flex-direction:column;background:var(--card);border:1px solid var(--line);border-radius:26px;overflow:hidden;color:inherit;text-decoration:none;min-width:0}
+.lc[hidden]{display:none}
+.lcp{position:relative;aspect-ratio:16/10;background:linear-gradient(160deg,var(--ev),var(--ink));overflow:hidden;display:grid;place-items:center}
+.lcp img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;transition:transform .8s var(--e,ease)}
+.lc:hover .lcp img{transform:scale(1.06)}
+.lcn{font:800 1.6rem var(--disp);color:#fff;opacity:.8;text-transform:uppercase;text-align:center;padding:0 16px}
+.lct{position:absolute;top:14px;left:14px;z-index:2;font:700 .68rem var(--disp);letter-spacing:.14em;text-transform:uppercase;background:rgba(255,255,255,.9);color:var(--ink);border-radius:999px;padding:6px 12px}
+.lcb{display:flex;flex-direction:column;gap:6px;padding:18px 20px 20px;flex:1}
+.lcb h3{margin:0;font-size:1.35rem}
+.lcm{margin:0;color:var(--ink2);font-size:.9rem}
+.lcr{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap;margin-top:6px;font-size:.92rem;color:var(--ink2)}
+.lcr b{color:var(--lk);font-size:1.02rem}
+.lcg{margin-top:auto;padding-top:12px;font-weight:700;color:var(--txt);display:flex;justify-content:space-between;gap:8px;border-top:1px solid var(--line);margin-top:12px}
+.lcg i{font-style:normal;transition:transform .25s}.lc:hover .lcg i{transform:translateX(5px)}
+
+/* ===== Galeri ===== */
+.gfl{display:grid;gap:6px;margin-bottom:8px}
+.gg{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,260px),1fr));gap:12px;margin-top:16px}
+.gi{position:relative;display:block;border-radius:20px;overflow:hidden;background:var(--soft);aspect-ratio:4/3;min-width:0}
+.gi[hidden]{display:none}
+.gi img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .8s var(--e,ease)}
+.gi:hover img{transform:scale(1.07)}
+.gcap{position:absolute;left:0;right:0;bottom:0;padding:26px 14px 12px;color:#fff;display:flex;flex-direction:column;background:linear-gradient(0deg,rgba(9,18,25,.75),transparent);pointer-events:none}
+.gcap b{font:700 .95rem var(--disp)}.gcap small{opacity:.85;font-size:.75rem;letter-spacing:.08em;text-transform:uppercase}
+.gm{grid-template-columns:repeat(4,1fr)}.gm .gw{grid-column:span 2;grid-row:span 2;aspect-ratio:auto}
+@media(max-width:800px){.gm{grid-template-columns:repeat(2,1fr)}}
+.gne{color:var(--ink2);margin:18px 0}
+.spq{display:grid;grid-template-columns:repeat(2,1fr);gap:0 36px;margin:20px 0 6px}
+.spq div{display:flex;justify-content:space-between;gap:16px;padding:12px 0;border-bottom:1px solid var(--line)}
+.spq dt{color:var(--ink2)}.spq dd{margin:0;font-weight:700;text-align:right}
+@media(max-width:700px){.spq{grid-template-columns:1fr}}
+@media(max-width:1319px){[data-layout=modern] nav.d{display:none}[data-layout=modern] .m{display:block}}
+@media(min-width:1320px){[data-layout=modern] nav.d{display:flex}[data-layout=modern] .m{display:none}}
+/* hero penuh: gambar menempel ke tepi layar, bukan ke kotak konten */
+[data-layout=modern] .hero.mh.full .mhin{position:static}
+[data-layout=modern] .hero.mh.full .mht{position:relative;z-index:2}
+[data-layout=modern] .hero.mh.full .mhm{left:0;right:0;top:0;bottom:0}
+html:not(.curtain) .hero.mh.full{position:relative}

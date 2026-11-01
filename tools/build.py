@@ -42,7 +42,7 @@ DOMAIN = SITE["domain"].rstrip("/")
 PRICE_DATE = SITE.get("price_date") or NOW.date().isoformat()
 PRICE_LABEL = SITE.get("price_date_label", "")
 BULAN = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"]
-RESERVED = {"simulasi-kredit", "kontak", "tentang-kami", "llms.txt", "testimoni", "serah-terima", "blog", "admin", "assets", "img", "harga-byd", "test-drive", "feed.xml", "sitemap.xml", "robots.txt", "404.html"}
+RESERVED = {"simulasi-kredit", "kontak", "galeri", "tentang-kami", "llms.txt", "testimoni", "serah-terima", "blog", "admin", "assets", "img", "harga-byd", "test-drive", "feed.xml", "sitemap.xml", "robots.txt", "404.html"}
 
 ARTICLES = content.load_items("articles", "article")
 LANDING = content.load_items("pages", "page")
@@ -512,7 +512,7 @@ def modern_header(path, promo):
         items += (f'<div class="dd"><a class="ddl" href="{base}"{on}>{esc(short_name(m))}</a>'
                   f'<button type="button" class="ddb" aria-expanded="false" aria-controls="dd{k}" aria-label="Sub-menu {esc(m["name"])}">{CHEV}</button>'
                   f'<div class="ddp sm" id="dd{k}"><p class="ddh">{esc(m["name"])}</p>{subs}</div></div>')
-    rest = (("/kontak/", "Kontak"), ("/test-drive/", "Test Drive"), ("/simulasi-kredit/", "Simulasi Kredit"))
+    rest = (("/galeri/", "Galeri"), ("/kontak/", "Kontak"), ("/test-drive/", "Test Drive"), ("/simulasi-kredit/", "Simulasi Kredit"))
     d = (f'<nav class="d md" aria-label="Menu utama"><a href="/"{cur("/")}>Beranda</a>{items}'
          + "".join(f'<a href="{h}"{cur(h)}>{lb}</a>' for h, lb in rest) + "</nav>")
     mob = ""
@@ -520,7 +520,7 @@ def modern_header(path, promo):
         base = f"/{m['slug']}/"
         mob += (f'<p class="mrow"><a class="mn" href="{base}"{cur(base)}>{esc(m["name"])}</a><span>'
                 + "".join(f'<a href="{base}{kk}/"{cur(base + kk + "/")}>{"Spek" if kk == "spesifikasi" else lb}</a>' for kk, lb in SUBS) + "</span></p>")
-    m_rest = "".join(f'<a class="mb" href="{h}"{cur(h)}>{lb}</a>' for h, lb in (("/test-drive/", "Test Drive"), ("/kontak/", "Kontak"), ("/simulasi-kredit/", "Simulasi Kredit")))
+    m_rest = "".join(f'<a class="mb" href="{h}"{cur(h)}>{lb}</a>' for h, lb in (("/galeri/", "Galeri"), ("/test-drive/", "Test Drive"), ("/kontak/", "Kontak"), ("/simulasi-kredit/", "Simulasi Kredit")))
     mm = (f'<details class="m"><summary aria-label="Buka menu">{MENU_ICON}<span class="hb" aria-hidden="true"><i></i><i></i><i></i></span></summary>'
           f'<div><a href="/"{cur("/")}>Beranda</a><p class="mh">Model Kami</p>{mob}{m_rest}</div></details>')
     wa = f'<a class="btn hwa" href="{wa_url()}" data-wa="header" rel="noopener" aria-label="Chat WhatsApp">{WA_ICON}<span>WhatsApp</span></a>'
@@ -530,7 +530,7 @@ def modern_header(path, promo):
 
 def modern_footer(fab):
     mod = "".join(f'<li><a href="/{m["slug"]}/">{esc(m["name"])}</a></li>' for m in MODELS)
-    exp = [("/simulasi-kredit/", "Simulasi kredit"), ("/test-drive/", "Test drive"), ("/kontak/", "Kontak"), ("/harga-byd/", "Harga mobil BYD"), ("/blog/", "Artikel")]
+    exp = [("/galeri/", "Galeri mobil"), ("/simulasi-kredit/", "Simulasi kredit"), ("/test-drive/", "Test drive"), ("/kontak/", "Kontak"), ("/harga-byd/", "Harga mobil BYD"), ("/blog/", "Artikel")]
     if testi_items():
         exp.append(("/testimoni/", "Testimoni"))
     if hand_items():
@@ -1270,7 +1270,7 @@ def build_home():
             else:
                 src = h.get("hero_image") or next((m["images"][0]["src"] for m in MODELS if m.get("images")), "")
                 media = f'<div class="mhm" data-aos="fade-up" data-aos-delay="100">{img_tag(src, h.get("hero_alt") or h["h1"], "(max-width:900px) 100vw, 560px", eager=True)}</div>' if src and images.resolve(src) else ""
-            return (f'<section class="hero c mh"><div class="wrap mhin{"" if media else " nomedia"}"><div class="mht">{profile()}<p class="eyb">{esc(eyebrow.upper())}</p><h1>{hl(h["h1"])}</h1><p class="lead">{esc(lead_txt)}</p><div class="cta">'
+            return (f'<section class="hero c mh{" full" if media else ""}"><div class="wrap mhin{"" if media else " nomedia"}"><div class="mht">{profile()}<p class="eyb">{esc(eyebrow.upper())}</p><h1>{hl(h["h1"])}</h1><p class="lead">{esc(lead_txt)}</p><div class="cta">'
                     f'<a class="btn" href="{wa_url()}" data-wa="hero" rel="noopener">{WA_ICON} {esc(h.get("cta_primary", "Chat WhatsApp"))}</a>'
                     f'<a class="btn o" href="#lead">{esc(h.get("cta_secondary", "Booking Test Drive"))}</a></div><ul class="infos">{info}</ul></div>{media}</div></section>')
         return (f'<section class="hero c"><div class="wrap">{profile()}<p class="eyb">{esc(eyebrow.upper())}</p><h1>{hl(h["h1"])}</h1><p class="lead">{esc(lead_txt)}</p><div class="cta">'
@@ -1278,7 +1278,34 @@ def build_home():
                 f'<a class="btn o" href="#lead">{esc(h.get("cta_secondary", "Booking Test Drive"))}</a></div>'
                 f'<ul class="infos">{info}</ul>{panel}</div></section>')
 
+    def s_models_md():
+        def grp(m):
+            return (m.get("body") or m.get("type") or "Model").strip().split()[0].capitalize()
+        groups = []
+        for m in MODELS:
+            g = grp(m)
+            if g not in groups:
+                groups.append(g)
+        chips = ""
+        if len(groups) > 1 and h.get("models_filter", True) is not False:
+            chips = ('<div class="lcf" role="group" aria-label="Filter tipe"><button type="button" class="gfc" data-f="" aria-pressed="true">Semua</button>'
+                     + "".join(f'<button type="button" class="gfc" data-f="{esc(g)}" aria-pressed="false">{esc(g)}</button>' for g in groups) + "</div>")
+        cards = ""
+        for k, m in enumerate(MODELS):
+            r = range_info(m)
+            src = (m["images"][0]["src"] if m.get("images") else "")
+            pic = img_tag(src, m["name"], "(max-width:600px) 90vw, 380px") if src and images.resolve(src) else f'<span class="lcn">{esc(short_name(m))}</span>'
+            meta = (f'<span>{"" if r[3] else "hingga "}{r[0]} km{" listrik" if r[3] else ""}</span>' if r else "")
+            cards += (f'<a class="lc" href="/{m["slug"]}/" data-t="{esc(grp(m))}" data-aos="fade-up" data-aos-delay="{k % 3 * 90}"><div class="lcp">{pic}<span class="lct">{esc(grp(m))}</span></div>'
+                      f'<div class="lcb"><h3>{esc(m["name"])}</h3><p class="lcm">{esc(m["type"])}</p><div class="lcr">{meta}<b>{esc(price_line(m))}</b></div>'
+                      f'<span class="lcg">Lihat spesifikasi, fitur dan galeri <i aria-hidden="true">→</i></span></div></a>')
+        return (f'<section class="s lcsec" id="model"><div class="wrap">{ey("Koleksi model")}<h2>{hl(h["models_title"])}</h2>{chips}'
+                f'<div class="lcg2" id="lcg">{cards}</div>'
+                f'<p class="note">Harga OTR Jakarta, {esc(PRICE_LABEL)}; dapat berubah. <a href="/harga-byd/">Daftar harga mobil BYD terbaru</a>.</p></div></section>')
+
     def s_models():
+        if STYLE_MD:
+            return s_models_md()
         cards = ""
         for m in MODELS:
             r = range_info(m)
@@ -1569,6 +1596,32 @@ def build_models():
                     f'<thead><tr><th>Varian</th><th>Harga OTR Jakarta</th><th>Jarak tempuh</th><th>Baterai</th><th>Kursi</th></tr></thead><tbody>{rows}</tbody></table></div>'
                     f'<p class="note">Harga sesuai price list dealer, dapat berubah dan berbeda antar daerah. Konfirmasi ke sales kami.</p>{nt}</div></section>')
 
+        def s_gallery2():
+            if not STYLE_MD:
+                return ""
+            its = gallery_items(m["slug"])[:8]
+            if not its:
+                return ""
+            tiles = "".join(f'<a class="gi{" gw" if k == 0 else ""}" href="{images.resolve(x["src"])}" data-gal aria-label="Perbesar foto {k + 1}">{img_tag(x["src"], x["alt"], "(max-width:600px) 50vw, 360px")}'
+                            f'<span class="gcap"><small>{x["cat"]}</small></span></a>' for k, x in enumerate(its))
+            return (f'<section class="s gsec"><div class="wrap">{ey("Galeri")}<h2>{hl("Galeri " + short_name(m))}</h2><div class="gg gm">{tiles}</div>'
+                    f'<p class="ctas"><a class="btn o sm" href="/galeri/?model={m["slug"]}">Lihat galeri semua model</a></p></div></section>')
+
+        def s_features():
+            hs = m.get("highlights") or []
+            if not STYLE_MD or not hs:
+                return ""
+            cards = "".join(f'<article class="fc" data-aos="fade-up" data-aos-delay="{k % 3 * 100}"><div class="fcb"><small>Fitur</small><h3>{esc(x["title"])}</h3><p>{esc(clip(x["text"], 110))}</p></div></article>' for k, x in enumerate(hs[:6]))
+            return f'<section class="s alt"><div class="wrap">{ey("Fitur unggulan")}<h2>{hl("Fitur " + short_name(m))}</h2><div class="fgrid">{cards}</div></div></section>'
+
+        def s_specs2():
+            sp = [x for x in (m.get("specs") or []) if x.get("label") and x.get("value")]
+            if not STYLE_MD or not sp:
+                return ""
+            rows = "".join(f'<div><dt>{esc(x["label"])}</dt><dd>{esc(x["value"])}</dd></div>' for x in sp[:10])
+            return (f'<section class="s"><div class="wrap">{ey("Spesifikasi")}<h2>{hl("Spesifikasi " + short_name(m))}</h2><dl class="spq">{rows}</dl>'
+                    f'<p class="ctas"><a class="btn o sm" href="/{m["slug"]}/spesifikasi/">Spesifikasi lengkap</a></p></div></section>')
+
         def s_specs():
             if STYLE_MD or not m.get("specs"):
                 return ""
@@ -1673,7 +1726,7 @@ def build_models():
         def s_details():
             return dive_section(m) if STYLE_MD else ""
 
-        reg = {"gallery": s_gallery, "explore": s_explore, "details": s_details, "mvideo": s_mvideo, "text": s_text, "ready": s_ready, "aesthetics": s_aesthetics, "safety": s_safety, "summary": s_summary, "highlights": s_highlights, "variants": s_variants, "specs": s_specs,
+        reg = {"gallery2": s_gallery2, "features": s_features, "specs2": s_specs2, "gallery": s_gallery, "explore": s_explore, "details": s_details, "mvideo": s_mvideo, "text": s_text, "ready": s_ready, "aesthetics": s_aesthetics, "safety": s_safety, "summary": s_summary, "highlights": s_highlights, "variants": s_variants, "specs": s_specs,
                "compare": s_compare, "articles": s_articles, "faq": s_faq, "others": s_others, "lead": s_lead,
                "leasing": lambda: leasing_section("model"), "testimonials": lambda: testi_section("model", m["slug"])}
         gal_known = [x["id"] for x in LAYOUT.get("model", [])]
@@ -1697,7 +1750,7 @@ def build_models():
                    f'<a class="btn o" href="{wa_url("Halo, saya ingin info " + m["name"])}" data-wa="model-{m["slug"]}" rel="noopener">{WA_ICON} Tanya harga</a></div>{brochure}'
                    f'<p class="subnav">' + "".join(f'<a href="{path}{k}/">{lb}</a>' for k, lb in SUBS) + f'</p></div>{gal}</div></div></section>')
         if STYLE_MD:
-            seq = ["mvideo", "explore", "text", "ready", "aesthetics", "safety", "details", "variants", "compare", "testimonials", "faq", "articles"]
+            seq = ["mvideo", "explore", "text", "ready", "gallery2", "features", "aesthetics", "safety", "specs2", "details", "variants", "compare", "testimonials", "faq", "articles"]
             body = top + "".join(reg[i]() for i in seq if lay_on("model", i))
         else:
             body = top + "".join(reg[i]() for i in sections_order("model", reg))
@@ -1926,6 +1979,55 @@ def build_credit_page():
         title = "Simulasi Kredit BYD: Hitung DP & Cicilan Bulanan"
     desc = f"Hitung simulasi kredit mobil listrik BYD: uang muka, tenor 1-5 tahun, dan cicilan bulanan tiap varian. Harga OTR Jakarta {PRICE_LABEL} di {NAME}."
     add(path, page(title, desc, path, body, [breadcrumb_ld(crumb_items)]), PRICE_DATE)
+
+
+def gallery_items(only=None):
+    """Semua foto model untuk galeri: foto utama/galeri, eksterior, interior, dan foto per warna. Kategori dari isian Admin."""
+    out, seen = [], set()
+    for m in MODELS:
+        if only and m["slug"] != only:
+            continue
+        cand = [(i.get("src"), i.get("alt"), (i.get("cat") or "Lainnya")) for i in m.get("images", []) if isinstance(i, dict)]
+        for key, cat in (("exterior", "Eksterior"), ("interior", "Interior")):
+            o = m.get(key) or {}
+            cand += [(o.get("image"), "", cat), (o.get("image2"), "", cat)] + [(x.get("image"), x.get("title"), cat) for x in (o.get("items") or []) if isinstance(x, dict)]
+        cand += [(c.get("image"), f'{m["name"]} warna {c.get("name", "")}', "Warna") for c in (m.get("colors") or []) if isinstance(c, dict)]
+        for src, alt, cat in cand:
+            k = images.resolve(src) if src else None
+            if not k or (m["slug"], k) in seen:
+                continue
+            seen.add((m["slug"], k))
+            out.append({"m": m, "src": src, "alt": (alt or "").strip() or m["name"], "cat": cat if cat in ("Eksterior", "Interior", "Warna") else "Lainnya"})
+    return out
+
+
+def build_gallery():
+    path = "/galeri/"
+    crumb_items = [("Beranda", "/"), ("Galeri", path)]
+    its = gallery_items()
+    ttl = (SITE.get("gallery_title") or "Galeri Mobil BYD").strip()
+    intro = (SITE.get("gallery_intro") or "Foto eksterior dan interior seluruh model BYD di dealer kami. Pilih model atau jenis foto, lalu ketuk gambar untuk memperbesar.").strip()
+    if its:
+        mods = [m for m in MODELS if any(x["m"]["slug"] == m["slug"] for x in its)]
+        cats = [c for c in ("Eksterior", "Interior", "Warna", "Lainnya") if any(x["cat"] == c for x in its)]
+        chips_m = '<button type="button" class="gfc" data-g="m" data-v="" aria-pressed="true">Semua model</button>' + "".join(f'<button type="button" class="gfc" data-g="m" data-v="{m["slug"]}" aria-pressed="false">{esc(short_name(m))}</button>' for m in mods)
+        chips_c = ('<button type="button" class="gfc" data-g="c" data-v="" aria-pressed="true">Semua foto</button>' + "".join(f'<button type="button" class="gfc" data-g="c" data-v="{c}" aria-pressed="false">{c}</button>' for c in cats)) if len(cats) > 1 else ""
+        tiles = "".join(f'<a class="gi" href="{images.resolve(x["src"])}" data-gal data-m="{x["m"]["slug"]}" data-c="{x["cat"]}" aria-label="Perbesar foto {esc(x["m"]["name"])}">'
+                        f'{img_tag(x["src"], x["alt"], "(max-width:600px) 50vw, 360px")}<span class="gcap"><b>{esc(x["m"]["name"])}</b><small>{x["cat"]}</small></span></a>' for x in its)
+        grid = (f'<div class="gfl" id="gfl"><div class="gfr" role="group" aria-label="Filter model">{chips_m}</div>' + (f'<div class="gfr" role="group" aria-label="Filter jenis foto">{chips_c}</div>' if chips_c else "") + "</div>"
+                f'<div class="gg" id="gg">{tiles}</div><p class="gne" id="gne" hidden>Belum ada foto untuk pilihan ini.</p>')
+    else:
+        grid = '<p class="gne">Foto sedang disiapkan. Hubungi sales kami lewat WhatsApp untuk melihat unitnya langsung.</p>'
+    body = (f'<section class="sub shero"><div class="wrap">{crumbs(crumb_items)}{ey("Galeri")}<h1>{esc(ttl)}</h1><p class="tl">{esc(intro)}</p></div></section>'
+            f'<section class="s"><div class="wrap">{grid}</div></section>'
+            f'<section class="s alt"><div class="wrap"><div class="ctas"><a class="btn" href="/test-drive/">Booking test drive</a><a class="btn o" href="{wa_url("Halo, saya ingin info BYD setelah melihat galeri.")}" data-wa="gallery" rel="noopener">{WA_ICON} Chat WhatsApp</a></div></div></section>')
+    title = f"{ttl}: Foto Semua Model | {NAME}"
+    if len(title) > 60:
+        title = f"{ttl} | {NAME}"
+    desc = f"Galeri foto eksterior dan interior mobil listrik BYD di {NAME}: {', '.join(m['name'] for m in MODELS[:4])}, dan model lainnya."[:158]
+    schema = [breadcrumb_ld(crumb_items), {"@context": "https://schema.org", "@type": "CollectionPage", "name": title, "url": url(path), "inLanguage": "id-ID"}]
+    ok = len(its) >= 6
+    add(path, page(title, desc, path, body, schema, robots="index,follow" if ok else "noindex,follow"), PRICE_DATE, ok)
 
 
 def build_contact():
@@ -2272,7 +2374,7 @@ def main():
     write_all()
     build_home(); build_models(); build_prices(); build_testdrive(); build_social_pages(); build_about()
     if STYLE_MD:
-        build_model_subs(); build_credit_page(); build_contact()
+        build_model_subs(); build_credit_page(); build_contact(); build_gallery()
     for a in VIS_ART:
         build_article(a)
     for p in VIS_LAND:

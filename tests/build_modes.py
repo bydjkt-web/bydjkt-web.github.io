@@ -90,6 +90,27 @@ def main():
     res["launch_text_clipped"] = "Kalimat panjang Kalimat panjang Kalimat panjang Kalimat panjang Kalimat panjang Kalimat panjang Kalimat panjang Kalimat panjang Kalimat panjang Kalimat panjang Kalimat panjang Kalimat panjang" not in hm3
     del pg["home"]["launching"]
     (tmp / "content/pages.json").write_text(json.dumps(pg))
+    res["lineup_cards"] = hm.count('class="lc"') == 6 and 'id="lcg"' in hm and 'class="lcf"' in hm and 'class="swiper' not in hm.split('id="model"')[1].split("</section>")[0]
+    res["menu_gallery"] = 'href="/galeri/"' in hm and 'class="ft mf"' in hm
+    gp = (tmp / "docs/galeri/index.html").read_text()
+    res["gallery_empty_noindex"] = 'noindex,follow' in gp and "Foto sedang disiapkan" in gp and "/galeri/" not in (tmp / "docs/sitemap.xml").read_text()
+    res["model_specs_features"] = 'class="spq"' in mp and "Fitur unggulan" in mp
+    mj2 = json.loads((tmp / "content/models.json").read_text())
+    ms2 = mj2["models"] if isinstance(mj2, dict) else mj2
+    (tmp / "content/img").mkdir(exist_ok=True)
+    shutil.copy(ROOT / "tests/fixtures/foto-besar.png", tmp / "content/img/uji-galeri.png")
+    for k, mm in enumerate(ms2):
+        mm["images"] = [{"src": "uji-galeri.png", "alt": "Foto uji " + mm["name"], "cat": "Eksterior"}]
+    (tmp / "content/models.json").write_text(json.dumps(mj2))
+    rc, hmg = build(tmp)
+    gp2 = (tmp / "docs/galeri/index.html").read_text()
+    mp3 = (tmp / "docs/byd-atto-3/index.html").read_text()
+    res["gallery_page"] = rc == 0 and gp2.count('class="gi"') == 6 and 'data-gal' in gp2 and 'data-m="byd-atto-3"' in gp2 and 'index,follow' in gp2 and "/galeri/" in (tmp / "docs/sitemap.xml").read_text()
+    res["model_gallery_section"] = 'class="s gsec"' in mp3 and "/galeri/?model=byd-atto-3" in mp3
+    res["hero_full_with_image"] = 'class="hero c mh full"' in hmg and 'class="lcp"' in hmg and 'noindex' not in gp2
+    for mm in ms2:
+        mm["images"] = []
+    (tmp / "content/models.json").write_text(json.dumps(mj2))
     pg["home"]["video"] = {"title": "Uji Video", "url": "https://youtu.be/dQw4w9WgXcQ"}
     pg["home"]["tech"] = [{"eyebrow": "Uji", "title": "Teknologi Uji", "text": "Isi uji.", "points": [{"title": "Poin Uji", "text": "x"}], "link": "/byd-seal/"}]
     pg["home"]["feature_model"] = "byd-seal"
