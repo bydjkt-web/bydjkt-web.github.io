@@ -105,6 +105,35 @@
     } catch (e) {}
   })();
 
+  // filter tipe di lineup beranda dan filter model/jenis foto di galeri
+  (function () {
+    var lg = document.getElementById("lcg");
+    if (lg) document.querySelectorAll(".lcf .gfc").forEach(function (b) {
+      b.addEventListener("click", function () {
+        var f = b.getAttribute("data-f");
+        document.querySelectorAll(".lcf .gfc").forEach(function (x) { x.setAttribute("aria-pressed", x === b ? "true" : "false"); });
+        lg.querySelectorAll(".lc").forEach(function (c) { c.hidden = !!f && c.getAttribute("data-t") !== f; });
+      });
+    });
+    var gg = document.getElementById("gg"); if (!gg) return;
+    var st = { m: "", c: "" }, none = document.getElementById("gne");
+    function apply() {
+      var n = 0;
+      gg.querySelectorAll(".gi").forEach(function (a) {
+        var ok = (!st.m || a.getAttribute("data-m") === st.m) && (!st.c || a.getAttribute("data-c") === st.c);
+        a.hidden = !ok; if (ok) n++;
+      });
+      if (none) none.hidden = n > 0;
+    }
+    function pick(g, v) {
+      st[g] = v;
+      document.querySelectorAll("#gfl .gfc[data-g=" + g + "]").forEach(function (x) { x.setAttribute("aria-pressed", x.getAttribute("data-v") === v ? "true" : "false"); });
+      apply();
+    }
+    document.querySelectorAll("#gfl .gfc").forEach(function (b) { b.addEventListener("click", function () { pick(b.getAttribute("data-g"), b.getAttribute("data-v")); }); });
+    var q = new URLSearchParams(location.search).get("model");
+    if (q && document.querySelector('#gfl .gfc[data-v="' + q.replace(/[^a-z0-9-]/gi, "") + '"]')) pick("m", q.replace(/[^a-z0-9-]/gi, ""));
+  })();
   // Lightbox sederhana untuk galeri model
   (function () {
     var links = document.querySelectorAll("[data-gal]");
@@ -476,7 +505,7 @@
       });
     }
     // hero: tiga lapisan bergerak beda jarak mengikuti kursor atau jari
-    var hm = document.querySelector(".hero.mh .mhin");
+    var hm = document.querySelector(".hero.mh:not(.full) .mhin");
     if (hm && !calm) {
       var far = document.createElement("i"), far2 = document.createElement("i"); far.className = "dp dp1"; far2.className = "dp dp2";
       far.setAttribute("aria-hidden", "true"); far2.setAttribute("aria-hidden", "true"); hm.appendChild(far); hm.appendChild(far2);
