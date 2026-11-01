@@ -557,6 +557,68 @@
   // tanggal test drive tidak boleh sebelum hari ini
   document.querySelectorAll("input[name=tdDate]").forEach(function (i) { var t = new Date(); t.setMinutes(t.getMinutes() - t.getTimezoneOffset()); i.min = t.toISOString().slice(0, 10); });
 
+  // ---- halaman perbandingan BYD vs brand lain ----
+  (function () {
+    var box = document.getElementById("cmpx"); if (!box) return;
+    var D; try { D = JSON.parse(box.getAttribute("data-cmp")); } catch (e) { return; }
+    var $ = function (id) { return document.getElementById(id); };
+    var sb = $("cb"), sv = $("cv2"), sbr = $("cbr"), smo = $("cmo"), out = $("cmpout");
+    function juta(n) {
+      if (n >= 1e9) return "Rp" + String(parseFloat((n / 1e9).toFixed(2))).replace(".", ",") + " miliar";
+      return "Rp" + String(parseFloat((n / 1e6).toFixed(1))).replace(".", ",") + " juta";
+    }
+    function el(tag, cls, txt) { var e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; }
+    function fillV() {
+      var m = D.byd[+sb.value]; sv.innerHTML = "";
+      m.v.forEach(function (v, i) { var o = document.createElement("option"); o.value = i; o.textContent = v.n + " · " + juta(v.p); sv.appendChild(o); });
+    }
+    function fillM(sel) {
+      var b = D.brands[+sbr.value]; smo.innerHTML = "";
+      b.m.forEach(function (x, i) { var o = document.createElement("option"); o.value = i; o.textContent = x.n + " · " + juta(x.p); smo.appendChild(o); });
+      if (sel != null) smo.value = sel;
+    }
+    function card(me, name, url, kind, price, b, r, w, d, byName) {
+      var a = el("article", "cxc" + (me ? " me" : ""));
+      if (me) a.appendChild(el("span", "cxb", "Pilihan BYD"));
+      var h3 = el("h3"); if (url) { var l = el("a", null, name); l.href = url; h3.appendChild(l); } else h3.textContent = name; a.appendChild(h3);
+      a.appendChild(el("p", "cxp", juta(price)));
+      if (!me && d) a.appendChild(el("span", "cxd " + (d > 0 ? "up" : "dn"), juta(Math.abs(d)) + (d > 0 ? " lebih mahal" : " lebih murah") + " dari " + byName));
+      var dl = el("dl");
+      [["Jenis", kind], ["Baterai", b], ["Jarak tempuh", r], ["Daya", w]].forEach(function (p) {
+        if (!p[1]) return; var row = el("div"); row.appendChild(el("dt", null, p[0])); row.appendChild(el("dd", null, p[1])); dl.appendChild(row);
+      });
+      a.appendChild(dl); return a;
+    }
+    function render() {
+      var by = D.byd[+sb.value], v = by.v[+sv.value || 0], co = D.brands[+sbr.value].m[+smo.value || 0];
+      var warn = [], d = co.p - v.p, pc = v.p ? Math.abs(d) / v.p * 100 : 0;
+      if (by.k !== co.k) warn.push("Jenis mobil berbeda: " + by.n + " termasuk " + by.k + ", sedangkan " + co.n + " termasuk " + co.k + ".");
+      if (pc > D.pct) warn.push("Harga berbeda jauh: selisih " + juta(Math.abs(d)) + " (" + Math.round(pc) + "%), batas kewajaran " + D.pct + "%.");
+      out.innerHTML = "";
+      var w;
+      if (warn.length) {
+        w = el("div", "cmw bad"); w.setAttribute("role", "alert"); w.appendChild(el("b", null, "Perbandingan ini kurang sesuai kriteria"));
+        var ul = el("ul"); warn.forEach(function (t) { ul.appendChild(el("li", null, t)); }); w.appendChild(ul);
+        w.appendChild(el("p", null, "Hasilnya tetap kami tampilkan, tetapi kurang adil karena kedua mobil berbeda kelas."));
+      } else {
+        w = el("div", "cmw ok"); w.setAttribute("role", "status"); w.appendChild(el("b", null, "Sesuai kriteria"));
+        w.appendChild(el("p", null, "Jenis mobil sama (" + by.k + ") dan selisih harga " + Math.round(pc) + "% (di bawah " + D.pct + "%)."));
+      }
+      out.appendChild(w);
+      var g = el("div", "cx cx2");
+      g.appendChild(card(true, by.n + " " + v.n, by.u, by.k, v.p, v.b, v.r, v.w, 0, ""));
+      g.appendChild(card(false, co.n, "", co.k, co.p, co.b, co.r, co.w, d, by.n + " " + v.n));
+      out.appendChild(g);
+    }
+    // keadaan awal sama dengan hasil yang sudah ditulis di HTML
+    var initName = (out.querySelector(".cxc:not(.me) h3") || {}).textContent || "", bi = +sbr.value;
+    fillV(); fillM(null);
+    var idx = D.brands[bi].m.map(function (x) { return x.n; }).indexOf(initName); if (idx > -1) smo.value = idx;
+    sb.addEventListener("change", function () { fillV(); render(); });
+    sv.addEventListener("change", render);
+    sbr.addEventListener("change", function () { fillM(null); render(); });
+    smo.addEventListener("change", render);
+  })();
   // ---- halaman simulasi kredit ----
   (function () {
     var box = document.querySelector(".cpage[data-credit]"); if (!box) return;
