@@ -299,16 +299,23 @@
       "title": "Bintang 5 Euro NCAP",
       "text": "",
       "badges": [],
-      "image": ""
+      "image": "/img/219385-2.webp"
     },
     "exterior": {
-      "intro_title": "",
-      "image2": "",
-      "title": "",
+      "intro_title": "test judul blok design",
+      "image2": "/img/230080.webp",
+      "title": "BYD M6 DM-i",
       "intro": "",
-      "image": "",
+      "image": "/img/230079.webp",
       "items_title": "",
-      "items": []
+      "items": [
+        {
+          "label": "Lampu",
+          "title": "Lampu Grill",
+          "text": "",
+          "image": "/img/230081.webp"
+        }
+      ]
     },
     "interior": {
       "title": "",
