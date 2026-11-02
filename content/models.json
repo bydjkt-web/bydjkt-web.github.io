@@ -156,7 +156,18 @@
     "powertrain": "PHEV",
     "keyword": "BYD M6 DM-i",
     "tagline": "MPV plug-in hybrid untuk keluarga, mulai Rp298 juta OTR Jakarta.",
-    "images": [],
+    "images": [
+      {
+        "src": "/img/230178.webp",
+        "alt": "Interior BYD M6 DM-i",
+        "cat": "Interior"
+      },
+      {
+        "src": "/img/230179.webp",
+        "alt": "Interior BYD M6 DM-i",
+        "cat": "Interior"
+      }
+    ],
     "intro": [
       "BYD M6 DM-i adalah MPV plug-in hybrid yang memadukan mesin bensin 1.5 liter dengan motor listrik. Anda bisa memakainya dengan listrik untuk perjalanan harian dan tetap tenang untuk perjalanan jauh karena ada mesin bensin sebagai cadangan.",
       "Tersedia dua keluarga varian: Classic (baterai lebih kecil, harga lebih terjangkau) dan Cross (baterai lebih besar, jarak tempuh listrik lebih panjang, fitur lebih lengkap). Varian Captain Seat memiliki 6 kursi."
@@ -310,18 +321,30 @@
       "items_title": "",
       "items": [
         {
-          "label": "Lampu",
-          "title": "Lampu Grill",
+          "label": "Plug in Hybrid",
+          "title": "M6 DM-i",
           "text": "",
           "image": "/img/230081.webp"
+        },
+        {
+          "label": "Pilihan Warna",
+          "title": "Warna M6 DM-i",
+          "text": "Warna M6 DM-i",
+          "image": "/img/230175.webp"
+        },
+        {
+          "label": "Grille Depan M6 DM",
+          "title": "M6 DM-i",
+          "text": "Grille Depan M6 DM",
+          "image": "/img/230176.webp"
         }
       ]
     },
     "interior": {
-      "title": "",
-      "intro": "",
-      "image": "",
-      "items_title": "",
+      "title": "Interior BYD M6 DM-i",
+      "intro": "Interior BYD M6 DM-i menyuguhkan keluasan kabin dan juga Kenyamanan berkendara dengan spacious Kabin yang lega dan tersedia 2 varian kursi yaitu captain Seat dan 7 seat",
+      "image": "/img/230177.webp",
+      "items_title": "Interior BYD M6 DM-i",
       "items": []
     },
     "colors": []
