@@ -184,7 +184,13 @@ CSS = (_BS.read_text(encoding="utf-8") if _BS.exists() else "") + minify_css((SR
 
 BOLT = ("<svg viewBox='0 0 32 32' aria-hidden='true'><rect width='32' height='32' rx='8' fill='currentColor'/>"
         "<path d='M18 4 8 18h7l-1 10 10-14h-7z' fill='#fff'/></svg>")
-FAVICON = ("data:image/svg+xml," + urllib.parse.quote(
+_LG = (SRC / "assets/brand/byd-dark.svg")
+LOGO = (_LG.read_text(encoding="utf-8").replace('fill="#16222d"', 'fill="currentColor"').replace("<svg ", '<svg class="lg" role="img" aria-label="BYD" ', 1)
+        if _LG.exists() else BOLT)
+SUB = re.sub(r"^BYD\s+", "", NAME).strip() or NAME
+ICONS = ('<link rel="icon" type="image/svg+xml" href="/assets/brand/icon.svg"><link rel="icon" type="image/png" sizes="48x48" href="/assets/brand/favicon-48.png">'
+         '<link rel="icon" type="image/png" sizes="32x32" href="/assets/brand/favicon-32.png"><link rel="apple-touch-icon" href="/assets/brand/apple-touch-icon.png">')
+FAVICON_OLD = ("data:image/svg+xml," + urllib.parse.quote(
     f"<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='{ACC}'/>"
     "<path d='M18 4 8 18h7l-1 10 10-14h-7z' fill='#fff'/></svg>"))
 WA_ICON = ("<svg viewBox='0 0 24 24' fill='currentColor' aria-hidden='true'><path d='M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 "
@@ -412,7 +418,7 @@ def socials():
 
 def dealer_ld():
     d = {"@context": "https://schema.org", "@type": "AutoDealer", "@id": url("/#dealer"), "name": NAME, "legalName": SITE.get("legal_name") or NAME, "url": url("/"),
-         "image": url("/assets/og-default.png"), "logo": url("/assets/og-default.png"),
+         "image": url("/assets/og-default.png"), "logo": url("/assets/brand/icon-512.png"),
          "description": "Dealer mobil listrik BYD: konsultasi, simulasi kredit, dan booking test drive.",
          "brand": {"@type": "Brand", "name": "BYD"}, "areaServed": "ID", "knowsAbout": ["mobil listrik BYD", "harga OTR mobil listrik", "kredit mobil listrik", "test drive BYD"],
          "address": {"@type": "PostalAddress", "streetAddress": SITE["address"], "addressLocality": SITE["city"],
@@ -455,7 +461,7 @@ def head(title, desc, path, og_type="website", schema=None, robots="index,follow
     return (f'<!doctype html><html lang="id"{HTML_MODE}><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
             f'<title>{esc(title)}</title><meta name="description" content="{esc(desc)}"><link rel="canonical" href="{canon}">'
             f'<meta name="robots" content="{robots},max-image-preview:large"><meta name="theme-color" content="{DARK}">'
-            f'<link rel="icon" href="{FAVICON}"><link rel="alternate" type="application/rss+xml" title="{esc(NAME)}" href="/feed.xml">'
+            f'{ICONS}<link rel="alternate" type="application/rss+xml" title="{esc(NAME)}" href="/feed.xml">'
             f'<meta property="og:type" content="{og_type}"><meta property="og:site_name" content="{esc(NAME)}">'
             f'<meta property="og:title" content="{esc(title)}"><meta property="og:description" content="{esc(desc)}">'
             f'<meta property="og:url" content="{canon}"><meta property="og:locale" content="id_ID"><meta property="og:image" content="{ogi}">{wh}'
@@ -508,7 +514,7 @@ def header(path=""):
     nav = "".join(f'<a href="{esc(n["href"])}"{" aria-current=page" if on(n) else ""}>{esc(n["label"])}</a>' for n in nav_items())
     wa = f'<a class="btn hwa" href="{wa_url()}" data-wa="header" rel="noopener" aria-label="Chat WhatsApp">{WA_ICON}<span>WhatsApp</span></a>'
     return (f'<a class="skip" href="#main">Lewati ke konten</a>{promo}<header class="top"><div class="wrap bar">'
-            f'<a class="logo" href="/" aria-label="{esc(NAME)} beranda">{BOLT}<span>{esc(NAME)}</span></a>'
+            f'<a class="logo" href="/" aria-label="{esc(NAME)} beranda">{LOGO}<span>{esc(SUB)}</span></a>'
             f'<nav class="d" aria-label="Menu utama">{nav}</nav>{wa}'
             f'<details class="m"><summary aria-label="Buka menu">{MENU_ICON}<span class="hb" aria-hidden="true"><i></i><i></i><i></i></span></summary><div>{nav}<a href="/test-drive/">Booking Test Drive</a></div></details></div></header>')
 
@@ -546,7 +552,7 @@ def modern_header(path, promo):
           f'<div><a href="/"{cur("/")}>Beranda</a><p class="mh">Model Kami</p>{mob}{m_rest}</div></details>')
     wa = f'<a class="btn hwa" href="{wa_url()}" data-wa="header" rel="noopener" aria-label="Chat WhatsApp">{WA_ICON}<span>WhatsApp</span></a>'
     return (f'<a class="skip" href="#main">Lewati ke konten</a>{promo}<header class="top"><div class="wrap bar">'
-            f'<a class="logo" href="/" aria-label="{esc(NAME)} beranda">{BOLT}<span>{esc(NAME)}</span></a>{d}{wa}{mm}</div></header>')
+            f'<a class="logo" href="/" aria-label="{esc(NAME)} beranda">{LOGO}<span>{esc(SUB)}</span></a>{d}{wa}{mm}</div></header>')
 
 
 def modern_footer(fab):
@@ -565,7 +571,7 @@ def modern_footer(fab):
     mail = f'<br><a href="mailto:{esc(SITE["email"])}">{esc(SITE["email"])}</a>' if SITE.get("email") else ""
     join = wa_url("Halo, saya ingin mendapat update promo dan unit BYD terbaru.")
     return (f'<footer class="ft mf"><div class="wrap"><div class="fg">'
-            f'<div class="fb"><a class="logo" href="/">{BOLT}<span>{esc(NAME)}</span></a><p class="ftag">Drive the future.</p><p>{esc(SITE["tagline"])}.</p>'
+            f'<div class="fb"><a class="logo" href="/">{LOGO}<span>{esc(SUB)}</span></a><p class="ftag">Drive the future.</p><p>{esc(SITE["tagline"])}.</p>'
             f'<p>{esc(SITE["address"])}, {esc(SITE["city"])}<br><a href="{wa_url()}" data-wa="footer" rel="noopener">{esc(SITE["phone_display"])}</a>{mail}</p></div>'
             f'<div><h2>Model</h2><ul>{mod}</ul></div><div><h2>Jelajahi</h2><ul>{ex}</ul></div>'
             f'<div><h2>Info Promo</h2><p>Dapatkan update promo dan unit BYD terbaru langsung di WhatsApp.</p>'
@@ -1671,7 +1677,7 @@ def build_models():
             if not arts:
                 return ""
             return (f'<section class="s alt"><div class="wrap"><h2>Artikel tentang {esc(m["name"])}</h2>'
-                    f'<div class="grid">{"".join(article_card(a) for a in arts)}</div></div></section>')
+                    f'<div class="grid">{"".join(article_card(a, STYLE_MD) for a in arts)}</div></div></section>')
 
         def s_faq():
             if not m.get("faq"):
@@ -1851,7 +1857,7 @@ def stat_cards(stats, cls="kst", m=None):
         return ""
     # Modern: kartu bisa dibalik; sisi belakang berisi varian dan harga dari data model (tanpa klaim baru)
     back = ""
-    if STYLE_MD and m and m.get("variants"):
+    if False and STYLE_MD and m and m.get("variants"):  # kartu flip dimatikan
         rows = "".join(f'<span class="r"><span>{esc(v["name"])}</span><b>{esc(juta(v["price"]))}</b></span>' for v in m["variants"][:4])
         back = f'<span class="fb"><small>Varian dan harga OTR</small>{rows}</span>'
     out = ""
@@ -2240,7 +2246,7 @@ def build_prices():
         arts = arts_for("prices", limit=6)
         if not arts:
             return ""
-        return f'<section class="s"><div class="wrap"><h2>{esc(p.get("articles_title", "Artikel Terkait"))}</h2><div class="grid">{"".join(article_card(a) for a in arts)}</div></div></section>'
+        return f'<section class="s"><div class="wrap"><h2>{esc(p.get("articles_title", "Artikel Terkait"))}</h2><div class="grid">{"".join(article_card(a, STYLE_MD) for a in arts)}</div></div></section>'
 
     def s_faq():
         return f'<section class="s alt"><div class="wrap art"><h2>{esc(p["faq_title"])}</h2>{faq_html(faq_pairs(p["faq"]))}</div></section>'
@@ -2416,9 +2422,13 @@ def og_default():
                 continue
         return ImageFont.load_default()
 
-    d.text((80, 200), NAME, font=font(96), fill="white")
-    d.text((80, 330), "Dealer Mobil Listrik BYD", font=font(48), fill=(200, 230, 225))
-    d.text((80, 410), "Harga OTR  |  Simulasi Kredit  |  Test Drive", font=font(34), fill=(160, 210, 200))
+    lg = SRC / "assets/brand/byd-light.png"
+    if lg.exists():
+        L = Image.open(lg).convert("RGBA").resize((440, int(440 * 154 / 800)), Image.LANCZOS)
+        img.paste(L, (80, 130), L)
+    d.text((80, 230), SUB if lg.exists() else NAME, font=font(96), fill="white")
+    d.text((80, 345), "Dealer Mobil Listrik BYD", font=font(48), fill=(200, 230, 225))
+    d.text((80, 425), "Harga OTR  |  Simulasi Kredit  |  Test Drive", font=font(34), fill=(160, 210, 200))
     img.save(OUT / "assets/og-default.png", optimize=True)
 
 
@@ -2445,6 +2455,8 @@ def write_all():
     (OUT / "assets/vendor").mkdir(exist_ok=True)
     for f in ("swiper.min.js", "swiper.min.css", "aos.min.js", "aos.min.css"):
         shutil.copy(SRC / "assets/vendor" / f, OUT / "assets/vendor" / f)
+    if (SRC / "assets/brand").exists():
+        shutil.copytree(SRC / "assets/brand", OUT / "assets/brand", dirs_exist_ok=True)
     (OUT / "assets/fonts").mkdir(exist_ok=True)
     shutil.copy(SRC / "assets/fonts/display.woff2", OUT / "assets/fonts/display.woff2")
     if (SRC / "assets/fonts/display-ed.woff2").exists():

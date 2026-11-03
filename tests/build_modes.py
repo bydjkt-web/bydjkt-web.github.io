@@ -62,7 +62,7 @@ def main():
     mp = (tmp / "docs/byd-atto-3/index.html").read_text()
     res["modern_model_page"] = all(x in mp for x in ('id="explore"', 'class="s txsec"', 'class="s alt rdsec"', "Estetika di setiap", 'class="s dive"')) and mp.index('id="explore"') < mp.index('class="s txsec"') < mp.index('class="s alt rdsec"') < mp.index('class="s dive"')
     res["modern_testdrive_steps"] = (tmp / "docs/test-drive/index.html").read_text().count('class="st"') == 3
-    res["modern_fx_markup"] = 'class="rib"' in hm and hm.index('class="rib"') < hm.index('id="model"') and 'class="flp"' in mp and 'data-colors' not in mp
+    res["modern_fx_markup"] = 'class="rib"' in hm and hm.index('class="rib"') < hm.index('id="model"') and 'class="flp"' not in mp and 'data-colors' not in mp
     mj = json.loads((tmp / "content/models.json").read_text())
     ms = next(x for x in (mj["models"] if isinstance(mj, dict) else mj) if x["slug"] == "byd-atto-3")
     (tmp / "content/img").mkdir(exist_ok=True)

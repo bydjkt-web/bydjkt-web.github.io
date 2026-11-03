@@ -1030,3 +1030,9 @@ html:not(.curtain) .hero.mh.full{position:relative}
 @media(max-width:1459px){[data-layout=modern] .hwa span{display:none}[data-layout=modern] .hwa{padding:0;width:44px;justify-content:center}}
 @media(min-width:1320px) and (max-width:1459px){[data-layout=modern] .btn.hwa{flex:none;width:44px;min-width:44px;height:44px;padding:0;justify-content:center;gap:0}[data-layout=modern] .btn.hwa svg{margin:0}}
 .cmh{margin:28px 0 0;font-size:1.4rem}
+
+.logo .lg{height:20px;width:auto;flex:none;color:inherit}
+.logo{color:#16222d;gap:12px}.logo span{font:600 .72rem var(--disp);letter-spacing:.32em;text-transform:uppercase;padding-left:12px;border-left:1px solid currentColor;line-height:1;opacity:.85}
+footer.mf .logo{color:#eef3f6}footer.mf .logo .lg{height:22px}
+@media(max-width:600px){.logo .lg{height:16px}.logo span{font-size:.62rem;letter-spacing:.24em;padding-left:9px}}
+@media(min-width:601px) and (max-width:1599px){header.top .logo span{display:none}}
