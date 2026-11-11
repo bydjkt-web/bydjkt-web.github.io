@@ -1,0 +1,34 @@
+name: Ganti domain ke bydjktsq.com
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  ganti:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Ganti URL lama ke domain baru
+        run: |
+          grep -rlI --exclude-dir=.git -e 'bydjkt-web.github.io' . \
+            | grep -v '^./.github/' \
+            | xargs -r sed -i 's#https\?://bydjkt-web\.github\.io#https://bydjktsq.com#g'
+
+      - name: Pastikan CNAME dan robots.txt benar
+        run: |
+          echo "bydjktsq.com" > CNAME
+          if [ -f robots.txt ] && ! grep -qi '^sitemap:' robots.txt; then
+            printf '\nSitemap: https://bydjktsq.com/sitemap.xml\n' >> robots.txt
+          fi
+
+      - name: Commit dan push
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@users.noreply.github.com"
+          git add -A
+          git diff --cached --stat
+          git diff --cached --quiet || (git commit -m "Ganti domain ke https://bydjktsq.com" && git push)
